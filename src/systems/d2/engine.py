@@ -11,6 +11,7 @@ from ...schema import (
     Acceptance,
     AnswerStatus,
     ClinicalEventArgs,
+    EventSelectionResult,
     CommonAnswer,
     CoverageType,
     DurationValue,
@@ -62,6 +63,9 @@ class D2Engine:
         if isinstance(args, ObservationArgs):
             interval = self._interval_ref(args.interval_ref, results)
             if args.interval_ref and interval is None:
+                dependency = results.get(args.interval_ref)
+                inherited = list(getattr(dependency, "limitations", []))
+                inherited.append(f"dependent interval {args.interval_ref} is unavailable")
                 return ObservationSelectionResult(
                     selected_observation_ids=[],
                     excluded_observation_ids=[],
@@ -69,7 +73,10 @@ class D2Engine:
                     scope=None,
                     reference_id=args.reference_id,
                     policy_id=args.policy_id,
-                    limitations=[f"dependent interval {args.interval_ref} is unavailable"],
+                    metric=args.metric,
+                    method=args.method,
+                    window_policy=args.window_policy,
+                    limitations=list(dict.fromkeys(inherited)),
                 )
             if interval is None and args.scope_mode == "question_scope":
                 # The runner injects the authorized question scope; the model may not
@@ -93,9 +100,9 @@ class D2Engine:
         value = results.get(ref)
         if value is None:
             raise ValueError(f"missing dependency result {ref}")
+        if not isinstance(value, IntervalResult):
+            raise TypeError(f"dependency {ref} is not an interval result")
         interval = getattr(value, "interval", None)
-        if interval is None:
-            raise TypeError(f"dependency {ref} does not expose an interval")
         return interval
 
     def _observation_rows(self, selection_ref: str, results: dict[str, object]):
@@ -106,18 +113,36 @@ class D2Engine:
 
     def _event_time(self, ref: str, results: dict[str, object]):
         result = results.get(ref)
-        if result is None or getattr(result, "time", None) is None:
-            raise ValueError(f"dependency {ref} does not provide an exact event anchor")
+        if result is None:
+            raise ValueError(f"missing dependency result {ref}")
+        if not isinstance(result, EventSelectionResult):
+            raise TypeError(f"dependency {ref} is not a clinical-event selection result")
         return result.time
+
+    @staticmethod
+    def _event_limitations(ref: str, results: dict[str, object]) -> list[str]:
+        result = results.get(ref)
+        if isinstance(result, EventSelectionResult):
+            return list(result.limitations)
+        return []
 
     def _interval_operation(self, args: IntervalArgs, results: dict[str, object]) -> IntervalResult:
         if args.operation == "between_event_anchors":
             start = self._event_time(args.start_ref or "", results)
             end = self._event_time(args.end_ref or "", results)
-            if start.upper != start.lower or end.upper != end.lower or start.lower >= end.lower:
+            inherited = self._event_limitations(args.start_ref or "", results) + self._event_limitations(args.end_ref or "", results)
+            if start is None or end is None:
+                limitations = list(dict.fromkeys(inherited + ["one or more clinical anchors is unavailable; dependent interval cannot be resolved"]))
                 return IntervalResult(
                     operation=args.operation,
-                    limitations=["event anchors are uncertain or not chronologically ordered"],
+                    limitations=limitations,
+                    dependency_ids=[args.start_ref or "", args.end_ref or ""],
+                )
+            if start.upper != start.lower or end.upper != end.lower or start.lower >= end.lower:
+                limitations = list(dict.fromkeys(inherited + ["event anchors are uncertain or not chronologically ordered"]))
+                return IntervalResult(
+                    operation=args.operation,
+                    limitations=limitations,
                     dependency_ids=[args.start_ref or "", args.end_ref or ""],
                 )
             return IntervalResult(
@@ -128,6 +153,14 @@ class D2Engine:
 
         if args.operation == "coverage":
             rows, selection = self._observation_rows(args.observation_ref or "", results)
+            if not rows:
+                return IntervalResult(
+                    operation=args.operation,
+                    interval=selection.scope,
+                    excluded_ids=selection.excluded_observation_ids,
+                    limitations=list(dict.fromkeys(selection.limitations + ["no selected observations support a coverage calculation"])),
+                    dependency_ids=[args.observation_ref or ""],
+                )
             scope = selection.scope or self.store.scope[0]
             nominal, nominal_ids = nominal_coverage(rows, scope)
             actual, unresolved, actual_ids = actual_support(rows, scope)
@@ -165,25 +198,33 @@ class D2Engine:
                     coverage_type=CoverageType.KNOWN_LOWER_BOUND if unresolved else CoverageType.ACTUAL_SUPPORT,
                 ),
             ]
-            limitations = ["fraction-only or unknown support prevents an exact total"] if unresolved else []
+            limitations = list(selection.limitations)
+            if unresolved:
+                limitations.append("fraction-only or unknown support prevents an exact total")
             return IntervalResult(
                 operation=args.operation,
                 interval=scope,
                 selected_ids=[row.observation_id for row in rows],
                 excluded_ids=selection.excluded_observation_ids,
                 facts=findings,
-                limitations=limitations,
+                limitations=list(dict.fromkeys(limitations)),
                 dependency_ids=[args.observation_ref or ""],
             )
 
         if args.operation == "summary":
             rows, selection = self._observation_rows(args.observation_ref or "", results)
+            if selection.window_policy == "clip_for_coverage":
+                return IntervalResult(
+                    operation=args.operation,
+                    limitations=["feature-window coverage selection cannot be reused for a value summary; select fully contained windows"],
+                    dependency_ids=[args.observation_ref or ""],
+                )
             value = numeric_summary(rows, args.statistic)
             if value is None:
                 return IntervalResult(
                     operation=args.operation,
                     selected_ids=[],
-                    limitations=["no numeric observations support the requested summary"],
+                    limitations=list(dict.fromkeys(selection.limitations + ["no numeric observations support the requested summary"])),
                     dependency_ids=[args.observation_ref or ""],
                 )
             first = rows[0]
@@ -209,11 +250,19 @@ class D2Engine:
 
         if args.operation == "compare_to_named_reference":
             rows, selection = self._observation_rows(args.target_ref or "", results)
+            if selection.window_policy == "clip_for_coverage":
+                return IntervalResult(
+                    operation=args.operation,
+                    limitations=["feature-window coverage selection cannot be reused for a named numeric comparison"],
+                    dependency_ids=[args.target_ref or ""],
+                )
             reference_id = args.reference_id or selection.reference_id
             if not reference_id:
                 raise ValueError("named comparison requires an explicit reference")
             reference = self.store.reference(reference_id)
-            if reference.metric != first_metric(rows) or reference.method != first_method(rows):
+            selected_metric = first_metric(rows) or selection.metric or ""
+            selected_method = first_method(rows) or selection.method or ""
+            if reference.metric != selected_metric or reference.method != selected_method:
                 return IntervalResult(
                     operation=args.operation,
                     selected_ids=[row.observation_id for row in rows],
@@ -225,6 +274,12 @@ class D2Engine:
                     operation=args.operation,
                     selected_ids=[row.observation_id for row in rows],
                     limitations=[f"reference {reference_id} is unavailable"],
+                    dependency_ids=[args.target_ref or ""],
+                )
+            if not rows:
+                return IntervalResult(
+                    operation=args.operation,
+                    limitations=list(dict.fromkeys(selection.limitations + [f"no selected observations support comparison to {reference_id}"])),
                     dependency_ids=[args.target_ref or ""],
                 )
             target = numeric_summary(rows, "median")
@@ -255,11 +310,11 @@ class D2Engine:
                 interval=selection.scope,
                 selected_ids=[row.observation_id for row in rows],
                 facts=[finding],
-                limitations=[
+                limitations=list(dict.fromkeys(selection.limitations + [
                     f"reference status is {reference.status.value}; descriptive only"
                     if reference.status.value == "provisional"
                     else ""
-                ],
+                ])),
                 dependency_ids=[args.target_ref or ""],
             )
 
@@ -270,6 +325,12 @@ class D2Engine:
             rule = next((item for item in self.store.scenario.episode_rules if item.rule_id == args.episode_rule_id), None)
             if rule is None:
                 raise ValueError(f"unknown episode rule {args.episode_rule_id}")
+            if not rows:
+                return IntervalResult(
+                    operation=args.operation,
+                    limitations=list(dict.fromkeys(selection.limitations + ["no selected observations support episode analysis"])),
+                    dependency_ids=[args.observation_ref or ""],
+                )
             groups = group_qualifying_intervals(
                 rows,
                 rule.threshold_operator,
@@ -315,7 +376,7 @@ class D2Engine:
                 interval=selection.scope,
                 selected_ids=[row.observation_id for row in rows],
                 facts=facts,
-                limitations=["grouping span is not continuous measured elevation"],
+                limitations=list(dict.fromkeys(selection.limitations + ["grouping span is not continuous measured elevation"])),
                 dependency_ids=[args.observation_ref or ""],
             )
 

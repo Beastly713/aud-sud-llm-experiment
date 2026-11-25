@@ -2,6 +2,24 @@
 
 Date: 2026-11-25
 
+## Confirmed-defect fix pass
+
+- Corrected all development oracle selectors to exact D01 observation IDs; the
+  independent oracle was not changed.
+- Distinguished missing/invalid dependencies, wrong result types and valid interval
+  results with unavailable intervals. Approximate, missing and ambiguous anchors now
+  propagate limitations without scope substitution, false zero coverage or crashes.
+- Added focused blocked-dependency and partial-window coverage regressions.
+- Added explicit fully-contained versus clip-for-coverage observation selection.
+- Expanded clinical bundles with event selections, candidate/selected clinical events,
+  occurrence IDs, action/assertion/time fields, source revisions and limitations.
+- Replaced placeholder gold slots with independently authored values, units,
+  denominators, exclusions, limitations and statuses for all 25 provisional records;
+  D02-Q1 is `answered` for its actual 30-second scope. D03/D04 ambiguity and partial
+  answerability were corrected.
+- Regenerated materialized development plans, gold, schemas and artifact-hash
+  manifest; human-review fields remain pending.
+
 ## Implemented
 
 - Versioned Pydantic v2 contracts for the shared evidence, clinical event, reference,
@@ -29,6 +47,12 @@ Date: 2026-11-25
 
 - `python3 -m compileall -q src evaluation tests` — passed.
 - `python3 -m py_compile $(rg --files src evaluation tests -g '*.py')` — passed.
+- JSON parsing and artifact checks for all materialized fixtures, questions, plans,
+  gold, schemas and manifests — passed.
+- Regenerated-artifact checks confirmed 25 gold records, exact Q1 coverage plans,
+  pending review status and corrected answerability statuses — passed.
+- Focused regression files added but not executed because the runtime dependencies
+  below are unavailable.
 - Static checks confirmed no D2 import in `evaluation/gold_oracle.py`, no material
   files in `data/test/` or `gold/test/`, and no trailing-whitespace findings.
 
@@ -38,8 +62,9 @@ Date: 2026-11-25
   installed in the workspace.
 - `python3 -m pytest tests/unit tests/security tests/dev` — blocked: `pytest` is not
   installed.
-- Schema materialization, fixture JSON export, mocked workflow execution and all
-  runtime tests therefore remain unexecuted; they are not reported as passed.
+- Mocked workflow execution and all runtime tests therefore remain unexecuted; they
+  are not reported as passed. Materialized JSON fixtures, gold and schemas are now
+  present and statically validated.
 - Docker runtime validation is not executed: the daemon is unavailable and the
   approved pinned Python image digest still requires operator configuration.
 - No API credentials, provider/model selection, live requests or human review were

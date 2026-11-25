@@ -1,0 +1,2942 @@
+[
+  {
+    "difficulty": "foundational",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q1",
+    "question_id": "D01-Q1",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-H1",
+            "D01-H2",
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "the remaining 15 seconds are not evidence of normal physiology",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "coverage_gaps"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D01-Q1-status"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D01-H1",
+            "D01-H2",
+            "D01-H3",
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "nominal_feature_window",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "nominal_coverage"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D01-H1",
+            "D01-H2",
+            "D01-H3",
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "actual_support",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "actual_support"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D01-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D01-H4",
+          "reason": "nominal window outside requested 30-second scope"
+        }
+      ],
+      "included_ids": [
+        "D01-H1",
+        "D01-H2"
+      ]
+    },
+    "snapshot_id": "D01-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q2",
+    "question_id": "D01-Q2",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-R1",
+            "D01-S-R"
+          ]
+        ],
+        "expected": {
+          "claim": "descriptive comparison only; not a healthy-normal inference",
+          "reason_code": "provisional_reference",
+          "reference_id": "D01-R1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "reference_qualification"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-H1",
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "the typical value describes selected windows, not the uncovered portion of the review span",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "summary_gap"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D01-Q2-status"
+      },
+      {
+        "absolute_tolerance": 0.1,
+        "evidence_alternatives": [
+          [
+            "D01-H1"
+          ]
+        ],
+        "expected": {
+          "interval_end": "2026-01-01T09:00:15+00:00",
+          "interval_start": "2026-01-01T09:00:00+00:00",
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "selected_ids": [
+            "D01-H1"
+          ],
+          "statistic": "median",
+          "unit": "bpm",
+          "value": 96.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "summary"
+      },
+      {
+        "absolute_tolerance": 0.1,
+        "evidence_alternatives": [
+          [
+            "D01-H1",
+            "D01-R1",
+            "D01-S-R"
+          ]
+        ],
+        "expected": {
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "policy_id": "D01-POLICY-NARROW",
+          "reference_id": "D01-R1",
+          "selected_ids": [
+            "D01-H1"
+          ],
+          "statistic": "median_difference",
+          "unit": "bpm",
+          "value": 16.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "reference_difference"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D01-H2",
+          "reason": "ineligible under narrow low-chest-motion policy"
+        },
+        {
+          "id": "D01-H3",
+          "reason": "rejected artifact"
+        }
+      ],
+      "included_ids": [
+        "D01-H1"
+      ]
+    },
+    "snapshot_id": "D01-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q3",
+    "question_id": "D01-Q3",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-S-H",
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "grouping span is not continuous measured elevation",
+          "reason_code": "grouping_not_continuous_elevation",
+          "rule_id": "D01-E1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "episode_semantics"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D01-Q3-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-P-H1",
+            "D01-P-H2",
+            "D01-S-H"
+          ]
+        ],
+        "expected": {
+          "rule_id": "D01-E1",
+          "unit": "episode",
+          "value": 1
+        },
+        "kind": "count",
+        "material": true,
+        "slot_id": "episode_count"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-P-H1",
+            "D01-P-H2",
+            "D01-S-R"
+          ]
+        ],
+        "expected": {
+          "actual_support_seconds": 20,
+          "grouping_span_seconds": 20,
+          "qualifying_window_seconds": 20,
+          "row_ids": [
+            "D01-P-H1",
+            "D01-P-H2"
+          ],
+          "rule_id": "D01-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "historical_group"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-H1",
+            "D01-S-H"
+          ]
+        ],
+        "expected": {
+          "qualifying_group_count": 0,
+          "reason": "10-second candidate is below the 15-second minimum grouping span",
+          "row_ids": [
+            "D01-H1"
+          ],
+          "rule_id": "D01-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "target_nonqualifying_candidate"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D01-H2",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D01-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D01-H4",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D01-H5",
+          "reason": "unknown chest motion"
+        }
+      ],
+      "included_ids": [
+        "D01-H1",
+        "D01-P-H1",
+        "D01-P-H2"
+      ]
+    },
+    "snapshot_id": "D01-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D01-Q4a",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-S-I",
+            "D01-S-H"
+          ]
+        ],
+        "expected": {
+          "claim": "accepted feature evidence is sparse and does not establish full-interval physiology",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "sparse_support"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-C4",
+            "D01-S-C"
+          ]
+        ],
+        "expected": {
+          "claim": "chronology does not establish treatment effect",
+          "reason_code": "forbidden_treatment_effect_inference"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "no_treatment_effect"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D01-Q4a-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-C1",
+            "D01-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "reported",
+          "assertion": "affirmed",
+          "mention_id": "D01-C1",
+          "occurrence_id": "D01-O1",
+          "precision": "instant",
+          "time": "2026-01-01T09:00:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "onset_anchor"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-C4",
+            "D01-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "completed",
+          "evidence_class": "structured_administration",
+          "mention_id": "D01-C4",
+          "occurrence_id": "D01-O4",
+          "precision": "instant",
+          "time": "2026-01-01T09:30:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "administration_anchor"
+      },
+      {
+        "absolute_tolerance": 0.1,
+        "evidence_alternatives": [
+          [
+            "D01-H1",
+            "D01-R1",
+            "D01-S-H",
+            "D01-S-R"
+          ]
+        ],
+        "expected": {
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "reference_id": "D01-R1",
+          "selected_ids": [
+            "D01-H1"
+          ],
+          "statistic": "median_difference",
+          "unit": "bpm",
+          "value": 16.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "heart_rate_difference"
+      },
+      {
+        "absolute_tolerance": 0.01,
+        "evidence_alternatives": [
+          [
+            "D01-G1",
+            "D01-G2",
+            "D01-G3",
+            "D01-S-H"
+          ]
+        ],
+        "expected": {
+          "method": "ac_conductance_100hz",
+          "metric": "ac_conductance",
+          "selected_ids": [
+            "D01-G1",
+            "D01-G2"
+          ],
+          "statistic": "median",
+          "unit": "\u00b5S",
+          "value": 3.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "ac_conductance_summary"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D01-C2",
+          "reason": "order is not completed administration"
+        },
+        {
+          "id": "D01-C3",
+          "reason": "held/not-done action is not completed administration"
+        },
+        {
+          "id": "D01-C6",
+          "reason": "uncertain narrative report is not a supported completed anchor"
+        },
+        {
+          "id": "D01-H2",
+          "reason": "ineligible narrow reference context"
+        },
+        {
+          "id": "D01-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D01-H4",
+          "reason": "ineligible/unknown narrow reference context"
+        },
+        {
+          "id": "D01-H5",
+          "reason": "indeterminate narrow reference eligibility"
+        },
+        {
+          "id": "D01-G3",
+          "reason": "rejected contact artifact"
+        }
+      ],
+      "included_ids": [
+        "D01-C1",
+        "D01-C4",
+        "D01-H1",
+        "D01-G1",
+        "D01-G2"
+      ]
+    },
+    "snapshot_id": "D01-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D01-Q4b",
+    "required_limitations": [],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D01-Q4b-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-C1",
+            "D01-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "reported",
+          "assertion": "affirmed",
+          "mention_id": "D01-C1",
+          "occurrence_id": "D01-O1",
+          "precision": "instant",
+          "time": "2026-01-01T09:00:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "symptom_onset"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D01-C4",
+            "D01-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "completed",
+          "evidence_class": "structured_administration",
+          "mention_id": "D01-C4",
+          "occurrence_id": "D01-O4",
+          "precision": "instant",
+          "time": "2026-01-01T09:30:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "completed_action"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D01-C2",
+          "reason": "order only"
+        },
+        {
+          "id": "D01-C3",
+          "reason": "held/not-done"
+        },
+        {
+          "id": "D01-C6",
+          "reason": "uncertain report"
+        }
+      ],
+      "included_ids": [
+        "D01-C1"
+      ]
+    },
+    "snapshot_id": "D01-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "foundational",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q1",
+    "question_id": "D02-Q1",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-H1",
+            "D02-H2",
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "the remaining 15 seconds are not evidence of normal physiology",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "coverage_gaps"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D02-Q1-status"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D02-H1",
+            "D02-H2",
+            "D02-H3",
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "nominal_feature_window",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "nominal_coverage"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D02-H1",
+            "D02-H2",
+            "D02-H3",
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "actual_support",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "actual_support"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D02-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D02-H4",
+          "reason": "nominal window outside requested 30-second scope"
+        }
+      ],
+      "included_ids": [
+        "D02-H1",
+        "D02-H2"
+      ]
+    },
+    "snapshot_id": "D02-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q2",
+    "question_id": "D02-Q2",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-R1",
+            "D02-S-R"
+          ]
+        ],
+        "expected": {
+          "claim": "descriptive comparison only; not a healthy-normal inference",
+          "reason_code": "provisional_reference",
+          "reference_id": "D02-R1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "reference_qualification"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-H1",
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "the typical value describes selected windows, not the uncovered portion of the review span",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "summary_gap"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D02-Q2-status"
+      },
+      {
+        "absolute_tolerance": 0.1,
+        "evidence_alternatives": [
+          [
+            "D02-H1"
+          ]
+        ],
+        "expected": {
+          "interval_end": "2026-01-02T09:00:15+00:00",
+          "interval_start": "2026-01-02T09:00:00+00:00",
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "selected_ids": [
+            "D02-H1"
+          ],
+          "statistic": "median",
+          "unit": "bpm",
+          "value": 96.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "summary"
+      },
+      {
+        "absolute_tolerance": 0.1,
+        "evidence_alternatives": [
+          [
+            "D02-H1",
+            "D02-R1",
+            "D02-S-R"
+          ]
+        ],
+        "expected": {
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "policy_id": "D02-POLICY-NARROW",
+          "reference_id": "D02-R1",
+          "selected_ids": [
+            "D02-H1"
+          ],
+          "statistic": "median_difference",
+          "unit": "bpm",
+          "value": 16.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "reference_difference"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D02-H2",
+          "reason": "ineligible under narrow low-chest-motion policy"
+        },
+        {
+          "id": "D02-H3",
+          "reason": "rejected artifact"
+        }
+      ],
+      "included_ids": [
+        "D02-H1"
+      ]
+    },
+    "snapshot_id": "D02-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q3",
+    "question_id": "D02-Q3",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-S-H",
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "grouping span is not continuous measured elevation",
+          "reason_code": "grouping_not_continuous_elevation",
+          "rule_id": "D02-E1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "episode_semantics"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D02-Q3-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-P-H1",
+            "D02-P-H2",
+            "D02-S-H"
+          ]
+        ],
+        "expected": {
+          "rule_id": "D02-E1",
+          "unit": "episode",
+          "value": 1
+        },
+        "kind": "count",
+        "material": true,
+        "slot_id": "episode_count"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-P-H1",
+            "D02-P-H2",
+            "D02-S-R"
+          ]
+        ],
+        "expected": {
+          "actual_support_seconds": 20,
+          "grouping_span_seconds": 20,
+          "qualifying_window_seconds": 20,
+          "row_ids": [
+            "D02-P-H1",
+            "D02-P-H2"
+          ],
+          "rule_id": "D02-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "historical_group"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-H1",
+            "D02-S-H"
+          ]
+        ],
+        "expected": {
+          "qualifying_group_count": 0,
+          "reason": "10-second candidate is below the 15-second minimum grouping span",
+          "row_ids": [
+            "D02-H1"
+          ],
+          "rule_id": "D02-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "target_nonqualifying_candidate"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D02-H2",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D02-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D02-H4",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D02-H5",
+          "reason": "unknown chest motion"
+        }
+      ],
+      "included_ids": [
+        "D02-H1",
+        "D02-P-H1",
+        "D02-P-H2"
+      ]
+    },
+    "snapshot_id": "D02-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D02-Q4a",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-C1",
+            "D02-S-C"
+          ]
+        ],
+        "expected": {
+          "lower": "2026-01-02T08:50:00+00:00",
+          "mention_id": "D02-C1",
+          "precision": "approximate",
+          "reason_code": "approximate_anchor",
+          "upper": "2026-01-02T09:10:00+00:00"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "uncertain_onset"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-C1",
+            "D02-C4",
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "exact onset-to-administration aggregate is not answerable without an exact onset",
+          "reason_code": "uncertain_anchor_blocks_exact_aggregate"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "blocked_exact_aggregate"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "partial"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D02-Q4a-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-C1",
+            "D02-S-C"
+          ]
+        ],
+        "expected": {
+          "lower": "2026-01-02T08:50:00+00:00",
+          "mention_id": "D02-C1",
+          "precision": "approximate",
+          "upper": "2026-01-02T09:10:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "reported_onset_bounds"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-C4",
+            "D02-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "completed",
+          "mention_id": "D02-C4",
+          "occurrence_id": "D02-O4",
+          "precision": "instant",
+          "time": "2026-01-02T09:30:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "completed_administration"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [],
+      "included_ids": [
+        "D02-C1",
+        "D02-C4"
+      ]
+    },
+    "snapshot_id": "D02-v1",
+    "status": "partial",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D02-Q4b",
+    "required_limitations": [],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D02-Q4b-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-C1",
+            "D02-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "reported",
+          "assertion": "affirmed",
+          "mention_id": "D02-C1",
+          "occurrence_id": "D02-O1",
+          "precision": "approximate",
+          "time": "2026-01-02T09:00:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "symptom_onset"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D02-C4",
+            "D02-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "completed",
+          "evidence_class": "structured_administration",
+          "mention_id": "D02-C4",
+          "occurrence_id": "D02-O4",
+          "precision": "instant",
+          "time": "2026-01-02T09:30:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "completed_action"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D02-C2",
+          "reason": "order only"
+        },
+        {
+          "id": "D02-C3",
+          "reason": "held/not-done"
+        },
+        {
+          "id": "D02-C6",
+          "reason": "uncertain report"
+        }
+      ],
+      "included_ids": [
+        "D02-C1"
+      ]
+    },
+    "snapshot_id": "D02-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "foundational",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q1",
+    "question_id": "D03-Q1",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-H1",
+            "D03-H2",
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "the remaining 15 seconds are not evidence of normal physiology",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "coverage_gaps"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D03-Q1-status"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D03-H1",
+            "D03-H2",
+            "D03-H3",
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "nominal_feature_window",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "nominal_coverage"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D03-H1",
+            "D03-H2",
+            "D03-H3",
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "actual_support",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "actual_support"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D03-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D03-H4",
+          "reason": "nominal window outside requested 30-second scope"
+        }
+      ],
+      "included_ids": [
+        "D03-H1",
+        "D03-H2"
+      ]
+    },
+    "snapshot_id": "D03-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q2",
+    "question_id": "D03-Q2",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-R1",
+            "D03-S-R"
+          ]
+        ],
+        "expected": {
+          "claim": "descriptive comparison only; not a healthy-normal inference",
+          "reason_code": "provisional_reference",
+          "reference_id": "D03-R1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "reference_qualification"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-H1",
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "the typical value describes selected windows, not the uncovered portion of the review span",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "summary_gap"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D03-Q2-status"
+      },
+      {
+        "absolute_tolerance": 0.1,
+        "evidence_alternatives": [
+          [
+            "D03-H1"
+          ]
+        ],
+        "expected": {
+          "interval_end": "2026-01-03T09:00:15+00:00",
+          "interval_start": "2026-01-03T09:00:00+00:00",
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "selected_ids": [
+            "D03-H1"
+          ],
+          "statistic": "median",
+          "unit": "bpm",
+          "value": 96.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "summary"
+      },
+      {
+        "absolute_tolerance": 0.1,
+        "evidence_alternatives": [
+          [
+            "D03-H1",
+            "D03-R1",
+            "D03-S-R"
+          ]
+        ],
+        "expected": {
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "policy_id": "D03-POLICY-NARROW",
+          "reference_id": "D03-R1",
+          "selected_ids": [
+            "D03-H1"
+          ],
+          "statistic": "median_difference",
+          "unit": "bpm",
+          "value": 16.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "reference_difference"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D03-H2",
+          "reason": "ineligible under narrow low-chest-motion policy"
+        },
+        {
+          "id": "D03-H3",
+          "reason": "rejected artifact"
+        }
+      ],
+      "included_ids": [
+        "D03-H1"
+      ]
+    },
+    "snapshot_id": "D03-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q3",
+    "question_id": "D03-Q3",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-S-H",
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "grouping span is not continuous measured elevation",
+          "reason_code": "grouping_not_continuous_elevation",
+          "rule_id": "D03-E1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "episode_semantics"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D03-Q3-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-P-H1",
+            "D03-P-H2",
+            "D03-S-H"
+          ]
+        ],
+        "expected": {
+          "rule_id": "D03-E1",
+          "unit": "episode",
+          "value": 1
+        },
+        "kind": "count",
+        "material": true,
+        "slot_id": "episode_count"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-P-H1",
+            "D03-P-H2",
+            "D03-S-R"
+          ]
+        ],
+        "expected": {
+          "actual_support_seconds": 20,
+          "grouping_span_seconds": 20,
+          "qualifying_window_seconds": 20,
+          "row_ids": [
+            "D03-P-H1",
+            "D03-P-H2"
+          ],
+          "rule_id": "D03-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "historical_group"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-H1",
+            "D03-S-H"
+          ]
+        ],
+        "expected": {
+          "qualifying_group_count": 0,
+          "reason": "10-second candidate is below the 15-second minimum grouping span",
+          "row_ids": [
+            "D03-H1"
+          ],
+          "rule_id": "D03-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "target_nonqualifying_candidate"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D03-H2",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D03-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D03-H4",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D03-H5",
+          "reason": "unknown chest motion"
+        }
+      ],
+      "included_ids": [
+        "D03-H1",
+        "D03-P-H1",
+        "D03-P-H2"
+      ]
+    },
+    "snapshot_id": "D03-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D03-Q4a",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-C4A",
+            "D03-C4B",
+            "D03-S-C"
+          ]
+        ],
+        "expected": {
+          "candidate_mention_ids": [
+            "D03-C4A",
+            "D03-C4B"
+          ],
+          "claim": "select which completed administration is intended",
+          "reason_code": "multiple_supported_anchor_candidates"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "ambiguous_administration"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "clarify"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D03-Q4a-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-C1",
+            "D03-S-C"
+          ]
+        ],
+        "expected": {
+          "mention_id": "D03-C1",
+          "occurrence_id": "D03-O1",
+          "precision": "instant",
+          "time": "2026-01-03T09:00:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "reported_onset"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [
+        "D03-C4A",
+        "D03-C4B"
+      ],
+      "excluded_ids_with_reasons": [],
+      "included_ids": [
+        "D03-C1"
+      ]
+    },
+    "snapshot_id": "D03-v1",
+    "status": "clarify",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D03-Q4b",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-C4A",
+            "D03-C4B",
+            "D03-S-C"
+          ]
+        ],
+        "expected": {
+          "candidate_mention_ids": [
+            "D03-C4A",
+            "D03-C4B"
+          ],
+          "reason_code": "multiple_supported_completed_occurrences"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "ambiguous_actions"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "clarify"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D03-Q4b-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D03-C1",
+            "D03-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "reported",
+          "assertion": "affirmed",
+          "mention_id": "D03-C1",
+          "occurrence_id": "D03-O1",
+          "precision": "instant",
+          "time": "2026-01-03T09:00:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "symptom_onset"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [
+        "D03-C4A",
+        "D03-C4B"
+      ],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D03-C2",
+          "reason": "order only"
+        },
+        {
+          "id": "D03-C3",
+          "reason": "held/not-done"
+        },
+        {
+          "id": "D03-C6",
+          "reason": "uncertain report"
+        }
+      ],
+      "included_ids": [
+        "D03-C1"
+      ]
+    },
+    "snapshot_id": "D03-v1",
+    "status": "clarify",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "foundational",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q1",
+    "question_id": "D04-Q1",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-H1",
+            "D04-H2",
+            "D04-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "the remaining 15 seconds are not evidence of normal physiology",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "coverage_gaps"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D04-Q1-status"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D04-H1",
+            "D04-H2",
+            "D04-H3",
+            "D04-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "nominal_feature_window",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "nominal_coverage"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D04-H1",
+            "D04-H2",
+            "D04-H3",
+            "D04-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "actual_support",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "actual_support"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D04-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D04-H4",
+          "reason": "nominal window outside requested 30-second scope"
+        }
+      ],
+      "included_ids": [
+        "D04-H1",
+        "D04-H2"
+      ]
+    },
+    "snapshot_id": "D04-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q2",
+    "question_id": "D04-Q2",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-R1",
+            "D04-S-R"
+          ]
+        ],
+        "expected": {
+          "reason_code": "reference_unavailable",
+          "reference_id": "D04-R1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "reference_unavailable"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "insufficient"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D04-Q2-status"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D04-R1",
+          "reason": "named reference unavailable"
+        }
+      ],
+      "included_ids": []
+    },
+    "snapshot_id": "D04-v1",
+    "status": "insufficient",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q3",
+    "question_id": "D04-Q3",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-S-H",
+            "D04-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "grouping span is not continuous measured elevation",
+          "reason_code": "grouping_not_continuous_elevation",
+          "rule_id": "D04-E1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "episode_semantics"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D04-Q3-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-P-H1",
+            "D04-P-H2",
+            "D04-S-H"
+          ]
+        ],
+        "expected": {
+          "rule_id": "D04-E1",
+          "unit": "episode",
+          "value": 1
+        },
+        "kind": "count",
+        "material": true,
+        "slot_id": "episode_count"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-P-H1",
+            "D04-P-H2",
+            "D04-S-R"
+          ]
+        ],
+        "expected": {
+          "actual_support_seconds": 20,
+          "grouping_span_seconds": 20,
+          "qualifying_window_seconds": 20,
+          "row_ids": [
+            "D04-P-H1",
+            "D04-P-H2"
+          ],
+          "rule_id": "D04-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "historical_group"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-H1",
+            "D04-S-H"
+          ]
+        ],
+        "expected": {
+          "qualifying_group_count": 0,
+          "reason": "10-second candidate is below the 15-second minimum grouping span",
+          "row_ids": [
+            "D04-H1"
+          ],
+          "rule_id": "D04-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "target_nonqualifying_candidate"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D04-H2",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D04-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D04-H4",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D04-H5",
+          "reason": "unknown chest motion"
+        }
+      ],
+      "included_ids": [
+        "D04-H1",
+        "D04-P-H1",
+        "D04-P-H2"
+      ]
+    },
+    "snapshot_id": "D04-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D04-Q4a",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-C1",
+            "D04-C2",
+            "D04-C3",
+            "D04-S-C"
+          ]
+        ],
+        "expected": {
+          "claim": "order and held/not-done records do not establish a completed administration",
+          "reason_code": "no_completed_administration_anchor"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "missing_administration"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "insufficient"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D04-Q4a-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-C1",
+            "D04-S-C"
+          ]
+        ],
+        "expected": {
+          "mention_id": "D04-C1",
+          "occurrence_id": "D04-O1",
+          "precision": "instant",
+          "time": "2026-01-04T09:00:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "reported_onset"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [],
+      "included_ids": [
+        "D04-C1"
+      ]
+    },
+    "snapshot_id": "D04-v1",
+    "status": "insufficient",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D04-Q4b",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-C2",
+            "D04-C3",
+            "D04-S-C"
+          ]
+        ],
+        "expected": {
+          "claim": "only order and held/not-done evidence is present",
+          "reason_code": "no_completed_administration"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "no_completed_action"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "insufficient"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D04-Q4b-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D04-C1",
+            "D04-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "reported",
+          "assertion": "affirmed",
+          "mention_id": "D04-C1",
+          "occurrence_id": "D04-O1",
+          "precision": "instant",
+          "time": "2026-01-04T09:00:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "symptom_onset"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D04-C2",
+          "reason": "order only"
+        },
+        {
+          "id": "D04-C3",
+          "reason": "held/not-done"
+        },
+        {
+          "id": "D04-C6",
+          "reason": "uncertain report"
+        }
+      ],
+      "included_ids": [
+        "D04-C1"
+      ]
+    },
+    "snapshot_id": "D04-v1",
+    "status": "insufficient",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "foundational",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q1",
+    "question_id": "D05-Q1",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-H1",
+            "D05-H2",
+            "D05-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "the remaining 15 seconds are not evidence of normal physiology",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "coverage_gaps"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D05-Q1-status"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D05-H1",
+            "D05-H2",
+            "D05-H3",
+            "D05-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "nominal_feature_window",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "nominal_coverage"
+      },
+      {
+        "absolute_tolerance": 0.0,
+        "evidence_alternatives": [
+          [
+            "D05-H1",
+            "D05-H2",
+            "D05-H3",
+            "D05-S-I"
+          ]
+        ],
+        "expected": {
+          "coverage_type": "actual_support",
+          "denominator_seconds": 30,
+          "fraction": 0.5,
+          "numerator_seconds": 15
+        },
+        "kind": "fraction",
+        "material": true,
+        "slot_id": "actual_support"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D05-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D05-H4",
+          "reason": "nominal window outside requested 30-second scope"
+        }
+      ],
+      "included_ids": [
+        "D05-H1",
+        "D05-H2"
+      ]
+    },
+    "snapshot_id": "D05-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q2",
+    "question_id": "D05-Q2",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-PULSE1",
+            "D05-R1",
+            "D05-S-R"
+          ]
+        ],
+        "expected": {
+          "method": "wrist_ppg",
+          "metric": "pulse_rate",
+          "reason_code": "method_incompatible_reference",
+          "reference_id": "D05-R1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "method_incompatible"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "insufficient"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D05-Q2-status"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D05-PULSE1",
+          "reason": "wrist PPG is not eligible for the chest-ECG reference policy"
+        }
+      ],
+      "included_ids": [
+        "D05-PULSE1"
+      ]
+    },
+    "snapshot_id": "D05-v1",
+    "status": "insufficient",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q3",
+    "question_id": "D05-Q3",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-S-H",
+            "D05-S-I"
+          ]
+        ],
+        "expected": {
+          "claim": "grouping span is not continuous measured elevation",
+          "reason_code": "grouping_not_continuous_elevation",
+          "rule_id": "D05-E1"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "episode_semantics"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D05-Q3-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-P-H1",
+            "D05-P-H2",
+            "D05-S-H"
+          ]
+        ],
+        "expected": {
+          "rule_id": "D05-E1",
+          "unit": "episode",
+          "value": 1
+        },
+        "kind": "count",
+        "material": true,
+        "slot_id": "episode_count"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-P-H1",
+            "D05-P-H2",
+            "D05-S-R"
+          ]
+        ],
+        "expected": {
+          "actual_support_seconds": 20,
+          "grouping_span_seconds": 20,
+          "qualifying_window_seconds": 20,
+          "row_ids": [
+            "D05-P-H1",
+            "D05-P-H2"
+          ],
+          "rule_id": "D05-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "historical_group"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-H1",
+            "D05-S-H"
+          ]
+        ],
+        "expected": {
+          "qualifying_group_count": 0,
+          "reason": "10-second candidate is below the 15-second minimum grouping span",
+          "row_ids": [
+            "D05-H1"
+          ],
+          "rule_id": "D05-E1"
+        },
+        "kind": "episode",
+        "material": true,
+        "slot_id": "target_nonqualifying_candidate"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D05-H2",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D05-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D05-H4",
+          "reason": "elevated chest motion"
+        },
+        {
+          "id": "D05-H5",
+          "reason": "unknown chest motion"
+        }
+      ],
+      "included_ids": [
+        "D05-H1",
+        "D05-P-H1",
+        "D05-P-H2"
+      ]
+    },
+    "snapshot_id": "D05-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "complex",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D05-Q4a",
+    "required_limitations": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-S-I",
+            "D05-S-H"
+          ]
+        ],
+        "expected": {
+          "claim": "accepted feature evidence is sparse and does not establish full-interval physiology",
+          "reason_code": "sparse_recording_bouts"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "sparse_support"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-C4",
+            "D05-S-C"
+          ]
+        ],
+        "expected": {
+          "claim": "chronology does not establish treatment effect",
+          "reason_code": "forbidden_treatment_effect_inference"
+        },
+        "kind": "limitation",
+        "material": true,
+        "slot_id": "no_treatment_effect"
+      }
+    ],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D05-Q4a-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-C1",
+            "D05-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "reported",
+          "assertion": "affirmed",
+          "mention_id": "D05-C1",
+          "occurrence_id": "D05-O1",
+          "precision": "instant",
+          "time": "2026-01-05T09:00:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "onset_anchor"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-C4",
+            "D05-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "completed",
+          "evidence_class": "structured_administration",
+          "mention_id": "D05-C4",
+          "occurrence_id": "D05-O4",
+          "precision": "instant",
+          "time": "2026-01-05T09:30:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "administration_anchor"
+      },
+      {
+        "absolute_tolerance": 0.1,
+        "evidence_alternatives": [
+          [
+            "D05-H1",
+            "D05-R1",
+            "D05-S-H",
+            "D05-S-R"
+          ]
+        ],
+        "expected": {
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "reference_id": "D05-R1",
+          "selected_ids": [
+            "D05-H1"
+          ],
+          "statistic": "median_difference",
+          "unit": "bpm",
+          "value": 16.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "heart_rate_difference"
+      },
+      {
+        "absolute_tolerance": 0.01,
+        "evidence_alternatives": [
+          [
+            "D05-G1",
+            "D05-G2",
+            "D05-G3",
+            "D05-S-H"
+          ]
+        ],
+        "expected": {
+          "method": "ac_conductance_100hz",
+          "metric": "ac_conductance",
+          "selected_ids": [
+            "D05-G1",
+            "D05-G2"
+          ],
+          "statistic": "median",
+          "unit": "\u00b5S",
+          "value": 3.0
+        },
+        "kind": "numeric",
+        "material": true,
+        "slot_id": "ac_conductance_summary"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D05-C2",
+          "reason": "order is not completed administration"
+        },
+        {
+          "id": "D05-C3",
+          "reason": "held/not-done action is not completed administration"
+        },
+        {
+          "id": "D05-C6",
+          "reason": "uncertain narrative report is not a supported completed anchor"
+        },
+        {
+          "id": "D05-H2",
+          "reason": "ineligible narrow reference context"
+        },
+        {
+          "id": "D05-H3",
+          "reason": "rejected artifact"
+        },
+        {
+          "id": "D05-H4",
+          "reason": "ineligible/unknown narrow reference context"
+        },
+        {
+          "id": "D05-H5",
+          "reason": "indeterminate narrow reference eligibility"
+        },
+        {
+          "id": "D05-G3",
+          "reason": "rejected contact artifact"
+        }
+      ],
+      "included_ids": [
+        "D05-C1",
+        "D05-C4",
+        "D05-H1",
+        "D05-G1",
+        "D05-G2"
+      ]
+    },
+    "snapshot_id": "D05-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  },
+  {
+    "difficulty": "compositional",
+    "forbidden_inferences": [
+      "diagnosis",
+      "treatment effect",
+      "normality",
+      "continuous physiology from feature windows"
+    ],
+    "permitted_additional_facts": [],
+    "question_class": "Q4",
+    "question_id": "D05-Q4b",
+    "required_limitations": [],
+    "required_slots": [
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-S-I"
+          ]
+        ],
+        "expected": {
+          "status": "answered"
+        },
+        "kind": "status",
+        "material": true,
+        "slot_id": "D05-Q4b-status"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-C1",
+            "D05-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "reported",
+          "assertion": "affirmed",
+          "mention_id": "D05-C1",
+          "occurrence_id": "D05-O1",
+          "precision": "instant",
+          "time": "2026-01-05T09:00:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "symptom_onset"
+      },
+      {
+        "absolute_tolerance": null,
+        "evidence_alternatives": [
+          [
+            "D05-C4",
+            "D05-S-C"
+          ]
+        ],
+        "expected": {
+          "action_status": "completed",
+          "evidence_class": "structured_administration",
+          "mention_id": "D05-C4",
+          "occurrence_id": "D05-O4",
+          "precision": "instant",
+          "time": "2026-01-05T09:30:00+00:00"
+        },
+        "kind": "event",
+        "material": true,
+        "slot_id": "completed_action"
+      }
+    ],
+    "review_author": "pending-human-review",
+    "review_checker": "pending-human-review",
+    "review_resolved": false,
+    "selection": {
+      "anchor_candidates": [],
+      "excluded_ids_with_reasons": [
+        {
+          "id": "D05-C2",
+          "reason": "order only"
+        },
+        {
+          "id": "D05-C3",
+          "reason": "held/not-done"
+        },
+        {
+          "id": "D05-C6",
+          "reason": "uncertain report"
+        }
+      ],
+      "included_ids": [
+        "D05-C1"
+      ]
+    },
+    "snapshot_id": "D05-v1",
+    "status": "answered",
+    "worksheet": "gold/worksheets/development.md"
+  }
+]

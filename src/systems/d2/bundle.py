@@ -4,12 +4,15 @@ from __future__ import annotations
 
 from ...evidence_store import EvidenceStore
 from ...schema import (
+    ClinicalEvent,
+    EventSelectionResult,
     EvidenceBundle,
     Finding,
     InvestigationPlan,
     IntervalResult,
     Limitation,
     Question,
+    TimeRangeValue,
 )
 
 
@@ -22,8 +25,38 @@ def build_bundle(
     facts: list[Finding] = []
     limitations: list[Limitation] = []
     source_ids: set[str] = set()
+    event_selections: list[EventSelectionResult] = []
+    clinical_events: list[ClinicalEvent] = []
     for result in results.values():
-        if isinstance(result, IntervalResult):
+        if isinstance(result, EventSelectionResult):
+            event_selections.append(result)
+            candidate_ids = result.candidate_mention_ids
+            for mention_id in candidate_ids:
+                event = store.event(mention_id)
+                if mention_id not in {item.mention_id for item in clinical_events}:
+                    clinical_events.append(event)
+                source_ids.update(event.source_ids)
+                if mention_id in result.selected_mention_ids:
+                    event_time = event.event_time
+                    value = None
+                    if event_time is not None:
+                        value = TimeRangeValue(lower=event_time.lower, upper=event_time.upper, precision=event_time.precision)
+                    facts.append(
+                        Finding(
+                            claim=f"source-supported {event.concept} clinical event",
+                            claim_kind="event",
+                            value=value,
+                            source_ids=list(event.source_ids),
+                            selected_ids=[event.mention_id],
+                            occurrence_id=event.occurrence_id,
+                            action_status=event.action_status,
+                            assertion_status=event.assertion,
+                        )
+                    )
+            for limitation in result.limitations:
+                if limitation:
+                    limitations.append(Limitation(claim=limitation, reason_code="event_selection", source_ids=list(result.source_ids)))
+        elif isinstance(result, IntervalResult):
             facts.extend(result.facts)
             for limitation in result.limitations:
                 if limitation:
@@ -51,5 +84,7 @@ def build_bundle(
         source_ids=sorted(source_ids),
         selected_revisions=revisions,
         internal_fact_ids={f"fact-{index + 1}": fact.claim for index, fact in enumerate(facts)},
+        event_selections=event_selections,
+        clinical_events=clinical_events,
     )
 

@@ -1,0 +1,15 @@
+{
+  "authorized_scope": [
+    {
+      "end": "2026-01-04T09:00:30Z",
+      "start": "2026-01-04T09:00:00Z"
+    }
+  ],
+  "difficulty": "foundational",
+  "question_class": "Q1",
+  "question_id": "D04-Q1",
+  "requested_status": null,
+  "scenario_id": "D04",
+  "snapshot_id": "D04-v1",
+  "text": "Over the first 30 seconds, how much accepted chest-ECG heart-rate evidence was available, and for how much do we have documented usable support?"
+}

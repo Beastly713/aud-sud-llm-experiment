@@ -321,7 +321,7 @@ def plan_for_question(question: Question, scenario: Scenario) -> InvestigationPl
     narrow_ref = f"{sid}-R1"
     narrow_policy = f"{sid}-POLICY-NARROW"
     if question.question_class == QuestionClass.Q1:
-        return InvestigationPlan(plan_id=f"dev-{question.question_id}", intent="accepted coverage and actual support", steps=[ObservationStep(id="obs", args=ObservationArgs(metric="heart_rate", method="chest_ecg")), IntervalStep(id="coverage", args=IntervalArgs(operation="coverage", observation_ref="obs"))], output="coverage")
+        return InvestigationPlan(plan_id=f"dev-{question.question_id}", intent="accepted coverage and actual support", steps=[ObservationStep(id="obs", args=ObservationArgs(metric="heart_rate", method="chest_ecg", window_policy="clip_for_coverage")), IntervalStep(id="coverage", args=IntervalArgs(operation="coverage", observation_ref="obs"))], output="coverage")
     if question.question_class == QuestionClass.Q2:
         metric = "pulse_rate" if sid == "D05" else "heart_rate"
         method = "wrist_ppg" if sid == "D05" else "chest_ecg"
@@ -346,37 +346,146 @@ def make_plans(scenarios: list[Scenario] | None = None, questions: list[Question
 def make_gold(questions: list[Question] | None = None) -> list[GoldRecord]:
     questions = questions or make_questions()
     records: list[GoldRecord] = []
+
+    def slot(slot_id: str, kind: str, expected: dict[str, object], evidence: list[str], tolerance: float | None = None, material: bool = True) -> GoldSlot:
+        return GoldSlot(slot_id=slot_id, kind=kind, expected=expected, evidence_alternatives=[evidence], material=material, absolute_tolerance=tolerance)
+
+    def limitation(slot_id: str, reason_code: str, expected: dict[str, object], evidence: list[str]) -> GoldSlot:
+        return slot(slot_id, "limitation", {"reason_code": reason_code, **expected}, evidence)
+
     for question in questions:
         number = int(question.scenario_id[-2:])
+        sid = question.scenario_id
+        base = _time(number)
+        start = base.isoformat()
+        end_30 = (base + timedelta(seconds=30)).isoformat()
+        end_15 = (base + timedelta(seconds=15)).isoformat()
+        admin_time = (base + timedelta(minutes=30)).isoformat()
         status = AnswerStatus.ANSWERED
-        if number == 2 and question.question_id.endswith("Q1"):
-            status = AnswerStatus.PARTIAL
         if number == 2 and question.question_id.endswith("Q4a"):
             status = AnswerStatus.PARTIAL
         if number == 3 and question.question_id.endswith("Q4a"):
+            status = AnswerStatus.CLARIFY
+        if number == 3 and question.question_id.endswith("Q4b"):
             status = AnswerStatus.CLARIFY
         if number == 4 and question.question_id.endswith("Q2"):
             status = AnswerStatus.INSUFFICIENT
         if number == 4 and question.question_id.endswith("Q4a"):
             status = AnswerStatus.INSUFFICIENT
         if number == 4 and question.question_id.endswith("Q4b"):
-            status = AnswerStatus.INSUFFICIENT
+            status = AnswerStatus.PARTIAL
         if number == 5 and question.question_id.endswith("Q2"):
             status = AnswerStatus.INSUFFICIENT
-        slots = [
-            GoldSlot(slot_id=f"{question.question_id}-status", kind="status", expected={"status": status.value}, evidence_alternatives=[[f"{question.scenario_id}-S-I"]], material=True),
-        ]
+
+        slots = [slot(f"{question.question_id}-status", "status", {"status": status.value}, [f"{sid}-S-I"])]
+        limitations: list[GoldSlot] = []
+        included: list[str] = []
+        excluded: list[dict[str, str]] = []
+        candidates: list[str] = []
         if question.question_class == QuestionClass.Q1:
+            included = [f"{sid}-H1", f"{sid}-H2"]
+            excluded = [{"id": f"{sid}-H3", "reason": "rejected artifact"}, {"id": f"{sid}-H4", "reason": "nominal window outside requested 30-second scope"}]
             slots.extend([
-                GoldSlot(slot_id="nominal_coverage", kind="fraction", expected={"coverage_type": "nominal_feature_window"}, evidence_alternatives=[[f"{question.scenario_id}-H1", f"{question.scenario_id}-H2", f"{question.scenario_id}-S-I"]], material=True),
-                GoldSlot(slot_id="actual_support", kind="fraction", expected={"coverage_type": "actual_support"}, evidence_alternatives=[[f"{question.scenario_id}-H1", f"{question.scenario_id}-H2", f"{question.scenario_id}-S-I"]], material=True),
+                slot("nominal_coverage", "fraction", {"numerator_seconds": 15, "denominator_seconds": 30, "fraction": 0.5, "coverage_type": "nominal_feature_window"}, [f"{sid}-H1", f"{sid}-H2", f"{sid}-H3", f"{sid}-S-I"], 0.0),
+                slot("actual_support", "fraction", {"numerator_seconds": 15, "denominator_seconds": 30, "fraction": 0.5, "coverage_type": "actual_support"}, [f"{sid}-H1", f"{sid}-H2", f"{sid}-H3", f"{sid}-S-I"], 0.0),
             ])
+            limitations.append(limitation("coverage_gaps", "sparse_recording_bouts", {"claim": "the remaining 15 seconds are not evidence of normal physiology"}, [f"{sid}-H1", f"{sid}-H2", f"{sid}-S-I"]))
         if question.question_class == QuestionClass.Q2:
-            slots.append(GoldSlot(slot_id="named_reference", kind="reference", expected={"reference_id": f"{question.scenario_id}-R1"}, evidence_alternatives=[[f"{question.scenario_id}-S-R"]], material=True))
+            if number in (1, 2, 3):
+                included = [f"{sid}-H1"]
+                excluded = [
+                    {"id": f"{sid}-H2", "reason": "ineligible under narrow low-chest-motion policy"},
+                    {"id": f"{sid}-H3", "reason": "rejected artifact"},
+                ]
+                slots.extend([
+                    slot("summary", "numeric", {"value": 96.0, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median", "interval_start": start, "interval_end": end_15, "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1"], 0.1),
+                    slot("reference_difference", "numeric", {"value": 16.0, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median_difference", "reference_id": f"{sid}-R1", "policy_id": f"{sid}-POLICY-NARROW", "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1", f"{sid}-R1", f"{sid}-S-R"], 0.1),
+                ])
+                limitations.extend([
+                    limitation("reference_qualification", "provisional_reference", {"reference_id": f"{sid}-R1", "claim": "descriptive comparison only; not a healthy-normal inference"}, [f"{sid}-R1", f"{sid}-S-R"]),
+                    limitation("summary_gap", "sparse_recording_bouts", {"claim": "the typical value describes selected windows, not the uncovered portion of the review span"}, [f"{sid}-H1", f"{sid}-S-I"]),
+                ])
+            elif number == 4:
+                excluded = [{"id": f"{sid}-R1", "reason": "named reference unavailable"}]
+                limitations.append(limitation("reference_unavailable", "reference_unavailable", {"reference_id": f"{sid}-R1"}, [f"{sid}-R1", f"{sid}-S-R"]))
+            else:
+                included = [f"{sid}-PULSE1"]
+                excluded = [{"id": f"{sid}-PULSE1", "reason": "wrist PPG is not eligible for the chest-ECG reference policy"}]
+                limitations.append(limitation("method_incompatible", "method_incompatible_reference", {"reference_id": f"{sid}-R1", "metric": "pulse_rate", "method": "wrist_ppg"}, [f"{sid}-PULSE1", f"{sid}-R1", f"{sid}-S-R"]))
         if question.question_class == QuestionClass.Q3:
-            slots.append(GoldSlot(slot_id="episode_rule", kind="episode", expected={"episode_rule_id": f"{question.scenario_id}-E1"}, evidence_alternatives=[[f"{question.scenario_id}-S-H"]], material=True))
+            included = [f"{sid}-H1", f"{sid}-P-H1", f"{sid}-P-H2"]
+            excluded = [
+                {"id": f"{sid}-H2", "reason": "elevated chest motion"},
+                {"id": f"{sid}-H3", "reason": "rejected artifact"},
+                {"id": f"{sid}-H4", "reason": "elevated chest motion"},
+                {"id": f"{sid}-H5", "reason": "unknown chest motion"},
+            ]
+            slots.extend([
+                slot("episode_count", "count", {"value": 1, "unit": "episode", "rule_id": f"{sid}-E1"}, [f"{sid}-P-H1", f"{sid}-P-H2", f"{sid}-S-H"]),
+                slot("historical_group", "episode", {"rule_id": f"{sid}-E1", "grouping_span_seconds": 20, "qualifying_window_seconds": 20, "actual_support_seconds": 20, "row_ids": [f"{sid}-P-H1", f"{sid}-P-H2"]}, [f"{sid}-P-H1", f"{sid}-P-H2", f"{sid}-S-R"]),
+                slot("target_nonqualifying_candidate", "episode", {"rule_id": f"{sid}-E1", "qualifying_group_count": 0, "row_ids": [f"{sid}-H1"], "reason": "10-second candidate is below the 15-second minimum grouping span"}, [f"{sid}-H1", f"{sid}-S-H"]),
+            ])
+            limitations.append(limitation("episode_semantics", "grouping_not_continuous_elevation", {"rule_id": f"{sid}-E1", "claim": "grouping span is not continuous measured elevation"}, [f"{sid}-S-H", f"{sid}-S-I"]))
         if question.question_class == QuestionClass.Q4:
-            slots.append(GoldSlot(slot_id="clinical_source", kind="event", expected={"source_id": f"{question.scenario_id}-S-C"}, evidence_alternatives=[[f"{question.scenario_id}-S-C"]], material=True))
-        records.append(GoldRecord(question_id=question.question_id, snapshot_id=question.snapshot_id, question_class=question.question_class, difficulty=question.difficulty, status=status, required_slots=slots, required_limitations=[], forbidden_inferences=["diagnosis", "treatment effect", "normality"], selection={"included_ids": [], "excluded_ids_with_reasons": []}, worksheet="gold/worksheets/development.md"))
+            if question.question_id.endswith("Q4a"):
+                if number in (1, 5):
+                    included = [f"{sid}-C1", f"{sid}-C4", f"{sid}-H1", f"{sid}-G1", f"{sid}-G2"]
+                    excluded = [
+                        {"id": f"{sid}-C2", "reason": "order is not completed administration"},
+                        {"id": f"{sid}-C3", "reason": "held/not-done action is not completed administration"},
+                        {"id": f"{sid}-C6", "reason": "uncertain narrative report is not a supported completed anchor"},
+                        {"id": f"{sid}-H2", "reason": "ineligible narrow reference context"},
+                        {"id": f"{sid}-H3", "reason": "rejected artifact"},
+                        {"id": f"{sid}-H4", "reason": "ineligible/unknown narrow reference context"},
+                        {"id": f"{sid}-H5", "reason": "indeterminate narrow reference eligibility"},
+                        {"id": f"{sid}-G3", "reason": "rejected contact artifact"},
+                    ]
+                    slots.extend([
+                        slot("onset_anchor", "event", {"mention_id": f"{sid}-C1", "occurrence_id": f"{sid}-O1", "action_status": "reported", "assertion": "affirmed", "time": start, "precision": "instant"}, [f"{sid}-C1", f"{sid}-S-C"]),
+                        slot("administration_anchor", "event", {"mention_id": f"{sid}-C4", "occurrence_id": f"{sid}-O4", "action_status": "completed", "evidence_class": "structured_administration", "time": admin_time, "precision": "instant"}, [f"{sid}-C4", f"{sid}-S-C"]),
+                        slot("heart_rate_difference", "numeric", {"value": 16.0, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median_difference", "reference_id": f"{sid}-R1", "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1", f"{sid}-R1", f"{sid}-S-H", f"{sid}-S-R"], 0.1),
+                        slot("ac_conductance_summary", "numeric", {"value": 3.0, "unit": "µS", "metric": "ac_conductance", "method": "ac_conductance_100hz", "statistic": "median", "selected_ids": [f"{sid}-G1", f"{sid}-G2"]}, [f"{sid}-G1", f"{sid}-G2", f"{sid}-G3", f"{sid}-S-H"], 0.01),
+                    ])
+                    limitations.extend([
+                        limitation("sparse_support", "sparse_recording_bouts", {"claim": "accepted feature evidence is sparse and does not establish full-interval physiology"}, [f"{sid}-S-I", f"{sid}-S-H"]),
+                        limitation("no_treatment_effect", "forbidden_treatment_effect_inference", {"claim": "chronology does not establish treatment effect"}, [f"{sid}-C4", f"{sid}-S-C"]),
+                    ])
+                elif number == 2:
+                    included = [f"{sid}-C1", f"{sid}-C4"]
+                    limitations.extend([
+                        limitation("uncertain_onset", "approximate_anchor", {"mention_id": f"{sid}-C1", "lower": (base - timedelta(minutes=10)).isoformat(), "upper": (base + timedelta(minutes=10)).isoformat(), "precision": "approximate"}, [f"{sid}-C1", f"{sid}-S-C"]),
+                        limitation("blocked_exact_aggregate", "uncertain_anchor_blocks_exact_aggregate", {"claim": "exact onset-to-administration aggregate is not answerable without an exact onset"}, [f"{sid}-C1", f"{sid}-C4", f"{sid}-S-I"]),
+                    ])
+                    slots.extend([
+                        slot("reported_onset_bounds", "event", {"mention_id": f"{sid}-C1", "lower": (base - timedelta(minutes=10)).isoformat(), "upper": (base + timedelta(minutes=10)).isoformat(), "precision": "approximate"}, [f"{sid}-C1", f"{sid}-S-C"]),
+                        slot("completed_administration", "event", {"mention_id": f"{sid}-C4", "occurrence_id": f"{sid}-O4", "action_status": "completed", "time": admin_time, "precision": "instant"}, [f"{sid}-C4", f"{sid}-S-C"]),
+                    ])
+                elif number == 3:
+                    candidates = [f"{sid}-C4A", f"{sid}-C4B"]
+                    included = [f"{sid}-C1"]
+                    limitations.append(limitation("ambiguous_administration", "multiple_supported_anchor_candidates", {"candidate_mention_ids": candidates, "claim": "select which completed administration is intended"}, [*candidates, f"{sid}-S-C"]))
+                    slots.append(slot("reported_onset", "event", {"mention_id": f"{sid}-C1", "occurrence_id": f"{sid}-O1", "time": start, "precision": "instant"}, [f"{sid}-C1", f"{sid}-S-C"]))
+                else:
+                    included = [f"{sid}-C1"]
+                    limitations.append(limitation("missing_administration", "no_completed_administration_anchor", {"claim": "order and held/not-done records do not establish a completed administration"}, [f"{sid}-C1", f"{sid}-C2", f"{sid}-C3", f"{sid}-S-C"]))
+                    slots.append(slot("reported_onset", "event", {"mention_id": f"{sid}-C1", "occurrence_id": f"{sid}-O1", "time": start, "precision": "instant"}, [f"{sid}-C1", f"{sid}-S-C"]))
+            else:
+                included = [f"{sid}-C1"]
+                excluded = [{"id": f"{sid}-C2", "reason": "order only"}, {"id": f"{sid}-C3", "reason": "held/not-done"}, {"id": f"{sid}-C6", "reason": "uncertain report"}]
+                if number == 3:
+                    candidates = [f"{sid}-C4A", f"{sid}-C4B"]
+                    status = AnswerStatus.CLARIFY
+                    limitations.append(limitation("ambiguous_actions", "multiple_supported_completed_occurrences", {"candidate_mention_ids": candidates}, [*candidates, f"{sid}-S-C"]))
+                elif number == 4:
+                    status = AnswerStatus.INSUFFICIENT
+                    limitations.append(limitation("no_completed_action", "no_completed_administration", {"claim": "only order and held/not-done evidence is present"}, [f"{sid}-C2", f"{sid}-C3", f"{sid}-S-C"]))
+                slots.append(slot("symptom_onset", "event", {"mention_id": f"{sid}-C1", "occurrence_id": f"{sid}-O1", "action_status": "reported", "assertion": "affirmed", "time": start, "precision": "approximate" if number == 2 else "instant"}, [f"{sid}-C1", f"{sid}-S-C"]))
+                if number in (1, 2, 5):
+                    admin_ids = [f"{sid}-C4"]
+                    slots.append(slot("completed_action", "event", {"mention_id": admin_ids[0], "occurrence_id": f"{sid}-O4", "action_status": "completed", "evidence_class": "structured_administration", "time": admin_time, "precision": "instant"}, [admin_ids[0], f"{sid}-S-C"]))
+
+        slots[0] = slot(f"{question.question_id}-status", "status", {"status": status.value}, [f"{sid}-S-I"])
+        selection = {"included_ids": included, "excluded_ids_with_reasons": excluded, "anchor_candidates": candidates}
+        records.append(GoldRecord(question_id=question.question_id, snapshot_id=question.snapshot_id, question_class=question.question_class, difficulty=question.difficulty, status=status, required_slots=slots, required_limitations=limitations, forbidden_inferences=["diagnosis", "treatment effect", "normality", "continuous physiology from feature windows"], selection=selection, worksheet="gold/worksheets/development.md"))
     return records
 

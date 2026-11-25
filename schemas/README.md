@@ -1,8 +1,8 @@
 # Exported JSON schemas
 
-Run `python3 -m src.schema_export` in the pinned environment to materialize the
-versioned Pydantic JSON schemas for `Scenario`, `Question`, `CommonAnswer`,
-`GoldRecord`, `InvestigationPlan` and `EvidenceBundle`. The command is deterministic;
-the current workspace does not include generated schemas because the pinned
-Pydantic dependency is not installed.
+The materialized versioned Pydantic JSON schemas for `Scenario`, `Question`,
+`CommonAnswer`, `GoldRecord`, `InvestigationPlan` and `EvidenceBundle` are committed
+here. Regenerate them with `python3 -m src.schema_export` after installing the pinned
+environment; runtime regeneration was not executable in the current workspace
+because Pydantic is unavailable.
 

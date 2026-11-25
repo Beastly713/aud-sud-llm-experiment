@@ -1,0 +1,844 @@
+{
+  "$defs": {
+    "ActionStatus": {
+      "enum": [
+        "completed",
+        "ordered",
+        "held",
+        "not_done",
+        "reported",
+        "unknown"
+      ],
+      "title": "ActionStatus",
+      "type": "string"
+    },
+    "AnswerStatus": {
+      "enum": [
+        "answered",
+        "partial",
+        "insufficient",
+        "clarify"
+      ],
+      "title": "AnswerStatus",
+      "type": "string"
+    },
+    "AssertionStatus": {
+      "enum": [
+        "affirmed",
+        "negated",
+        "uncertain",
+        "historical",
+        "hypothetical"
+      ],
+      "title": "AssertionStatus",
+      "type": "string"
+    },
+    "CategoricalValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "categorical",
+          "default": "categorical",
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "CategoricalValue",
+      "type": "object"
+    },
+    "ClaimKind": {
+      "enum": [
+        "observation",
+        "coverage",
+        "comparison",
+        "episode",
+        "event",
+        "limitation",
+        "other"
+      ],
+      "title": "ClaimKind",
+      "type": "string"
+    },
+    "ClinicalEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "action_status": {
+          "$ref": "#/$defs/ActionStatus"
+        },
+        "assertion": {
+          "$ref": "#/$defs/AssertionStatus"
+        },
+        "concept": {
+          "title": "Concept",
+          "type": "string"
+        },
+        "contradiction_link": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contradiction Link"
+        },
+        "documented_at": {
+          "format": "date-time",
+          "title": "Documented At",
+          "type": "string"
+        },
+        "event_time": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeBounds"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "event_type": {
+          "title": "Event Type",
+          "type": "string"
+        },
+        "evidence_class": {
+          "$ref": "#/$defs/EvidenceClass"
+        },
+        "experiencer": {
+          "$ref": "#/$defs/Experiencer"
+        },
+        "mention_id": {
+          "title": "Mention Id",
+          "type": "string"
+        },
+        "occurrence_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Occurrence Id"
+        },
+        "occurrence_link_status": {
+          "$ref": "#/$defs/OccurrenceLinkStatus",
+          "default": "none"
+        },
+        "original_text": {
+          "title": "Original Text",
+          "type": "string"
+        },
+        "participant_id": {
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "semantic_support": {
+          "$ref": "#/$defs/ReviewState"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "source_review": {
+          "$ref": "#/$defs/ReviewState"
+        },
+        "structural_review": {
+          "$ref": "#/$defs/ReviewState"
+        }
+      },
+      "required": [
+        "mention_id",
+        "participant_id",
+        "event_type",
+        "concept",
+        "assertion",
+        "experiencer",
+        "evidence_class",
+        "action_status",
+        "documented_at",
+        "semantic_support",
+        "source_review",
+        "structural_review",
+        "original_text"
+      ],
+      "title": "ClinicalEvent",
+      "type": "object"
+    },
+    "CoverageType": {
+      "enum": [
+        "nominal_feature_window",
+        "actual_support",
+        "known_lower_bound",
+        "grouping_span"
+      ],
+      "title": "CoverageType",
+      "type": "string"
+    },
+    "DurationValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "duration",
+          "default": "duration",
+          "title": "Kind",
+          "type": "string"
+        },
+        "seconds": {
+          "title": "Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seconds"
+      ],
+      "title": "DurationValue",
+      "type": "object"
+    },
+    "EventSelectionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_mention_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Candidate Mention Ids",
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "occurrence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Occurrence Ids",
+          "type": "array"
+        },
+        "result_type": {
+          "const": "event_selection",
+          "default": "event_selection",
+          "title": "Result Type",
+          "type": "string"
+        },
+        "selected_mention_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Selected Mention Ids",
+          "type": "array"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/AnswerStatus"
+        },
+        "time": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeBounds"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "selected_mention_ids",
+        "candidate_mention_ids",
+        "occurrence_ids",
+        "status"
+      ],
+      "title": "EventSelectionResult",
+      "type": "object"
+    },
+    "EvidenceClass": {
+      "enum": [
+        "structured_administration",
+        "structured_order",
+        "narrative_report",
+        "assessment",
+        "extracted_candidate"
+      ],
+      "title": "EvidenceClass",
+      "type": "string"
+    },
+    "Experiencer": {
+      "enum": [
+        "patient",
+        "other",
+        "unknown"
+      ],
+      "title": "Experiencer",
+      "type": "string"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "action_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ActionStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "assertion_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AssertionStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "claim_kind": {
+          "$ref": "#/$defs/ClaimKind",
+          "default": "other"
+        },
+        "coverage_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CoverageType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "denominator_seconds": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Denominator Seconds"
+        },
+        "episode_rule_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Episode Rule Id"
+        },
+        "interval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Interval"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
+        },
+        "metric": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Metric"
+        },
+        "occurrence_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Occurrence Id"
+        },
+        "policy_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Id"
+        },
+        "reference_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Id"
+        },
+        "requested_statistic": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requested Statistic"
+        },
+        "selected_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Selected Ids",
+          "type": "array"
+        },
+        "site": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Site"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "categorical": "#/$defs/CategoricalValue",
+                  "duration": "#/$defs/DurationValue",
+                  "fraction": "#/$defs/FractionValue",
+                  "list": "#/$defs/ListValue",
+                  "numeric": "#/$defs/NumericValue",
+                  "time_range": "#/$defs/TimeRangeValue"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/NumericValue"
+                },
+                {
+                  "$ref": "#/$defs/CategoricalValue"
+                },
+                {
+                  "$ref": "#/$defs/DurationValue"
+                },
+                {
+                  "$ref": "#/$defs/FractionValue"
+                },
+                {
+                  "$ref": "#/$defs/TimeRangeValue"
+                },
+                {
+                  "$ref": "#/$defs/ListValue"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "claim"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "FractionValue": {
+      "additionalProperties": false,
+      "properties": {
+        "coverage_type": {
+          "$ref": "#/$defs/CoverageType"
+        },
+        "denominator": {
+          "title": "Denominator",
+          "type": "integer"
+        },
+        "fraction": {
+          "title": "Fraction",
+          "type": "number"
+        },
+        "kind": {
+          "const": "fraction",
+          "default": "fraction",
+          "title": "Kind",
+          "type": "string"
+        },
+        "numerator": {
+          "title": "Numerator",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator",
+        "fraction",
+        "coverage_type"
+      ],
+      "title": "FractionValue",
+      "type": "object"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "Limitation": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "reason_code": {
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "selected_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Selected Ids",
+          "type": "array"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim",
+        "reason_code"
+      ],
+      "title": "Limitation",
+      "type": "object"
+    },
+    "ListValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "list",
+          "default": "list",
+          "title": "Kind",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              }
+            ]
+          },
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "values"
+      ],
+      "title": "ListValue",
+      "type": "object"
+    },
+    "NumericValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "numeric",
+          "default": "numeric",
+          "title": "Kind",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "NumericValue",
+      "type": "object"
+    },
+    "OccurrenceLinkStatus": {
+      "enum": [
+        "linked",
+        "unresolved",
+        "contradicted",
+        "none"
+      ],
+      "title": "OccurrenceLinkStatus",
+      "type": "string"
+    },
+    "ReviewState": {
+      "enum": [
+        "unassessed",
+        "supported",
+        "unsupported",
+        "reviewed"
+      ],
+      "title": "ReviewState",
+      "type": "string"
+    },
+    "TemporalPrecision": {
+      "enum": [
+        "instant",
+        "minute",
+        "interval",
+        "approximate",
+        "unknown"
+      ],
+      "title": "TemporalPrecision",
+      "type": "string"
+    },
+    "TimeBounds": {
+      "additionalProperties": false,
+      "properties": {
+        "lower": {
+          "format": "date-time",
+          "title": "Lower",
+          "type": "string"
+        },
+        "precision": {
+          "$ref": "#/$defs/TemporalPrecision"
+        },
+        "upper": {
+          "format": "date-time",
+          "title": "Upper",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lower",
+        "upper",
+        "precision"
+      ],
+      "title": "TimeBounds",
+      "type": "object"
+    },
+    "TimeRangeValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "time_range",
+          "default": "time_range",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lower": {
+          "format": "date-time",
+          "title": "Lower",
+          "type": "string"
+        },
+        "precision": {
+          "$ref": "#/$defs/TemporalPrecision"
+        },
+        "upper": {
+          "format": "date-time",
+          "title": "Upper",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lower",
+        "upper",
+        "precision"
+      ],
+      "title": "TimeRangeValue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "clinical_events": {
+      "items": {
+        "$ref": "#/$defs/ClinicalEvent"
+      },
+      "title": "Clinical Events",
+      "type": "array"
+    },
+    "computed_facts": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Computed Facts",
+      "type": "array"
+    },
+    "effective_scope": {
+      "items": {
+        "$ref": "#/$defs/Interval"
+      },
+      "title": "Effective Scope",
+      "type": "array"
+    },
+    "event_selections": {
+      "items": {
+        "$ref": "#/$defs/EventSelectionResult"
+      },
+      "title": "Event Selections",
+      "type": "array"
+    },
+    "internal_fact_ids": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Internal Fact Ids",
+      "type": "object"
+    },
+    "limitations": {
+      "items": {
+        "$ref": "#/$defs/Limitation"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "question_id": {
+      "title": "Question Id",
+      "type": "string"
+    },
+    "selected_revisions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Selected Revisions",
+      "type": "object"
+    },
+    "snapshot_id": {
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "source_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Source Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "question_id",
+    "snapshot_id",
+    "plan_id",
+    "effective_scope",
+    "computed_facts",
+    "limitations",
+    "source_ids",
+    "selected_revisions"
+  ],
+  "title": "EvidenceBundle",
+  "type": "object"
+}

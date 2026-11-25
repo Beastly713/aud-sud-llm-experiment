@@ -1,0 +1,15 @@
+{
+  "authorized_scope": [
+    {
+      "end": "2026-01-05T09:00:15Z",
+      "start": "2026-01-05T09:00:00Z"
+    }
+  ],
+  "difficulty": "compositional",
+  "question_class": "Q2",
+  "question_id": "D05-Q2",
+  "requested_status": null,
+  "scenario_id": "D05",
+  "snapshot_id": "D05-v1",
+  "text": "Compared with the named earlier ECG reference, what was the typical wrist pulse rate during the review bout?"
+}

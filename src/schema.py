@@ -546,6 +546,7 @@ class ObservationArgs(StrictModel):
     policy_id: str | None = None
     require_eligibility: bool = False
     scope_mode: Literal["question_scope", "all_authorized"] = "question_scope"
+    window_policy: Literal["fully_contained", "clip_for_coverage"] = "fully_contained"
 
 
 class IntervalArgs(StrictModel):
@@ -649,6 +650,9 @@ class ObservationSelectionResult(StrictModel):
     scope: Interval | None = None
     reference_id: str | None = None
     policy_id: str | None = None
+    metric: str | None = None
+    method: str | None = None
+    window_policy: Literal["fully_contained", "clip_for_coverage"] = "fully_contained"
     limitations: list[str] = Field(default_factory=list)
 
 
@@ -689,6 +693,8 @@ class EvidenceBundle(StrictModel):
     source_ids: list[str]
     selected_revisions: dict[str, str]
     internal_fact_ids: dict[str, str] = Field(default_factory=dict)
+    event_selections: list[EventSelectionResult] = Field(default_factory=list)
+    clinical_events: list[ClinicalEvent] = Field(default_factory=list)
 
 
 class ExecutionTrace(StrictModel):

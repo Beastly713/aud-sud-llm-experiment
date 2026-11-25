@@ -1,0 +1,1418 @@
+{
+  "D01-Q1": {
+    "intent": "accepted coverage and actual support",
+    "output": "coverage",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D01-Q1",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "question_scope",
+          "window_policy": "clip_for_coverage"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "coverage",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "coverage",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D01-Q2": {
+    "intent": "named historical comparison",
+    "output": "comparison",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D01-Q2",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": "D01-POLICY-NARROW",
+          "quality": "accepted",
+          "reference_id": "D01-R1",
+          "require_eligibility": true,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "summary",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "summary",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "compare_to_named_reference",
+          "policy_id": "D01-POLICY-NARROW",
+          "reference_id": "D01-R1",
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": "obs",
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "comparison",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D01-Q3": {
+    "intent": "configured episode recurrence",
+    "output": "episodes",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D01-Q3",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": "low",
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "all_authorized",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": "D01-E1",
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "episodes",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "episodes",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D01-Q4a": {
+    "intent": "event-anchored multimodal comparison",
+    "output": "evidence_linked_comparison",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D01-Q4a",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "end_ref": "administration",
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "between_event_anchors",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": "onset",
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "span",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "interval_ref": "span",
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": "D01-POLICY-NARROW",
+          "quality": "accepted",
+          "reference_id": "D01-R1",
+          "require_eligibility": true,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "hr",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "compare_to_named_reference",
+          "policy_id": "D01-POLICY-NARROW",
+          "reference_id": "D01-R1",
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": "hr",
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "hr_comparison",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "interval_ref": "span",
+          "method": "ac_conductance_100hz",
+          "metric": "ac_conductance",
+          "movement": null,
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "acg",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "acg",
+          "operation": "summary",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "acg_summary",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "evidence_ids": [
+            "D01-S-C",
+            "D01-S-H",
+            "D01-S-R"
+          ],
+          "operation": "resolve"
+        },
+        "id": "sources",
+        "tool": "resolve_evidence"
+      }
+    ]
+  },
+  "D01-Q4b": {
+    "intent": "source-supported clinical chronology",
+    "output": "clinical_evidence",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D01-Q4b",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "evidence_ids": [
+            "D01-S-C"
+          ],
+          "operation": "resolve"
+        },
+        "id": "sources",
+        "tool": "resolve_evidence"
+      }
+    ]
+  },
+  "D02-Q1": {
+    "intent": "accepted coverage and actual support",
+    "output": "coverage",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D02-Q1",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "question_scope",
+          "window_policy": "clip_for_coverage"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "coverage",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "coverage",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D02-Q2": {
+    "intent": "named historical comparison",
+    "output": "comparison",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D02-Q2",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": "D02-POLICY-NARROW",
+          "quality": "accepted",
+          "reference_id": "D02-R1",
+          "require_eligibility": true,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "summary",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "summary",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "compare_to_named_reference",
+          "policy_id": "D02-POLICY-NARROW",
+          "reference_id": "D02-R1",
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": "obs",
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "comparison",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D02-Q3": {
+    "intent": "configured episode recurrence",
+    "output": "episodes",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D02-Q3",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": "low",
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "all_authorized",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": "D02-E1",
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "episodes",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "episodes",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D02-Q4a": {
+    "intent": "event-anchored multimodal comparison",
+    "output": "evidence_linked_comparison",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D02-Q4a",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "end_ref": "administration",
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "between_event_anchors",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": "onset",
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "span",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "interval_ref": "span",
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": "D02-POLICY-NARROW",
+          "quality": "accepted",
+          "reference_id": "D02-R1",
+          "require_eligibility": true,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "hr",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "compare_to_named_reference",
+          "policy_id": "D02-POLICY-NARROW",
+          "reference_id": "D02-R1",
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": "hr",
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "hr_comparison",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "interval_ref": "span",
+          "method": "ac_conductance_100hz",
+          "metric": "ac_conductance",
+          "movement": null,
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "acg",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "acg",
+          "operation": "summary",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "acg_summary",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "evidence_ids": [
+            "D02-S-C",
+            "D02-S-H",
+            "D02-S-R"
+          ],
+          "operation": "resolve"
+        },
+        "id": "sources",
+        "tool": "resolve_evidence"
+      }
+    ]
+  },
+  "D02-Q4b": {
+    "intent": "source-supported clinical chronology",
+    "output": "clinical_evidence",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D02-Q4b",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "evidence_ids": [
+            "D02-S-C"
+          ],
+          "operation": "resolve"
+        },
+        "id": "sources",
+        "tool": "resolve_evidence"
+      }
+    ]
+  },
+  "D03-Q1": {
+    "intent": "accepted coverage and actual support",
+    "output": "coverage",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D03-Q1",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "question_scope",
+          "window_policy": "clip_for_coverage"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "coverage",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "coverage",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D03-Q2": {
+    "intent": "named historical comparison",
+    "output": "comparison",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D03-Q2",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": "D03-POLICY-NARROW",
+          "quality": "accepted",
+          "reference_id": "D03-R1",
+          "require_eligibility": true,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "summary",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "summary",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "compare_to_named_reference",
+          "policy_id": "D03-POLICY-NARROW",
+          "reference_id": "D03-R1",
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": "obs",
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "comparison",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D03-Q3": {
+    "intent": "configured episode recurrence",
+    "output": "episodes",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D03-Q3",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": "low",
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "all_authorized",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": "D03-E1",
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "episodes",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "episodes",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D03-Q4a": {
+    "intent": "clinical anchor resolution with honest abstention",
+    "output": "clinical_evidence",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D03-Q4a",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      }
+    ]
+  },
+  "D03-Q4b": {
+    "intent": "source-supported clinical chronology",
+    "output": "clinical_evidence",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D03-Q4b",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "evidence_ids": [
+            "D03-S-C"
+          ],
+          "operation": "resolve"
+        },
+        "id": "sources",
+        "tool": "resolve_evidence"
+      }
+    ]
+  },
+  "D04-Q1": {
+    "intent": "accepted coverage and actual support",
+    "output": "coverage",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D04-Q1",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "question_scope",
+          "window_policy": "clip_for_coverage"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "coverage",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "coverage",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D04-Q2": {
+    "intent": "named historical comparison",
+    "output": "comparison",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D04-Q2",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": "D04-POLICY-NARROW",
+          "quality": "accepted",
+          "reference_id": "D04-R1",
+          "require_eligibility": true,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "summary",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "summary",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "compare_to_named_reference",
+          "policy_id": "D04-POLICY-NARROW",
+          "reference_id": "D04-R1",
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": "obs",
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "comparison",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D04-Q3": {
+    "intent": "configured episode recurrence",
+    "output": "episodes",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D04-Q3",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": "low",
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "all_authorized",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": "D04-E1",
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "episodes",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "episodes",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D04-Q4a": {
+    "intent": "clinical anchor resolution with honest abstention",
+    "output": "clinical_evidence",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D04-Q4a",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      }
+    ]
+  },
+  "D04-Q4b": {
+    "intent": "source-supported clinical chronology",
+    "output": "clinical_evidence",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D04-Q4b",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "evidence_ids": [
+            "D04-S-C"
+          ],
+          "operation": "resolve"
+        },
+        "id": "sources",
+        "tool": "resolve_evidence"
+      }
+    ]
+  },
+  "D05-Q1": {
+    "intent": "accepted coverage and actual support",
+    "output": "coverage",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D05-Q1",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "question_scope",
+          "window_policy": "clip_for_coverage"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "coverage",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "coverage",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D05-Q2": {
+    "intent": "named historical comparison",
+    "output": "comparison",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D05-Q2",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "wrist_ppg",
+          "metric": "pulse_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": "D05-POLICY-NARROW",
+          "quality": "accepted",
+          "reference_id": "D05-R1",
+          "require_eligibility": true,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "summary",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "summary",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "compare_to_named_reference",
+          "policy_id": "D05-POLICY-NARROW",
+          "reference_id": "D05-R1",
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": "obs",
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "comparison",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D05-Q3": {
+    "intent": "configured episode recurrence",
+    "output": "episodes",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D05-Q3",
+    "steps": [
+      {
+        "args": {
+          "interval_ref": null,
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": "low",
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "all_authorized",
+          "window_policy": "fully_contained"
+        },
+        "id": "obs",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": "D05-E1",
+          "interval_ref": null,
+          "observation_ref": "obs",
+          "operation": "episodes",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "episodes",
+        "tool": "analyze_intervals"
+      }
+    ]
+  },
+  "D05-Q4a": {
+    "intent": "event-anchored multimodal comparison",
+    "output": "evidence_linked_comparison",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D05-Q4a",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "end_ref": "administration",
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "between_event_anchors",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": "onset",
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "span",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "interval_ref": "span",
+          "method": "chest_ecg",
+          "metric": "heart_rate",
+          "movement": null,
+          "operation": "select",
+          "policy_id": "D05-POLICY-NARROW",
+          "quality": "accepted",
+          "reference_id": "D05-R1",
+          "require_eligibility": true,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "hr",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": null,
+          "operation": "compare_to_named_reference",
+          "policy_id": "D05-POLICY-NARROW",
+          "reference_id": "D05-R1",
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": "hr",
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "hr_comparison",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "interval_ref": "span",
+          "method": "ac_conductance_100hz",
+          "metric": "ac_conductance",
+          "movement": null,
+          "operation": "select",
+          "policy_id": null,
+          "quality": "accepted",
+          "reference_id": null,
+          "require_eligibility": false,
+          "scope_mode": "question_scope",
+          "window_policy": "fully_contained"
+        },
+        "id": "acg",
+        "tool": "query_observations"
+      },
+      {
+        "args": {
+          "end_ref": null,
+          "episode_rule_id": null,
+          "interval_ref": null,
+          "observation_ref": "acg",
+          "operation": "summary",
+          "policy_id": null,
+          "reference_id": null,
+          "start_ref": null,
+          "statistic": "median",
+          "target_ref": null,
+          "uncertainty_policy": "preserve_bounds_or_abstain"
+        },
+        "id": "acg_summary",
+        "tool": "analyze_intervals"
+      },
+      {
+        "args": {
+          "evidence_ids": [
+            "D05-S-C",
+            "D05-S-H",
+            "D05-S-R"
+          ],
+          "operation": "resolve"
+        },
+        "id": "sources",
+        "tool": "resolve_evidence"
+      }
+    ]
+  },
+  "D05-Q4b": {
+    "intent": "source-supported clinical chronology",
+    "output": "clinical_evidence",
+    "participant_scope": "authorized_context_only",
+    "plan_id": "dev-D05-Q4b",
+    "steps": [
+      {
+        "args": {
+          "action_status": null,
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "tremor",
+          "event_type": "symptom_onset",
+          "evidence_class": null,
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "onset",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "action_status": "completed",
+          "anchor_role": null,
+          "assertion": null,
+          "concept": "diazepam",
+          "event_type": "medication_administration",
+          "evidence_class": "structured_administration",
+          "operation": "select",
+          "selection": "unique_supported_or_clarify"
+        },
+        "id": "administration",
+        "tool": "query_clinical_events"
+      },
+      {
+        "args": {
+          "evidence_ids": [
+            "D05-S-C"
+          ],
+          "operation": "resolve"
+        },
+        "id": "sources",
+        "tool": "resolve_evidence"
+      }
+    ]
+  }
+}

@@ -26,8 +26,30 @@ question before any benchmark execution.
 For each scenario's first 30 seconds, H1 `[0,10)` and H2 `[5,15)` contribute a
 nominal union of 15 seconds. H1 contributes `[0,8)` actual support and H2 contributes
 `[5,15)`, giving 15 seconds of known actual support; rejected H3 contributes neither.
-The denominator is the 30-second requested span. D02-H5 is fraction-only and must be
-reported as unresolved if included in a scope where it matters.
+The denominator is the 30-second requested span, so both requested fractions are
+`15/30 = 0.50`. D02-Q1 is therefore `answered`: D02-H5 is fraction-only but begins at
+45 seconds and is outside that question's 30-second scope.
+
+## Derived development findings
+
+| Questions | Expected supported findings | Material limitation/status |
+|---|---|---|
+| D01/D02/D03/D05-Q1 | nominal feature-window coverage 15/30 s; known actual support 15/30 s; H3 rejected | answered |
+| D01/D02/D03-Q2 | H1 only; median ECG HR 96 bpm; R1 difference +16 bpm; R1 provisional | answered, descriptive only |
+| D04-Q2 | no comparison value | insufficient: R1 unavailable |
+| D05-Q2 | no comparison value | insufficient: wrist PPG is incompatible with ECG R1 |
+| D01–D05-Q3 | one historical E1 group: grouping span 20 s, qualifying coverage 20 s, actual support 20 s; target H1 candidate fails 15 s minimum | answered, grouping is not continuous elevation |
+| D01/D05-Q4a | C1 reported onset, C4 completed at 09:30; ECG difference +16 bpm from H1/R1; AC-G median 3.00 µS from G1/G2 | answered, sparse support and no treatment-effect inference |
+| D02-Q4a | C1 bounds 08:50–09:10; C4 completed at 09:30 | partial: exact event-bounded aggregate blocked by approximate onset |
+| D03-Q4a | C1 supported; C4A and C4B are both completed candidates | clarify which administration is intended |
+| D04-Q4a | C1 reported onset only | insufficient: no completed administration anchor |
+| D01/D02/D05-Q4b | reported onset plus completed administration with order/held/uncertain distinctions | answered |
+| D03-Q4b | C1 plus C4A/C4B candidates | clarify which completed occurrence is intended |
+| D04-Q4b | C1; C2 order and C3 held/not-done | partial: symptom onset is supported, but no completed action is supported |
+
+Every numeric slot carries its unit, statistic, denominator/interval and evidence IDs
+in the provisional gold object. Every exclusion is retained with its reason; source
+and clinical review fields remain pending human review.
 
 ## Scenario/source worksheet index
 

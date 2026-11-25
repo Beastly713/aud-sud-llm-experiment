@@ -1,0 +1,1028 @@
+{
+  "clinical_events": [
+    {
+      "action_status": "reported",
+      "assertion": "affirmed",
+      "concept": "tremor",
+      "contradiction_link": null,
+      "documented_at": "2026-01-04T09:00:00Z",
+      "event_time": {
+        "lower": "2026-01-04T09:00:00Z",
+        "precision": "instant",
+        "upper": "2026-01-04T09:00:00Z"
+      },
+      "event_type": "symptom_onset",
+      "evidence_class": "narrative_report",
+      "experiencer": "patient",
+      "mention_id": "D04-C1",
+      "occurrence_id": "D04-O1",
+      "occurrence_link_status": "linked",
+      "original_text": "patient reports tremor began at the stated time",
+      "participant_id": "D04-P01",
+      "semantic_support": "supported",
+      "source_ids": [
+        "D04-S-C"
+      ],
+      "source_review": "supported",
+      "structural_review": "supported"
+    },
+    {
+      "action_status": "ordered",
+      "assertion": "affirmed",
+      "concept": "diazepam",
+      "contradiction_link": null,
+      "documented_at": "2026-01-04T09:05:00Z",
+      "event_time": {
+        "lower": "2026-01-04T09:05:00Z",
+        "precision": "instant",
+        "upper": "2026-01-04T09:05:00Z"
+      },
+      "event_type": "medication_order",
+      "evidence_class": "structured_order",
+      "experiencer": "patient",
+      "mention_id": "D04-C2",
+      "occurrence_id": null,
+      "occurrence_link_status": "unresolved",
+      "original_text": "diazepam ordered",
+      "participant_id": "D04-P01",
+      "semantic_support": "supported",
+      "source_ids": [
+        "D04-S-C"
+      ],
+      "source_review": "supported",
+      "structural_review": "supported"
+    },
+    {
+      "action_status": "held",
+      "assertion": "affirmed",
+      "concept": "diazepam",
+      "contradiction_link": null,
+      "documented_at": "2026-01-04T09:10:00Z",
+      "event_time": {
+        "lower": "2026-01-04T09:10:00Z",
+        "precision": "instant",
+        "upper": "2026-01-04T09:10:00Z"
+      },
+      "event_type": "medication_action",
+      "evidence_class": "structured_order",
+      "experiencer": "patient",
+      "mention_id": "D04-C3",
+      "occurrence_id": null,
+      "occurrence_link_status": "unresolved",
+      "original_text": "diazepam held; not administered",
+      "participant_id": "D04-P01",
+      "semantic_support": "supported",
+      "source_ids": [
+        "D04-S-C"
+      ],
+      "source_review": "supported",
+      "structural_review": "supported"
+    },
+    {
+      "action_status": "reported",
+      "assertion": "uncertain",
+      "concept": "diazepam",
+      "contradiction_link": null,
+      "documented_at": "2026-01-04T09:15:00Z",
+      "event_time": {
+        "lower": "2026-01-04T09:15:00Z",
+        "precision": "instant",
+        "upper": "2026-01-04T09:15:00Z"
+      },
+      "event_type": "medication_report",
+      "evidence_class": "narrative_report",
+      "experiencer": "patient",
+      "mention_id": "D04-C6",
+      "occurrence_id": null,
+      "occurrence_link_status": "unresolved",
+      "original_text": "patient uncertainly reports a dose",
+      "participant_id": "D04-P01",
+      "semantic_support": "supported",
+      "source_ids": [
+        "D04-S-C"
+      ],
+      "source_review": "supported",
+      "structural_review": "supported"
+    }
+  ],
+  "contexts": [
+    {
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:10Z",
+          "start": "2026-01-04T09:00:00Z"
+        }
+      ],
+      "ambient_qualifier": null,
+      "clock_status": "aligned",
+      "context_id": "D04-CTX-H1",
+      "imu_summary": null,
+      "linked_observation_ids": [],
+      "movement": "low",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:10Z",
+        "start": "2026-01-04T09:00:00Z"
+      },
+      "participant_id": "D04-P01",
+      "source_ids": [
+        "D04-S-H"
+      ]
+    },
+    {
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:15Z",
+          "start": "2026-01-04T09:00:05Z"
+        }
+      ],
+      "ambient_qualifier": null,
+      "clock_status": "aligned",
+      "context_id": "D04-CTX-H2",
+      "imu_summary": null,
+      "linked_observation_ids": [],
+      "movement": "elevated",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:15Z",
+        "start": "2026-01-04T09:00:05Z"
+      },
+      "participant_id": "D04-P01",
+      "source_ids": [
+        "D04-S-H"
+      ]
+    },
+    {
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:30Z",
+          "start": "2026-01-04T09:00:20Z"
+        }
+      ],
+      "ambient_qualifier": null,
+      "clock_status": "aligned",
+      "context_id": "D04-CTX-H3",
+      "imu_summary": null,
+      "linked_observation_ids": [],
+      "movement": "low",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:30Z",
+        "start": "2026-01-04T09:00:20Z"
+      },
+      "participant_id": "D04-P01",
+      "source_ids": [
+        "D04-S-H"
+      ]
+    },
+    {
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:40Z",
+          "start": "2026-01-04T09:00:30Z"
+        }
+      ],
+      "ambient_qualifier": null,
+      "clock_status": "aligned",
+      "context_id": "D04-CTX-H4",
+      "imu_summary": null,
+      "linked_observation_ids": [],
+      "movement": "elevated",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:40Z",
+        "start": "2026-01-04T09:00:30Z"
+      },
+      "participant_id": "D04-P01",
+      "source_ids": [
+        "D04-S-H"
+      ]
+    },
+    {
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:55Z",
+          "start": "2026-01-04T09:00:45Z"
+        }
+      ],
+      "ambient_qualifier": null,
+      "clock_status": "aligned",
+      "context_id": "D04-CTX-H5",
+      "imu_summary": null,
+      "linked_observation_ids": [],
+      "movement": "unknown",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:55Z",
+        "start": "2026-01-04T09:00:45Z"
+      },
+      "participant_id": "D04-P01",
+      "source_ids": [
+        "D04-S-H"
+      ]
+    },
+    {
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:10Z",
+          "start": "2026-01-04T09:00:00Z"
+        }
+      ],
+      "ambient_qualifier": null,
+      "clock_status": "aligned",
+      "context_id": "D04-CTX-W1",
+      "imu_summary": null,
+      "linked_observation_ids": [],
+      "movement": "low",
+      "node": "wrist",
+      "nominal": {
+        "end": "2026-01-04T09:00:10Z",
+        "start": "2026-01-04T09:00:00Z"
+      },
+      "participant_id": "D04-P01",
+      "source_ids": [
+        "D04-S-H"
+      ]
+    },
+    {
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:40Z",
+          "start": "2026-01-04T09:00:30Z"
+        }
+      ],
+      "ambient_qualifier": null,
+      "clock_status": "aligned",
+      "context_id": "D04-CTX-W2",
+      "imu_summary": null,
+      "linked_observation_ids": [],
+      "movement": "low",
+      "node": "wrist",
+      "nominal": {
+        "end": "2026-01-04T09:00:40Z",
+        "start": "2026-01-04T09:00:30Z"
+      },
+      "participant_id": "D04-P01",
+      "source_ids": [
+        "D04-S-H"
+      ]
+    },
+    {
+      "actual_support": [
+        {
+          "end": "2026-01-03T09:00:10Z",
+          "start": "2026-01-03T09:00:00Z"
+        }
+      ],
+      "ambient_qualifier": null,
+      "clock_status": "aligned",
+      "context_id": "D04-CTX-P1",
+      "imu_summary": null,
+      "linked_observation_ids": [],
+      "movement": "low",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-03T09:00:10Z",
+        "start": "2026-01-03T09:00:00Z"
+      },
+      "participant_id": "D04-P01",
+      "source_ids": [
+        "D04-S-R"
+      ]
+    },
+    {
+      "actual_support": [
+        {
+          "end": "2026-01-03T09:00:20Z",
+          "start": "2026-01-03T09:00:10Z"
+        }
+      ],
+      "ambient_qualifier": null,
+      "clock_status": "aligned",
+      "context_id": "D04-CTX-P2",
+      "imu_summary": null,
+      "linked_observation_ids": [],
+      "movement": "low",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-03T09:00:20Z",
+        "start": "2026-01-03T09:00:10Z"
+      },
+      "participant_id": "D04-P01",
+      "source_ids": [
+        "D04-S-R"
+      ]
+    }
+  ],
+  "eligibility": [
+    {
+      "observation_id": "D04-H1",
+      "policy_id": "D04-POLICY-NARROW",
+      "reasons": [
+        "motion or unavailable reference"
+      ],
+      "reference_id": "D04-R1",
+      "revision": "ref-r1",
+      "status": "indeterminate"
+    },
+    {
+      "observation_id": "D04-H1",
+      "policy_id": "D04-POLICY-BROAD",
+      "reasons": [],
+      "reference_id": "D04-R2",
+      "revision": "ref-r2",
+      "status": "eligible"
+    },
+    {
+      "observation_id": "D04-H2",
+      "policy_id": "D04-POLICY-NARROW",
+      "reasons": [
+        "motion or unavailable reference"
+      ],
+      "reference_id": "D04-R1",
+      "revision": "ref-r1",
+      "status": "indeterminate"
+    },
+    {
+      "observation_id": "D04-H2",
+      "policy_id": "D04-POLICY-BROAD",
+      "reasons": [],
+      "reference_id": "D04-R2",
+      "revision": "ref-r2",
+      "status": "eligible"
+    },
+    {
+      "observation_id": "D04-H4",
+      "policy_id": "D04-POLICY-NARROW",
+      "reasons": [
+        "motion or unavailable reference"
+      ],
+      "reference_id": "D04-R1",
+      "revision": "ref-r1",
+      "status": "indeterminate"
+    },
+    {
+      "observation_id": "D04-H4",
+      "policy_id": "D04-POLICY-BROAD",
+      "reasons": [],
+      "reference_id": "D04-R2",
+      "revision": "ref-r2",
+      "status": "eligible"
+    },
+    {
+      "observation_id": "D04-H5",
+      "policy_id": "D04-POLICY-NARROW",
+      "reasons": [
+        "motion or unavailable reference"
+      ],
+      "reference_id": "D04-R1",
+      "revision": "ref-r1",
+      "status": "indeterminate"
+    },
+    {
+      "observation_id": "D04-H5",
+      "policy_id": "D04-POLICY-BROAD",
+      "reasons": [],
+      "reference_id": "D04-R2",
+      "revision": "ref-r2",
+      "status": "eligible"
+    },
+    {
+      "observation_id": "D04-P-H1",
+      "policy_id": "D04-POLICY-NARROW",
+      "reasons": [
+        "motion or unavailable reference"
+      ],
+      "reference_id": "D04-R1",
+      "revision": "ref-r1",
+      "status": "indeterminate"
+    },
+    {
+      "observation_id": "D04-P-H1",
+      "policy_id": "D04-POLICY-BROAD",
+      "reasons": [],
+      "reference_id": "D04-R2",
+      "revision": "ref-r2",
+      "status": "eligible"
+    },
+    {
+      "observation_id": "D04-P-H2",
+      "policy_id": "D04-POLICY-NARROW",
+      "reasons": [
+        "motion or unavailable reference"
+      ],
+      "reference_id": "D04-R1",
+      "revision": "ref-r1",
+      "status": "indeterminate"
+    },
+    {
+      "observation_id": "D04-P-H2",
+      "policy_id": "D04-POLICY-BROAD",
+      "reasons": [],
+      "reference_id": "D04-R2",
+      "revision": "ref-r2",
+      "status": "eligible"
+    }
+  ],
+  "episode_rules": [
+    {
+      "maximum_gap_seconds": 5,
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "minimum_grouping_seconds": 15,
+      "policy_id": null,
+      "reference_id": null,
+      "required_acceptance": "accepted",
+      "required_movement": "low",
+      "rule_id": "D04-E1",
+      "threshold": 95.0,
+      "threshold_operator": ">="
+    }
+  ],
+  "observations": [
+    {
+      "acceptance": "accepted",
+      "acceptance_reasons": [],
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:08Z",
+          "start": "2026-01-04T09:00:00Z"
+        }
+      ],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-H1"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:10Z",
+        "start": "2026-01-04T09:00:00Z"
+      },
+      "observation_id": "D04-H1",
+      "participant_id": "D04-P01",
+      "site": "chest",
+      "source_ids": [
+        "D04-S-H"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "intervals",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "present",
+        "units": "bpm",
+        "value": 96
+      }
+    },
+    {
+      "acceptance": "accepted",
+      "acceptance_reasons": [],
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:15Z",
+          "start": "2026-01-04T09:00:05Z"
+        }
+      ],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-H2"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:15Z",
+        "start": "2026-01-04T09:00:05Z"
+      },
+      "observation_id": "D04-H2",
+      "participant_id": "D04-P01",
+      "site": "chest",
+      "source_ids": [
+        "D04-S-H"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "intervals",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "present",
+        "units": "bpm",
+        "value": 100
+      }
+    },
+    {
+      "acceptance": "rejected",
+      "acceptance_reasons": [
+        "artifact"
+      ],
+      "actual_support": [],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-H3"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:30Z",
+        "start": "2026-01-04T09:00:20Z"
+      },
+      "observation_id": "D04-H3",
+      "participant_id": "D04-P01",
+      "site": "chest",
+      "source_ids": [
+        "D04-S-H"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "unknown",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "absent",
+        "units": "bpm",
+        "value": null
+      }
+    },
+    {
+      "acceptance": "accepted",
+      "acceptance_reasons": [],
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:40Z",
+          "start": "2026-01-04T09:00:30Z"
+        }
+      ],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-H4"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:40Z",
+        "start": "2026-01-04T09:00:30Z"
+      },
+      "observation_id": "D04-H4",
+      "participant_id": "D04-P01",
+      "site": "chest",
+      "source_ids": [
+        "D04-S-H"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "intervals",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "present",
+        "units": "bpm",
+        "value": 98
+      }
+    },
+    {
+      "acceptance": "accepted",
+      "acceptance_reasons": [],
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:55Z",
+          "start": "2026-01-04T09:00:45Z"
+        }
+      ],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-H5"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-04T09:00:55Z",
+        "start": "2026-01-04T09:00:45Z"
+      },
+      "observation_id": "D04-H5",
+      "participant_id": "D04-P01",
+      "site": "chest",
+      "source_ids": [
+        "D04-S-H"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "intervals",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "present",
+        "units": "bpm",
+        "value": 92
+      }
+    },
+    {
+      "acceptance": "accepted",
+      "acceptance_reasons": [],
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:10Z",
+          "start": "2026-01-04T09:00:00Z"
+        }
+      ],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-W1"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "wrist_ppg",
+      "metric": "pulse_rate",
+      "node": "wrist",
+      "nominal": {
+        "end": "2026-01-04T09:00:10Z",
+        "start": "2026-01-04T09:00:00Z"
+      },
+      "observation_id": "D04-PULSE1",
+      "participant_id": "D04-P01",
+      "site": "wrist",
+      "source_ids": [
+        "D04-S-H"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "intervals",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "present",
+        "units": "bpm",
+        "value": 95
+      }
+    },
+    {
+      "acceptance": "accepted",
+      "acceptance_reasons": [],
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:30Z",
+          "start": "2026-01-04T09:00:00Z"
+        }
+      ],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-W1"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "ac_conductance_100hz",
+      "metric": "ac_conductance",
+      "node": "wrist",
+      "nominal": {
+        "end": "2026-01-04T09:00:30Z",
+        "start": "2026-01-04T09:00:00Z"
+      },
+      "observation_id": "D04-G1",
+      "participant_id": "D04-P01",
+      "site": "wrist",
+      "source_ids": [
+        "D04-S-H"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "intervals",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "present",
+        "units": "\u00b5S",
+        "value": 2.5
+      }
+    },
+    {
+      "acceptance": "accepted",
+      "acceptance_reasons": [],
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:40Z",
+          "start": "2026-01-04T09:00:30Z"
+        }
+      ],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-W2"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "ac_conductance_100hz",
+      "metric": "ac_conductance",
+      "node": "wrist",
+      "nominal": {
+        "end": "2026-01-04T09:00:40Z",
+        "start": "2026-01-04T09:00:30Z"
+      },
+      "observation_id": "D04-G2",
+      "participant_id": "D04-P01",
+      "site": "wrist",
+      "source_ids": [
+        "D04-S-H"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "intervals",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "present",
+        "units": "\u00b5S",
+        "value": 3.5
+      }
+    },
+    {
+      "acceptance": "rejected",
+      "acceptance_reasons": [
+        "artifact"
+      ],
+      "actual_support": [],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-W2"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "ac_conductance_100hz",
+      "metric": "ac_conductance",
+      "node": "wrist",
+      "nominal": {
+        "end": "2026-01-04T09:00:50Z",
+        "start": "2026-01-04T09:00:40Z"
+      },
+      "observation_id": "D04-G3",
+      "participant_id": "D04-P01",
+      "site": "wrist",
+      "source_ids": [
+        "D04-S-H"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "unknown",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "absent",
+        "units": "\u00b5S",
+        "value": null
+      }
+    },
+    {
+      "acceptance": "accepted",
+      "acceptance_reasons": [],
+      "actual_support": [
+        {
+          "end": "2026-01-03T09:00:10Z",
+          "start": "2026-01-03T09:00:00Z"
+        }
+      ],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-P1"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-03T09:00:10Z",
+        "start": "2026-01-03T09:00:00Z"
+      },
+      "observation_id": "D04-P-H1",
+      "participant_id": "D04-P01",
+      "site": "chest",
+      "source_ids": [
+        "D04-S-R"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "intervals",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "present",
+        "units": "bpm",
+        "value": 98
+      }
+    },
+    {
+      "acceptance": "accepted",
+      "acceptance_reasons": [],
+      "actual_support": [
+        {
+          "end": "2026-01-03T09:00:20Z",
+          "start": "2026-01-03T09:00:10Z"
+        }
+      ],
+      "configuration": null,
+      "context_ids": [
+        "D04-CTX-P2"
+      ],
+      "feature_version": "fixture-feature-v1",
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "node": "chest",
+      "nominal": {
+        "end": "2026-01-03T09:00:20Z",
+        "start": "2026-01-03T09:00:10Z"
+      },
+      "observation_id": "D04-P-H2",
+      "participant_id": "D04-P01",
+      "site": "chest",
+      "source_ids": [
+        "D04-S-R"
+      ],
+      "support_denominator_seconds": null,
+      "support_fraction": null,
+      "support_kind": "intervals",
+      "timing_quality": "resolved",
+      "value": {
+        "missingness": "present",
+        "units": "bpm",
+        "value": 97
+      }
+    }
+  ],
+  "participant_id": "D04-P01",
+  "policies": [
+    {
+      "allowed_operations": [
+        "summary",
+        "coverage",
+        "compare_to_named_reference",
+        "episodes"
+      ],
+      "compatible_nodes": [
+        "chest"
+      ],
+      "denominator_definitions": {
+        "requested_interval": "wall-clock seconds"
+      },
+      "episode_rule_ids": [
+        "D04-E1"
+      ],
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "policy_id": "D04-POLICY-NARROW",
+      "reference_ids": [
+        "D04-R1"
+      ],
+      "version": "bucket5-v1"
+    },
+    {
+      "allowed_operations": [
+        "summary",
+        "coverage",
+        "compare_to_named_reference"
+      ],
+      "compatible_nodes": [
+        "chest"
+      ],
+      "denominator_definitions": {
+        "requested_interval": "wall-clock seconds"
+      },
+      "episode_rule_ids": [],
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "policy_id": "D04-POLICY-BROAD",
+      "reference_ids": [
+        "D04-R2"
+      ],
+      "version": "bucket5-v1"
+    }
+  ],
+  "references": [
+    {
+      "as_of": "2026-01-04T11:00:00Z",
+      "center": null,
+      "comparison_units": [
+        "prior-day-bout"
+      ],
+      "configuration": null,
+      "epoch_label": "earlier low-chest-motion epoch",
+      "event_cutoff": "2026-01-03T09:30:00Z",
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "policy_id": "D04-POLICY-NARROW",
+      "reference_id": "D04-R1",
+      "revision": "ref-r1",
+      "site": "chest",
+      "source_ids": [
+        "D04-S-R"
+      ],
+      "spread": null,
+      "status": "unavailable",
+      "units": "bpm"
+    },
+    {
+      "as_of": "2026-01-04T11:00:00Z",
+      "center": 82.0,
+      "comparison_units": [
+        "prior-day-bout"
+      ],
+      "configuration": null,
+      "epoch_label": "earlier broad ECG epoch",
+      "event_cutoff": "2026-01-03T09:30:00Z",
+      "method": "chest_ecg",
+      "metric": "heart_rate",
+      "policy_id": "D04-POLICY-BROAD",
+      "reference_id": "D04-R2",
+      "revision": "ref-r2",
+      "site": "chest",
+      "source_ids": [
+        "D04-S-R"
+      ],
+      "spread": null,
+      "status": "supported_descriptive",
+      "units": "bpm"
+    }
+  ],
+  "scenario_id": "D04",
+  "snapshot": {
+    "authorized_scope": [
+      {
+        "end": "2026-01-04T10:00:00Z",
+        "start": "2026-01-04T09:00:00Z"
+      },
+      {
+        "end": "2026-01-03T09:30:00Z",
+        "start": "2026-01-03T09:00:00Z"
+      }
+    ],
+    "available_as_of": "2026-01-04T11:00:00Z",
+    "participant_id": "D04-P01",
+    "revision": "snapshot-v1",
+    "scenario_id": "D04",
+    "snapshot_id": "D04-v1",
+    "source_event_cutoff": "2026-01-04T10:00:00Z",
+    "source_inventory": [
+      "D04-S-H",
+      "D04-S-C",
+      "D04-S-R",
+      "D04-S-I"
+    ],
+    "timezone": "UTC"
+  },
+  "sources": [
+    {
+      "content": "feature rows and measurement support for the target recording",
+      "covered_scope": [
+        {
+          "end": "2026-01-04T10:00:00Z",
+          "start": "2026-01-04T09:00:00Z"
+        }
+      ],
+      "locator": "synthetic://D04-S-H",
+      "recording_available": true,
+      "revision": "r1",
+      "source_id": "D04-S-H",
+      "source_type": "feature_export",
+      "unknown_scope": []
+    },
+    {
+      "content": "patient-reported tremor onset and medication documentation",
+      "covered_scope": [
+        {
+          "end": "2026-01-04T10:00:00Z",
+          "start": "2026-01-04T09:00:00Z"
+        }
+      ],
+      "locator": "synthetic://D04-S-C",
+      "recording_available": true,
+      "revision": "r1",
+      "source_id": "D04-S-C",
+      "source_type": "clinical_note",
+      "unknown_scope": []
+    },
+    {
+      "content": "named historical reference center and eligibility policy",
+      "covered_scope": [
+        {
+          "end": "2026-01-03T09:30:00Z",
+          "start": "2026-01-03T09:00:00Z"
+        }
+      ],
+      "locator": "synthetic://D04-S-R",
+      "recording_available": true,
+      "revision": "r1",
+      "source_id": "D04-S-R",
+      "source_type": "reference_snapshot",
+      "unknown_scope": []
+    },
+    {
+      "content": "recording inventory: target bouts are available; unrecorded spans remain unknown",
+      "covered_scope": [
+        {
+          "end": "2026-01-04T10:00:00Z",
+          "start": "2026-01-04T09:00:00Z"
+        }
+      ],
+      "locator": "synthetic://D04-S-I",
+      "recording_available": true,
+      "revision": "r1",
+      "source_id": "D04-S-I",
+      "source_type": "inventory",
+      "unknown_scope": []
+    }
+  ],
+  "synthetic_disclosure": "Synthetic engineering fixture; not patient data or clinical ground truth."
+}

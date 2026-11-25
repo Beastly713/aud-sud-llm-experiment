@@ -11,6 +11,7 @@ from ...schema import (
     ObservationSelectionResult,
     Interval,
 )
+from .intervals import nominal_coverage
 
 
 def _scope_for_ref(store: EvidenceStore, result: object | None) -> Interval | None:
@@ -32,8 +33,13 @@ def query_observations(
     for observation in store.observations():
         if observation.metric != args.metric or observation.method != args.method:
             continue
-        if interval and not (observation.nominal.start >= interval.start and observation.nominal.end <= interval.end):
-            continue
+        if interval:
+            fully_contained = observation.nominal.start >= interval.start and observation.nominal.end <= interval.end
+            overlaps = observation.nominal.start < interval.end and observation.nominal.end > interval.start
+            if args.window_policy == "fully_contained" and not fully_contained:
+                continue
+            if args.window_policy == "clip_for_coverage" and not overlaps:
+                continue
         if args.quality and observation.acceptance != args.quality:
             excluded.append(observation.observation_id)
             reasons[observation.observation_id] = "quality filter"
@@ -56,6 +62,13 @@ def query_observations(
                 )
                 continue
         selected.append(observation)
+    limitations: list[str] = []
+    if not selected:
+        limitations.append("no accepted observations matched the explicit selection")
+    elif interval:
+        covered, _ = nominal_coverage(selected, interval)
+        if sum(item.seconds for item in covered) < interval.seconds:
+            limitations.append("selected feature windows are sparse within the requested interval; uncovered time is unknown")
     return ObservationSelectionResult(
         selected_observation_ids=[item.observation_id for item in selected],
         excluded_observation_ids=excluded,
@@ -63,6 +76,9 @@ def query_observations(
         scope=interval,
         reference_id=args.reference_id,
         policy_id=args.policy_id,
-        limitations=[] if selected else ["no accepted observations matched the explicit selection"],
+        metric=args.metric,
+        method=args.method,
+        window_policy=args.window_policy,
+        limitations=limitations,
     )
 

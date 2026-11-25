@@ -1,0 +1,160 @@
+{
+  "$defs": {
+    "AnswerStatus": {
+      "enum": [
+        "answered",
+        "partial",
+        "insufficient",
+        "clarify"
+      ],
+      "title": "AnswerStatus",
+      "type": "string"
+    },
+    "GoldSlot": {
+      "additionalProperties": false,
+      "properties": {
+        "absolute_tolerance": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Absolute Tolerance"
+        },
+        "evidence_alternatives": {
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Evidence Alternatives",
+          "type": "array"
+        },
+        "expected": {
+          "title": "Expected",
+          "type": "object"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "material": {
+          "default": true,
+          "title": "Material",
+          "type": "boolean"
+        },
+        "slot_id": {
+          "title": "Slot Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slot_id",
+        "kind",
+        "expected",
+        "evidence_alternatives"
+      ],
+      "title": "GoldSlot",
+      "type": "object"
+    },
+    "QuestionClass": {
+      "enum": [
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4"
+      ],
+      "title": "QuestionClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "difficulty": {
+      "title": "Difficulty",
+      "type": "string"
+    },
+    "forbidden_inferences": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Forbidden Inferences",
+      "type": "array"
+    },
+    "permitted_additional_facts": {
+      "items": {
+        "type": "object"
+      },
+      "title": "Permitted Additional Facts",
+      "type": "array"
+    },
+    "question_class": {
+      "$ref": "#/$defs/QuestionClass"
+    },
+    "question_id": {
+      "title": "Question Id",
+      "type": "string"
+    },
+    "required_limitations": {
+      "items": {
+        "$ref": "#/$defs/GoldSlot"
+      },
+      "title": "Required Limitations",
+      "type": "array"
+    },
+    "required_slots": {
+      "items": {
+        "$ref": "#/$defs/GoldSlot"
+      },
+      "title": "Required Slots",
+      "type": "array"
+    },
+    "review_author": {
+      "default": "pending-human-review",
+      "title": "Review Author",
+      "type": "string"
+    },
+    "review_checker": {
+      "default": "pending-human-review",
+      "title": "Review Checker",
+      "type": "string"
+    },
+    "review_resolved": {
+      "default": false,
+      "title": "Review Resolved",
+      "type": "boolean"
+    },
+    "selection": {
+      "title": "Selection",
+      "type": "object"
+    },
+    "snapshot_id": {
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/AnswerStatus"
+    },
+    "worksheet": {
+      "title": "Worksheet",
+      "type": "string"
+    }
+  },
+  "required": [
+    "question_id",
+    "snapshot_id",
+    "question_class",
+    "difficulty",
+    "status",
+    "required_slots",
+    "selection",
+    "worksheet"
+  ],
+  "title": "GoldRecord",
+  "type": "object"
+}

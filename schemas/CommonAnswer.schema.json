@@ -1,0 +1,556 @@
+{
+  "$defs": {
+    "ActionStatus": {
+      "enum": [
+        "completed",
+        "ordered",
+        "held",
+        "not_done",
+        "reported",
+        "unknown"
+      ],
+      "title": "ActionStatus",
+      "type": "string"
+    },
+    "AnswerStatus": {
+      "enum": [
+        "answered",
+        "partial",
+        "insufficient",
+        "clarify"
+      ],
+      "title": "AnswerStatus",
+      "type": "string"
+    },
+    "AssertionStatus": {
+      "enum": [
+        "affirmed",
+        "negated",
+        "uncertain",
+        "historical",
+        "hypothetical"
+      ],
+      "title": "AssertionStatus",
+      "type": "string"
+    },
+    "CategoricalValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "categorical",
+          "default": "categorical",
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "CategoricalValue",
+      "type": "object"
+    },
+    "ClaimKind": {
+      "enum": [
+        "observation",
+        "coverage",
+        "comparison",
+        "episode",
+        "event",
+        "limitation",
+        "other"
+      ],
+      "title": "ClaimKind",
+      "type": "string"
+    },
+    "CoverageType": {
+      "enum": [
+        "nominal_feature_window",
+        "actual_support",
+        "known_lower_bound",
+        "grouping_span"
+      ],
+      "title": "CoverageType",
+      "type": "string"
+    },
+    "DurationValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "duration",
+          "default": "duration",
+          "title": "Kind",
+          "type": "string"
+        },
+        "seconds": {
+          "title": "Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seconds"
+      ],
+      "title": "DurationValue",
+      "type": "object"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "action_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ActionStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "assertion_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AssertionStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "claim_kind": {
+          "$ref": "#/$defs/ClaimKind",
+          "default": "other"
+        },
+        "coverage_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CoverageType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "denominator_seconds": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Denominator Seconds"
+        },
+        "episode_rule_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Episode Rule Id"
+        },
+        "interval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Interval"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
+        },
+        "metric": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Metric"
+        },
+        "occurrence_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Occurrence Id"
+        },
+        "policy_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Id"
+        },
+        "reference_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Id"
+        },
+        "requested_statistic": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requested Statistic"
+        },
+        "selected_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Selected Ids",
+          "type": "array"
+        },
+        "site": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Site"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "categorical": "#/$defs/CategoricalValue",
+                  "duration": "#/$defs/DurationValue",
+                  "fraction": "#/$defs/FractionValue",
+                  "list": "#/$defs/ListValue",
+                  "numeric": "#/$defs/NumericValue",
+                  "time_range": "#/$defs/TimeRangeValue"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/NumericValue"
+                },
+                {
+                  "$ref": "#/$defs/CategoricalValue"
+                },
+                {
+                  "$ref": "#/$defs/DurationValue"
+                },
+                {
+                  "$ref": "#/$defs/FractionValue"
+                },
+                {
+                  "$ref": "#/$defs/TimeRangeValue"
+                },
+                {
+                  "$ref": "#/$defs/ListValue"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "claim"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "FractionValue": {
+      "additionalProperties": false,
+      "properties": {
+        "coverage_type": {
+          "$ref": "#/$defs/CoverageType"
+        },
+        "denominator": {
+          "title": "Denominator",
+          "type": "integer"
+        },
+        "fraction": {
+          "title": "Fraction",
+          "type": "number"
+        },
+        "kind": {
+          "const": "fraction",
+          "default": "fraction",
+          "title": "Kind",
+          "type": "string"
+        },
+        "numerator": {
+          "title": "Numerator",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator",
+        "fraction",
+        "coverage_type"
+      ],
+      "title": "FractionValue",
+      "type": "object"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "Limitation": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "reason_code": {
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "selected_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Selected Ids",
+          "type": "array"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim",
+        "reason_code"
+      ],
+      "title": "Limitation",
+      "type": "object"
+    },
+    "ListValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "list",
+          "default": "list",
+          "title": "Kind",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              }
+            ]
+          },
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "values"
+      ],
+      "title": "ListValue",
+      "type": "object"
+    },
+    "NumericValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "numeric",
+          "default": "numeric",
+          "title": "Kind",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "NumericValue",
+      "type": "object"
+    },
+    "TemporalPrecision": {
+      "enum": [
+        "instant",
+        "minute",
+        "interval",
+        "approximate",
+        "unknown"
+      ],
+      "title": "TemporalPrecision",
+      "type": "string"
+    },
+    "TimeRangeValue": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "time_range",
+          "default": "time_range",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lower": {
+          "format": "date-time",
+          "title": "Lower",
+          "type": "string"
+        },
+        "precision": {
+          "$ref": "#/$defs/TemporalPrecision"
+        },
+        "upper": {
+          "format": "date-time",
+          "title": "Upper",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lower",
+        "upper",
+        "precision"
+      ],
+      "title": "TimeRangeValue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "clarification": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Clarification"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "$ref": "#/$defs/Limitation"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "schema_version": {
+      "default": "d2-experiment.schema.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/AnswerStatus"
+    }
+  },
+  "required": [
+    "status"
+  ],
+  "title": "CommonAnswer",
+  "type": "object"
+}

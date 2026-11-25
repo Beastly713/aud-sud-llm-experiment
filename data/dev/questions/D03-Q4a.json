@@ -1,0 +1,15 @@
+{
+  "authorized_scope": [
+    {
+      "end": "2026-01-03T09:30:00Z",
+      "start": "2026-01-03T09:00:00Z"
+    }
+  ],
+  "difficulty": "complex",
+  "question_class": "Q4",
+  "question_id": "D03-Q4a",
+  "requested_status": null,
+  "scenario_id": "D03",
+  "snapshot_id": "D03-v1",
+  "text": "Between the reported tremor onset and a documented completed diazepam administration, what accepted low-chest-motion ECG heart-rate change and wrist AC conductance were observed?"
+}

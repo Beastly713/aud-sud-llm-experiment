@@ -1,0 +1,105 @@
+{
+  "$defs": {
+    "AnswerStatus": {
+      "enum": [
+        "answered",
+        "partial",
+        "insufficient",
+        "clarify"
+      ],
+      "title": "AnswerStatus",
+      "type": "string"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "QuestionClass": {
+      "enum": [
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4"
+      ],
+      "title": "QuestionClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "authorized_scope": {
+      "items": {
+        "$ref": "#/$defs/Interval"
+      },
+      "title": "Authorized Scope",
+      "type": "array"
+    },
+    "difficulty": {
+      "enum": [
+        "foundational",
+        "compositional",
+        "complex"
+      ],
+      "title": "Difficulty",
+      "type": "string"
+    },
+    "question_class": {
+      "$ref": "#/$defs/QuestionClass"
+    },
+    "question_id": {
+      "title": "Question Id",
+      "type": "string"
+    },
+    "requested_status": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AnswerStatus"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "text": {
+      "title": "Text",
+      "type": "string"
+    }
+  },
+  "required": [
+    "question_id",
+    "scenario_id",
+    "snapshot_id",
+    "text",
+    "question_class",
+    "difficulty",
+    "authorized_scope"
+  ],
+  "title": "Question",
+  "type": "object"
+}

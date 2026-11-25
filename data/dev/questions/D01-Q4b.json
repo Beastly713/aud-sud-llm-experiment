@@ -1,0 +1,15 @@
+{
+  "authorized_scope": [
+    {
+      "end": "2026-01-01T09:30:00Z",
+      "start": "2026-01-01T09:00:00Z"
+    }
+  ],
+  "difficulty": "compositional",
+  "question_class": "Q4",
+  "question_id": "D01-Q4b",
+  "requested_status": null,
+  "scenario_id": "D01",
+  "snapshot_id": "D01-v1",
+  "text": "Which source-supported clinical medication action and symptom-onset evidence can be stated for this review, and what remains uncertain?"
+}

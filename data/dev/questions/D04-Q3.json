@@ -1,0 +1,19 @@
+{
+  "authorized_scope": [
+    {
+      "end": "2026-01-04T10:00:00Z",
+      "start": "2026-01-04T09:00:00Z"
+    },
+    {
+      "end": "2026-01-03T09:30:00Z",
+      "start": "2026-01-03T09:00:00Z"
+    }
+  ],
+  "difficulty": "complex",
+  "question_class": "Q3",
+  "question_id": "D04-Q3",
+  "requested_status": null,
+  "scenario_id": "D04",
+  "snapshot_id": "D04-v1",
+  "text": "Using the configured E1 rule, how many elevated heart-rate groups were identified, what was their qualifying-window coverage versus grouping span, and did the same rule recur earlier?"
+}

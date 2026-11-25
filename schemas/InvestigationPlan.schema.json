@@ -1,0 +1,577 @@
+{
+  "$defs": {
+    "Acceptance": {
+      "enum": [
+        "accepted",
+        "rejected"
+      ],
+      "title": "Acceptance",
+      "type": "string"
+    },
+    "ActionStatus": {
+      "enum": [
+        "completed",
+        "ordered",
+        "held",
+        "not_done",
+        "reported",
+        "unknown"
+      ],
+      "title": "ActionStatus",
+      "type": "string"
+    },
+    "AssertionStatus": {
+      "enum": [
+        "affirmed",
+        "negated",
+        "uncertain",
+        "historical",
+        "hypothetical"
+      ],
+      "title": "AssertionStatus",
+      "type": "string"
+    },
+    "ClinicalEventArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "action_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ActionStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "anchor_role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Anchor Role"
+        },
+        "assertion": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AssertionStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "concept": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Concept"
+        },
+        "event_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Type"
+        },
+        "evidence_class": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceClass"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "operation": {
+          "default": "select",
+          "enum": [
+            "select",
+            "group_occurrences"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "selection": {
+          "default": "all",
+          "enum": [
+            "all",
+            "unique_supported_or_clarify",
+            "first_supported",
+            "last_supported"
+          ],
+          "title": "Selection",
+          "type": "string"
+        }
+      },
+      "title": "ClinicalEventArgs",
+      "type": "object"
+    },
+    "ClinicalStep": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/ClinicalEventArgs"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "tool": {
+          "const": "query_clinical_events",
+          "default": "query_clinical_events",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "args"
+      ],
+      "title": "ClinicalStep",
+      "type": "object"
+    },
+    "EvidenceClass": {
+      "enum": [
+        "structured_administration",
+        "structured_order",
+        "narrative_report",
+        "assessment",
+        "extracted_candidate"
+      ],
+      "title": "EvidenceClass",
+      "type": "string"
+    },
+    "IntervalArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "end_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Ref"
+        },
+        "episode_rule_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Episode Rule Id"
+        },
+        "interval_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interval Ref"
+        },
+        "observation_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observation Ref"
+        },
+        "operation": {
+          "enum": [
+            "between_event_anchors",
+            "coverage",
+            "summary",
+            "compare_to_named_reference",
+            "episodes",
+            "fixed_interval"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "policy_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Id"
+        },
+        "reference_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Id"
+        },
+        "start_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Ref"
+        },
+        "statistic": {
+          "default": "median",
+          "enum": [
+            "median",
+            "mean",
+            "min",
+            "max",
+            "count"
+          ],
+          "title": "Statistic",
+          "type": "string"
+        },
+        "target_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Ref"
+        },
+        "uncertainty_policy": {
+          "default": "preserve_bounds_or_abstain",
+          "enum": [
+            "preserve_bounds_or_abstain",
+            "bounded_subpart"
+          ],
+          "title": "Uncertainty Policy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation"
+      ],
+      "title": "IntervalArgs",
+      "type": "object"
+    },
+    "IntervalStep": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/IntervalArgs"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "tool": {
+          "const": "analyze_intervals",
+          "default": "analyze_intervals",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "args"
+      ],
+      "title": "IntervalStep",
+      "type": "object"
+    },
+    "MovementStratum": {
+      "enum": [
+        "low",
+        "elevated",
+        "unknown",
+        "ambiguous"
+      ],
+      "title": "MovementStratum",
+      "type": "string"
+    },
+    "ObservationArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "interval_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interval Ref"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "movement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MovementStratum"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "operation": {
+          "default": "select",
+          "enum": [
+            "select",
+            "list_intervals"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "policy_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Id"
+        },
+        "quality": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Acceptance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "accepted"
+        },
+        "reference_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Id"
+        },
+        "require_eligibility": {
+          "default": false,
+          "title": "Require Eligibility",
+          "type": "boolean"
+        },
+        "scope_mode": {
+          "default": "question_scope",
+          "enum": [
+            "question_scope",
+            "all_authorized"
+          ],
+          "title": "Scope Mode",
+          "type": "string"
+        },
+        "window_policy": {
+          "default": "fully_contained",
+          "enum": [
+            "fully_contained",
+            "clip_for_coverage"
+          ],
+          "title": "Window Policy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric",
+        "method"
+      ],
+      "title": "ObservationArgs",
+      "type": "object"
+    },
+    "ObservationStep": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/ObservationArgs"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "tool": {
+          "const": "query_observations",
+          "default": "query_observations",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "args"
+      ],
+      "title": "ObservationStep",
+      "type": "object"
+    },
+    "ResolveArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "operation": {
+          "const": "resolve",
+          "default": "resolve",
+          "title": "Operation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_ids"
+      ],
+      "title": "ResolveArgs",
+      "type": "object"
+    },
+    "ResolveStep": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/ResolveArgs"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "tool": {
+          "const": "resolve_evidence",
+          "default": "resolve_evidence",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "args"
+      ],
+      "title": "ResolveStep",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "intent": {
+      "title": "Intent",
+      "type": "string"
+    },
+    "output": {
+      "title": "Output",
+      "type": "string"
+    },
+    "participant_scope": {
+      "const": "authorized_context_only",
+      "default": "authorized_context_only",
+      "title": "Participant Scope",
+      "type": "string"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "analyze_intervals": "#/$defs/IntervalStep",
+            "query_clinical_events": "#/$defs/ClinicalStep",
+            "query_observations": "#/$defs/ObservationStep",
+            "resolve_evidence": "#/$defs/ResolveStep"
+          },
+          "propertyName": "tool"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/ClinicalStep"
+          },
+          {
+            "$ref": "#/$defs/ObservationStep"
+          },
+          {
+            "$ref": "#/$defs/IntervalStep"
+          },
+          {
+            "$ref": "#/$defs/ResolveStep"
+          }
+        ]
+      },
+      "title": "Steps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "plan_id",
+    "intent",
+    "steps",
+    "output"
+  ],
+  "title": "InvestigationPlan",
+  "type": "object"
+}

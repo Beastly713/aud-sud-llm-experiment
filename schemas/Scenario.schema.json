@@ -1,0 +1,1110 @@
+{
+  "$defs": {
+    "Acceptance": {
+      "enum": [
+        "accepted",
+        "rejected"
+      ],
+      "title": "Acceptance",
+      "type": "string"
+    },
+    "ActionStatus": {
+      "enum": [
+        "completed",
+        "ordered",
+        "held",
+        "not_done",
+        "reported",
+        "unknown"
+      ],
+      "title": "ActionStatus",
+      "type": "string"
+    },
+    "AssertionStatus": {
+      "enum": [
+        "affirmed",
+        "negated",
+        "uncertain",
+        "historical",
+        "hypothetical"
+      ],
+      "title": "AssertionStatus",
+      "type": "string"
+    },
+    "ClinicalEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "action_status": {
+          "$ref": "#/$defs/ActionStatus"
+        },
+        "assertion": {
+          "$ref": "#/$defs/AssertionStatus"
+        },
+        "concept": {
+          "title": "Concept",
+          "type": "string"
+        },
+        "contradiction_link": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contradiction Link"
+        },
+        "documented_at": {
+          "format": "date-time",
+          "title": "Documented At",
+          "type": "string"
+        },
+        "event_time": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeBounds"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "event_type": {
+          "title": "Event Type",
+          "type": "string"
+        },
+        "evidence_class": {
+          "$ref": "#/$defs/EvidenceClass"
+        },
+        "experiencer": {
+          "$ref": "#/$defs/Experiencer"
+        },
+        "mention_id": {
+          "title": "Mention Id",
+          "type": "string"
+        },
+        "occurrence_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Occurrence Id"
+        },
+        "occurrence_link_status": {
+          "$ref": "#/$defs/OccurrenceLinkStatus",
+          "default": "none"
+        },
+        "original_text": {
+          "title": "Original Text",
+          "type": "string"
+        },
+        "participant_id": {
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "semantic_support": {
+          "$ref": "#/$defs/ReviewState"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "source_review": {
+          "$ref": "#/$defs/ReviewState"
+        },
+        "structural_review": {
+          "$ref": "#/$defs/ReviewState"
+        }
+      },
+      "required": [
+        "mention_id",
+        "participant_id",
+        "event_type",
+        "concept",
+        "assertion",
+        "experiencer",
+        "evidence_class",
+        "action_status",
+        "documented_at",
+        "semantic_support",
+        "source_review",
+        "structural_review",
+        "original_text"
+      ],
+      "title": "ClinicalEvent",
+      "type": "object"
+    },
+    "ClockStatus": {
+      "enum": [
+        "aligned",
+        "bounded",
+        "unknown"
+      ],
+      "title": "ClockStatus",
+      "type": "string"
+    },
+    "ContextAnnotation": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_support": {
+          "items": {
+            "$ref": "#/$defs/Interval"
+          },
+          "title": "Actual Support",
+          "type": "array"
+        },
+        "ambient_qualifier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ambient Qualifier"
+        },
+        "clock_status": {
+          "$ref": "#/$defs/ClockStatus"
+        },
+        "context_id": {
+          "title": "Context Id",
+          "type": "string"
+        },
+        "imu_summary": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "number"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Imu Summary"
+        },
+        "linked_observation_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Linked Observation Ids",
+          "type": "array"
+        },
+        "movement": {
+          "$ref": "#/$defs/MovementStratum"
+        },
+        "node": {
+          "title": "Node",
+          "type": "string"
+        },
+        "nominal": {
+          "$ref": "#/$defs/Interval"
+        },
+        "participant_id": {
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "context_id",
+        "participant_id",
+        "node",
+        "nominal",
+        "movement",
+        "clock_status"
+      ],
+      "title": "ContextAnnotation",
+      "type": "object"
+    },
+    "EligibilityRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "policy_id": {
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "reference_id": {
+          "title": "Reference Id",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/EligibilityStatus"
+        }
+      },
+      "required": [
+        "observation_id",
+        "reference_id",
+        "policy_id",
+        "revision",
+        "status"
+      ],
+      "title": "EligibilityRecord",
+      "type": "object"
+    },
+    "EligibilityStatus": {
+      "enum": [
+        "eligible",
+        "ineligible",
+        "indeterminate"
+      ],
+      "title": "EligibilityStatus",
+      "type": "string"
+    },
+    "EpisodeRule": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum_gap_seconds": {
+          "title": "Maximum Gap Seconds",
+          "type": "integer"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "minimum_grouping_seconds": {
+          "title": "Minimum Grouping Seconds",
+          "type": "integer"
+        },
+        "policy_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Id"
+        },
+        "reference_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Id"
+        },
+        "required_acceptance": {
+          "$ref": "#/$defs/Acceptance",
+          "default": "accepted"
+        },
+        "required_movement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MovementStratum"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "threshold": {
+          "title": "Threshold",
+          "type": "number"
+        },
+        "threshold_operator": {
+          "enum": [
+            ">=",
+            ">",
+            "<=",
+            "<"
+          ],
+          "title": "Threshold Operator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "metric",
+        "method",
+        "threshold_operator",
+        "threshold",
+        "minimum_grouping_seconds",
+        "maximum_gap_seconds"
+      ],
+      "title": "EpisodeRule",
+      "type": "object"
+    },
+    "EvidenceClass": {
+      "enum": [
+        "structured_administration",
+        "structured_order",
+        "narrative_report",
+        "assessment",
+        "extracted_candidate"
+      ],
+      "title": "EvidenceClass",
+      "type": "string"
+    },
+    "EvidenceSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "authorized_scope": {
+          "items": {
+            "$ref": "#/$defs/Interval"
+          },
+          "title": "Authorized Scope",
+          "type": "array"
+        },
+        "available_as_of": {
+          "format": "date-time",
+          "title": "Available As Of",
+          "type": "string"
+        },
+        "participant_id": {
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "scenario_id": {
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "source_event_cutoff": {
+          "format": "date-time",
+          "title": "Source Event Cutoff",
+          "type": "string"
+        },
+        "source_inventory": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Inventory",
+          "type": "array"
+        },
+        "timezone": {
+          "title": "Timezone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "participant_id",
+        "snapshot_id",
+        "available_as_of",
+        "source_event_cutoff",
+        "timezone",
+        "authorized_scope",
+        "source_inventory",
+        "revision"
+      ],
+      "title": "EvidenceSnapshot",
+      "type": "object"
+    },
+    "Experiencer": {
+      "enum": [
+        "patient",
+        "other",
+        "unknown"
+      ],
+      "title": "Experiencer",
+      "type": "string"
+    },
+    "HistoricalReference": {
+      "additionalProperties": false,
+      "properties": {
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "center": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Center"
+        },
+        "comparison_units": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Comparison Units",
+          "type": "array"
+        },
+        "configuration": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Configuration"
+        },
+        "epoch_label": {
+          "title": "Epoch Label",
+          "type": "string"
+        },
+        "event_cutoff": {
+          "format": "date-time",
+          "title": "Event Cutoff",
+          "type": "string"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "policy_id": {
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "reference_id": {
+          "title": "Reference Id",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "site": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Site"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "spread": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Spread"
+        },
+        "status": {
+          "$ref": "#/$defs/ReferenceStatus"
+        },
+        "units": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Units"
+        }
+      },
+      "required": [
+        "reference_id",
+        "policy_id",
+        "metric",
+        "method",
+        "epoch_label",
+        "event_cutoff",
+        "as_of",
+        "status",
+        "revision"
+      ],
+      "title": "HistoricalReference",
+      "type": "object"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "InvestigationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_operations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Operations",
+          "type": "array"
+        },
+        "compatible_nodes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Compatible Nodes",
+          "type": "array"
+        },
+        "denominator_definitions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Denominator Definitions",
+          "type": "object"
+        },
+        "episode_rule_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Episode Rule Ids",
+          "type": "array"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "policy_id": {
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "reference_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reference Ids",
+          "type": "array"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "policy_id",
+        "version",
+        "metric",
+        "method",
+        "compatible_nodes",
+        "allowed_operations",
+        "denominator_definitions"
+      ],
+      "title": "InvestigationPolicy",
+      "type": "object"
+    },
+    "MeasurementValue": {
+      "additionalProperties": false,
+      "properties": {
+        "missingness": {
+          "$ref": "#/$defs/Missingness",
+          "default": "present"
+        },
+        "units": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Units"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "MeasurementValue",
+      "type": "object"
+    },
+    "Missingness": {
+      "enum": [
+        "present",
+        "absent",
+        "unknown",
+        "unavailable",
+        "inapplicable"
+      ],
+      "title": "Missingness",
+      "type": "string"
+    },
+    "MovementStratum": {
+      "enum": [
+        "low",
+        "elevated",
+        "unknown",
+        "ambiguous"
+      ],
+      "title": "MovementStratum",
+      "type": "string"
+    },
+    "Observation": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance": {
+          "$ref": "#/$defs/Acceptance"
+        },
+        "acceptance_reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Acceptance Reasons",
+          "type": "array"
+        },
+        "actual_support": {
+          "items": {
+            "$ref": "#/$defs/Interval"
+          },
+          "title": "Actual Support",
+          "type": "array"
+        },
+        "configuration": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Configuration"
+        },
+        "context_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Context Ids",
+          "type": "array"
+        },
+        "feature_version": {
+          "title": "Feature Version",
+          "type": "string"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "node": {
+          "title": "Node",
+          "type": "string"
+        },
+        "nominal": {
+          "$ref": "#/$defs/Interval"
+        },
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "participant_id": {
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "site": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Site"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "support_denominator_seconds": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Support Denominator Seconds"
+        },
+        "support_fraction": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Support Fraction"
+        },
+        "support_kind": {
+          "$ref": "#/$defs/SupportKind"
+        },
+        "timing_quality": {
+          "title": "Timing Quality",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/MeasurementValue"
+        }
+      },
+      "required": [
+        "observation_id",
+        "participant_id",
+        "metric",
+        "method",
+        "node",
+        "value",
+        "nominal",
+        "acceptance",
+        "support_kind",
+        "timing_quality",
+        "feature_version"
+      ],
+      "title": "Observation",
+      "type": "object"
+    },
+    "OccurrenceLinkStatus": {
+      "enum": [
+        "linked",
+        "unresolved",
+        "contradicted",
+        "none"
+      ],
+      "title": "OccurrenceLinkStatus",
+      "type": "string"
+    },
+    "ReferenceStatus": {
+      "enum": [
+        "unavailable",
+        "provisional",
+        "supported_descriptive"
+      ],
+      "title": "ReferenceStatus",
+      "type": "string"
+    },
+    "ReviewState": {
+      "enum": [
+        "unassessed",
+        "supported",
+        "unsupported",
+        "reviewed"
+      ],
+      "title": "ReviewState",
+      "type": "string"
+    },
+    "SourceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content"
+        },
+        "covered_scope": {
+          "items": {
+            "$ref": "#/$defs/Interval"
+          },
+          "title": "Covered Scope",
+          "type": "array"
+        },
+        "locator": {
+          "title": "Locator",
+          "type": "string"
+        },
+        "recording_available": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recording Available"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "source_id": {
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_type": {
+          "title": "Source Type",
+          "type": "string"
+        },
+        "unknown_scope": {
+          "items": {
+            "$ref": "#/$defs/Interval"
+          },
+          "title": "Unknown Scope",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_id",
+        "source_type",
+        "locator",
+        "revision"
+      ],
+      "title": "SourceRecord",
+      "type": "object"
+    },
+    "SupportKind": {
+      "enum": [
+        "intervals",
+        "fraction_only",
+        "unknown"
+      ],
+      "title": "SupportKind",
+      "type": "string"
+    },
+    "TemporalPrecision": {
+      "enum": [
+        "instant",
+        "minute",
+        "interval",
+        "approximate",
+        "unknown"
+      ],
+      "title": "TemporalPrecision",
+      "type": "string"
+    },
+    "TimeBounds": {
+      "additionalProperties": false,
+      "properties": {
+        "lower": {
+          "format": "date-time",
+          "title": "Lower",
+          "type": "string"
+        },
+        "precision": {
+          "$ref": "#/$defs/TemporalPrecision"
+        },
+        "upper": {
+          "format": "date-time",
+          "title": "Upper",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lower",
+        "upper",
+        "precision"
+      ],
+      "title": "TimeBounds",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "clinical_events": {
+      "items": {
+        "$ref": "#/$defs/ClinicalEvent"
+      },
+      "title": "Clinical Events",
+      "type": "array"
+    },
+    "contexts": {
+      "items": {
+        "$ref": "#/$defs/ContextAnnotation"
+      },
+      "title": "Contexts",
+      "type": "array"
+    },
+    "eligibility": {
+      "items": {
+        "$ref": "#/$defs/EligibilityRecord"
+      },
+      "title": "Eligibility",
+      "type": "array"
+    },
+    "episode_rules": {
+      "items": {
+        "$ref": "#/$defs/EpisodeRule"
+      },
+      "title": "Episode Rules",
+      "type": "array"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/Observation"
+      },
+      "title": "Observations",
+      "type": "array"
+    },
+    "participant_id": {
+      "title": "Participant Id",
+      "type": "string"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/InvestigationPolicy"
+      },
+      "title": "Policies",
+      "type": "array"
+    },
+    "references": {
+      "items": {
+        "$ref": "#/$defs/HistoricalReference"
+      },
+      "title": "References",
+      "type": "array"
+    },
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "snapshot": {
+      "$ref": "#/$defs/EvidenceSnapshot"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/SourceRecord"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "synthetic_disclosure": {
+      "default": "Synthetic engineering fixture; not patient data or clinical ground truth.",
+      "title": "Synthetic Disclosure",
+      "type": "string"
+    }
+  },
+  "required": [
+    "scenario_id",
+    "participant_id",
+    "snapshot",
+    "sources",
+    "observations",
+    "contexts",
+    "references",
+    "eligibility",
+    "clinical_events",
+    "policies",
+    "episode_rules"
+  ],
+  "title": "Scenario",
+  "type": "object"
+}

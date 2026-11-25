@@ -23,3 +23,18 @@ def test_mock_a_c_b_workflows_preserve_structured_answers() -> None:
     assert trace_c["calls"] == 2
     assert "bundle" in trace_b
 
+
+def test_q4_bundle_retains_structured_clinical_evidence() -> None:
+    scenarios = make_scenarios()
+    questions = make_questions(scenarios)
+    plans = make_plans(scenarios, questions)
+    question = next(item for item in questions if item.question_id == "D01-Q4a")
+    answer, trace = run_d2(MockClient(), question, scenarios[0], development_plan=plans[question.question_id])
+    bundle = trace["bundle"]
+    events = {item["mention_id"]: item for item in bundle["clinical_events"]}
+    assert {"D01-C1", "D01-C4"}.issubset(events)
+    assert events["D01-C1"]["action_status"] == "reported"
+    assert events["D01-C4"]["action_status"] == "completed"
+    assert bundle["event_selections"]
+    assert any(finding.claim_kind.value == "event" for finding in answer.findings)
+

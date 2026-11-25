@@ -1,0 +1,15 @@
+{
+  "authorized_scope": [
+    {
+      "end": "2026-01-03T09:00:15Z",
+      "start": "2026-01-03T09:00:00Z"
+    }
+  ],
+  "difficulty": "compositional",
+  "question_class": "Q2",
+  "question_id": "D03-Q2",
+  "requested_status": null,
+  "scenario_id": "D03",
+  "snapshot_id": "D03-v1",
+  "text": "Compared with the named earlier low-chest-motion ECG reference, what was the typical heart rate during the review bout?"
+}
