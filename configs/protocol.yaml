@@ -10,6 +10,7 @@ max_output_tokens_per_call: 4096
 canonical_input_token_cap: 65536
 full_call_token_cap: 98304
 program_stdout_byte_cap: 1048576
+program_stderr_byte_cap: 1048576
 sandbox:
   image: "python:3.12.8-slim@sha256:development-pin-required"
   network: none

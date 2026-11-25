@@ -55,7 +55,14 @@ def build_bundle(
                     )
             for limitation in result.limitations:
                 if limitation:
-                    limitations.append(Limitation(claim=limitation, reason_code="event_selection", source_ids=list(result.source_ids)))
+                    limitations.append(
+                        Limitation(
+                            claim=limitation,
+                            reason_code="event_selection",
+                            source_ids=list(result.source_ids),
+                            selected_ids=list(result.selected_mention_ids or result.candidate_mention_ids),
+                        )
+                    )
         elif isinstance(result, IntervalResult):
             facts.extend(result.facts)
             for limitation in result.limitations:

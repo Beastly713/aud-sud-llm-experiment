@@ -1,4 +1,4 @@
-"""Hosted-model abstraction with explicit live-execution gating and mocks."""
+"""Hosted-model clients, provider-specific structured output and local validation."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import time
 from dataclasses import dataclass
 from typing import Any, Protocol, Type
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from .schema import CommonAnswer, GeneratedProgram, InvestigationPlan, Question
 from .serialization import canonical_json
@@ -25,29 +25,54 @@ class ModelConfig(BaseModel):
     allow_live: bool = False
     api_base: str | None = None
 
+    @field_validator("model_id")
+    @classmethod
+    def nonempty_model(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("AUD_SUD_MODEL_ID is required for live execution")
+        return value
+
+    @field_validator("provider")
+    @classmethod
+    def supported_provider(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if normalized not in {"openai", "gemini"}:
+            raise ValueError("AUD_SUD_PROVIDER must be openai or gemini")
+        return normalized
+
 
 class ModelResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
     value: dict[str, Any]
     raw_text: str
+    raw_response: str | None = None
     provider_response_id: str | None = None
+    model_id: str
     input_tokens: int | None = None
     output_tokens: int | None = None
+    total_tokens: int | None = None
     latency_ms: float
     transport_retries: int = 0
 
 
 class LLMClient(Protocol):
+    model_id: str
+    is_mock: bool
+
     def generate(self, *, purpose: str, question: Question, payload: dict[str, Any], schema: Type[BaseModel]) -> ModelResponse:
         ...
 
 
-def live_execution_authorized(config: ModelConfig, cli_live: bool = False) -> bool:
-    return config.allow_live and cli_live and os.environ.get("AUD_SUD_ALLOW_LIVE_API", "false").lower() == "true"
-
-
 class LiveExecutionDisabled(RuntimeError):
     pass
+
+
+class LiveConfigurationError(RuntimeError):
+    pass
+
+
+def live_execution_authorized(config: ModelConfig, cli_live: bool = False) -> bool:
+    return config.allow_live and cli_live and os.environ.get("AUD_SUD_ALLOW_LIVE_API", "false").lower() == "true"
 
 
 @dataclass
@@ -63,14 +88,22 @@ class SemanticCallBudget:
 
 def is_transient_transport_error(error: Exception) -> bool:
     text = str(error).lower()
-    return isinstance(error, (TimeoutError, ConnectionError)) or any(token in text for token in ("429", "rate limit", "500", "502", "503", "504", "timeout", "temporarily unavailable"))
+    return isinstance(error, (TimeoutError, ConnectionError)) or any(
+        token in text for token in ("429", "rate limit", "500", "502", "503", "504", "timeout", "temporarily unavailable")
+    )
+
+
+def _validate_structured(value: Any, schema: Type[BaseModel]) -> dict[str, Any]:
+    validated = schema.model_validate(value)
+    return validated.model_dump(mode="json")
 
 
 @dataclass
 class MockClient:
-    """Deterministic structured-output mock used by all local workflow tests."""
+    """Deterministic structured-output mock used only by offline tests."""
 
     model_id: str = "mock-development-model"
+    is_mock: bool = True
 
     def generate(self, *, purpose: str, question: Question, payload: dict[str, Any], schema: Type[BaseModel]) -> ModelResponse:
         started = time.perf_counter()
@@ -94,25 +127,116 @@ class MockClient:
             value = payload.get("mock_answer", {"status": "insufficient", "limitations": [{"claim": "mock", "reason_code": "mock"}]})
         else:
             value = payload.get("mock_value", {})
+        value = _validate_structured(value, schema)
         raw = json.dumps(value, sort_keys=True)
-        return ModelResponse(value=value, raw_text=raw, provider_response_id=f"mock-{purpose}-{question.question_id}", input_tokens=len(canonical_json(payload)) // 4, output_tokens=len(raw) // 4, latency_ms=(time.perf_counter() - started) * 1000)
+        return ModelResponse(
+            value=value,
+            raw_text=raw,
+            raw_response=raw,
+            provider_response_id=f"mock-{purpose}-{question.question_id}",
+            model_id=self.model_id,
+            input_tokens=len(canonical_json(payload)) // 4,
+            output_tokens=len(raw) // 4,
+            total_tokens=(len(canonical_json(payload)) + len(raw)) // 4,
+            latency_ms=(time.perf_counter() - started) * 1000,
+        )
+
+
+def _safe_provider_dump(response: Any) -> str | None:
+    """Serialize provider metadata only; credentials are never part of responses."""
+    try:
+        if hasattr(response, "model_dump_json"):
+            return response.model_dump_json()
+        if hasattr(response, "to_json"):
+            return response.to_json()
+    except Exception:
+        return None
+    return None
+
+
+def _gemini_schema(schema: Type[BaseModel]) -> dict[str, Any]:
+    """Convert Pydantic JSON Schema to a conservative Gemini response schema.
+
+    Gemini's response-schema dialect is not treated as a drop-in implementation of
+    JSON Schema. References, discriminators, defaults and multi-branch unions are
+    normalized before the request; the complete Pydantic model still validates the
+    returned JSON locally.
+    """
+    source = schema.model_json_schema()
+    definitions = source.get("$defs", {})
+
+    def convert(node: Any, stack: tuple[str, ...] = ()) -> Any:
+        if isinstance(node, list):
+            return [convert(item, stack) for item in node]
+        if not isinstance(node, dict):
+            return node
+        if "$ref" in node:
+            name = node["$ref"].rsplit("/", 1)[-1]
+            if name in stack:
+                return {"type": "object"}
+            return convert(definitions.get(name, {"type": "object"}), stack + (name,))
+        if "anyOf" in node:
+            branches = [branch for branch in node["anyOf"] if branch != {"type": "null"}]
+            if len(branches) == 1:
+                return convert(branches[0], stack)
+            return {"type": "object"}
+        if "oneOf" in node:
+            branches = [convert(branch, stack) for branch in node["oneOf"]]
+            objects = [branch for branch in branches if isinstance(branch, dict) and branch.get("type") == "object"]
+            if objects:
+                properties: dict[str, Any] = {}
+                for branch in objects:
+                    properties.update(branch.get("properties", {}))
+                return {"type": "object", "properties": properties}
+            return {"type": "object"}
+        output: dict[str, Any] = {}
+        for key, value in node.items():
+            if key in {
+                "$schema", "$defs", "title", "default", "description", "discriminator", "examples",
+                "additionalProperties", "minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum",
+                "minLength", "maxLength", "pattern", "minItems", "maxItems", "uniqueItems",
+                "readOnly", "writeOnly",
+            }:
+                continue
+            if key == "const":
+                output["enum"] = [value]
+                continue
+            output[key] = convert(value, stack)
+        return output
+
+    converted = convert({key: value for key, value in source.items() if key != "$defs"})
+    if not isinstance(converted, dict) or converted.get("type") != "object":
+        raise ValueError(f"Gemini response schema conversion did not produce an object for {schema.__name__}")
+    return converted
 
 
 class HostedModelClient:
-    """Small provider adapter; it cannot issue a request without explicit authorization."""
+    """Provider adapter gated by explicit environment and CLI authorization."""
+
+    is_mock = False
 
     def __init__(self, config: ModelConfig, *, cli_live: bool = False):
         self.config = config
+        self.model_id = config.model_id
         self.cli_live = cli_live
         if not live_execution_authorized(config, cli_live):
             raise LiveExecutionDisabled("live API calls require AUD_SUD_ALLOW_LIVE_API=true and --live")
+        if not os.environ.get("AUD_SUD_API_KEY"):
+            raise LiveConfigurationError("AUD_SUD_API_KEY is required for live execution")
 
     def generate(self, *, purpose: str, question: Question, payload: dict[str, Any], schema: Type[BaseModel]) -> ModelResponse:
+        if self.config.provider == "openai":
+            return self._generate_openai(purpose, question, payload, schema)
+        if self.config.provider == "gemini":
+            return self._generate_gemini(purpose, question, payload, schema)
+        raise LiveConfigurationError(f"unsupported provider: {self.config.provider}")
+
+    def _generate_openai(self, purpose: str, question: Question, payload: dict[str, Any], schema: Type[BaseModel]) -> ModelResponse:
         try:
             from openai import OpenAI
         except ImportError as exc:
-            raise RuntimeError("the optional hosted API SDK is not installed") from exc
-        client = OpenAI(api_key=os.environ.get("AUD_SUD_API_KEY"), base_url=self.config.api_base)
+            raise LiveConfigurationError("openai SDK is not installed") from exc
+        client = OpenAI(api_key=os.environ["AUD_SUD_API_KEY"], base_url=self.config.api_base)
         started = time.perf_counter()
         response = client.responses.parse(
             model=self.config.model_id,
@@ -128,14 +252,67 @@ class HostedModelClient:
         parsed = response.output_parsed
         if parsed is None:
             raise ValueError("provider returned no structured output")
-        value = parsed.model_dump(mode="json") if isinstance(parsed, BaseModel) else parsed
+        value = _validate_structured(parsed.model_dump(mode="json") if isinstance(parsed, BaseModel) else parsed, schema)
         usage = getattr(response, "usage", None)
+        input_tokens = getattr(usage, "input_tokens", None)
+        output_tokens = getattr(usage, "output_tokens", None)
         return ModelResponse(
             value=value,
-            raw_text=json.dumps(value, sort_keys=True),
+            raw_text=getattr(response, "output_text", None) or json.dumps(value, sort_keys=True),
+            raw_response=_safe_provider_dump(response),
             provider_response_id=getattr(response, "id", None),
-            input_tokens=getattr(usage, "input_tokens", None),
-            output_tokens=getattr(usage, "output_tokens", None),
+            model_id=getattr(response, "model", None) or self.config.model_id,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            total_tokens=(input_tokens + output_tokens) if input_tokens is not None and output_tokens is not None else None,
+            latency_ms=(time.perf_counter() - started) * 1000,
+        )
+
+    def _generate_gemini(self, purpose: str, question: Question, payload: dict[str, Any], schema: Type[BaseModel]) -> ModelResponse:
+        try:
+            from google import genai
+            from google.genai import types
+        except ImportError as exc:
+            raise LiveConfigurationError("google-genai SDK is not installed") from exc
+        client = genai.Client(api_key=os.environ["AUD_SUD_API_KEY"])
+        started = time.perf_counter()
+        config_kwargs: dict[str, Any] = {
+            "response_mime_type": "application/json",
+            "response_schema": _gemini_schema(schema),
+            "max_output_tokens": self.config.max_output_tokens,
+        }
+        if self.config.temperature is not None:
+            config_kwargs["temperature"] = self.config.temperature
+        if self.config.top_p is not None:
+            config_kwargs["top_p"] = self.config.top_p
+        config = types.GenerateContentConfig(
+            **config_kwargs,
+        )
+        response = client.models.generate_content(
+            model=self.config.model_id,
+            contents=json.dumps(payload, sort_keys=True),
+            config=config,
+        )
+        raw_text = getattr(response, "text", None)
+        if not raw_text:
+            raise ValueError("Gemini returned no structured JSON text")
+        try:
+            value = _validate_structured(json.loads(raw_text), schema)
+        except (json.JSONDecodeError, ValueError, TypeError) as exc:
+            raise ValueError(f"Gemini structured output failed local {schema.__name__} validation") from exc
+        usage = getattr(response, "usage_metadata", None)
+        input_tokens = getattr(usage, "prompt_token_count", None)
+        output_tokens = getattr(usage, "candidates_token_count", None)
+        total_tokens = getattr(usage, "total_token_count", None)
+        return ModelResponse(
+            value=value,
+            raw_text=raw_text,
+            raw_response=_safe_provider_dump(response),
+            provider_response_id=getattr(response, "response_id", None) or getattr(response, "id", None),
+            model_id=self.config.model_id,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            total_tokens=total_tokens,
             latency_ms=(time.perf_counter() - started) * 1000,
         )
 
@@ -150,7 +327,11 @@ class RetryingClient:
 
     @property
     def model_id(self) -> str:
-        return getattr(self.underlying, "model_id", "hosted")
+        return self.underlying.model_id
+
+    @property
+    def is_mock(self) -> bool:
+        return self.underlying.is_mock
 
     def generate(self, *, purpose: str, question: Question, payload: dict[str, Any], schema: Type[BaseModel]) -> ModelResponse:
         retries = 0

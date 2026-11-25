@@ -716,6 +716,7 @@ class ExecutionTrace(StrictModel):
     input_tokens: int | None = None
     output_tokens: int | None = None
     latency_ms: float | None = None
+    model_calls: list[dict[str, object]] = Field(default_factory=list)
 
 
 class HumanAnnotation(StrictModel):

@@ -11,10 +11,28 @@ python3 -m src.devdata_export
 python3 -m src.schema_export
 python3 -m evaluation.gold_validate --split dev
 python3 -m pytest tests/unit tests/security tests/dev
-python3 -m src.runner --split dev --arms A,C,B --mock
+python3 -m src.runner --split dev --arms A,C,B --mock --run development-mock
+python3 -m src.runner --split dev --arms A,C,B --mock --questions D01-Q1,D02-Q4a,D03-Q2 --run development-smoke-mock
 ```
 
-The dependency versions are pinned in `requirements.lock`. Installation, API credentials and Docker daemon setup are operator responsibilities. Live execution requires both `AUD_SUD_ALLOW_LIVE_API=true` and the explicit `--live` flag; the development runner uses mocked model responses.
+The dependency versions are specified in `requirements.lock`. Installation, API credentials and Docker daemon setup are operator responsibilities. Live execution requires both `AUD_SUD_ALLOW_LIVE_API=true` and the explicit `--live` flag. Live B generates its own typed plan and composition; live C uses the configured Docker sandbox. Mock runs and live runs must use different `--run` identifiers.
+
+After manually installing dependencies, selecting an available provider/model, setting
+an API key and replacing the sandbox placeholder with an approved pinned digest, an
+operator may run the development smoke test with:
+
+```bash
+export AUD_SUD_ALLOW_LIVE_API=true
+export AUD_SUD_PROVIDER=gemini
+export AUD_SUD_MODEL_ID='<operator-selected-model-id>'
+export AUD_SUD_API_KEY='<operator-supplied-secret>'
+export AUD_SUD_SANDBOX_IMAGE='<approved-image-reference-with-64-hex-digest>'
+python3 -m src.runner --split dev --arms A,C,B --live --questions D01-Q1,D02-Q4a,D03-Q2 --run development-live-smoke
+```
+
+The live command has not been run in development verification. It reports attempted,
+successful and failed workflows and writes raw/delivered answers, model-call usage,
+traces and a resumable execution manifest under `runs/<run-id>/`.
 
 Materialization writes the canonical D01–D05 fixtures, 25 questions, provisional gold
 and manual-plan manifest under the development directories. It does not create any

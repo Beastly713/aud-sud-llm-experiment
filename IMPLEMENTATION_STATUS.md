@@ -20,6 +20,23 @@ Date: 2026-11-25
 - Regenerated materialized development plans, gold, schemas and artifact-hash
   manifest; human-review fields remain pending.
 
+## Live execution-path implementation
+
+- Added strict live/mock execution contexts. Live B receives no authored development
+  plan, and live C receives `DockerSandbox`; mock test doubles are confined to the
+  offline path. Run manifests reject mode, model or schedule reuse.
+- Added `--questions` selection for one or comma-separated development IDs, per-call
+  raw provider records and token/retry traces, and attempted/successful/failed
+  workflow summaries.
+- Added Gemini support through `google-genai` with a provider-specific conservative
+  response-schema conversion and local Pydantic validation for all structured outputs.
+- Added frozen common prompt/definition loading to A, B and C and actual D2 argument
+  schemas/manifests to B. Docker execution now validates a 64-hex digest, runs
+  offline/non-root/read-only with resource/output limits, and cleans up timeouts.
+- Added live-routing regression tests and retained clinical selection details in the
+  D2 composition bundle. No development dataset or authoritative document was
+  changed in this pass.
+
 ## Implemented
 
 - Versioned Pydantic v2 contracts for the shared evidence, clinical event, reference,
@@ -47,26 +64,29 @@ Date: 2026-11-25
 
 - `python3 -m compileall -q src evaluation tests` — passed.
 - `python3 -m py_compile $(rg --files src evaluation tests -g '*.py')` — passed.
+- `git diff --check` — passed.
 - JSON parsing and artifact checks for all materialized fixtures, questions, plans,
   gold, schemas and manifests — passed.
 - Regenerated-artifact checks confirmed 25 gold records, exact Q1 coverage plans,
   pending review status and corrected answerability statuses — passed.
-- Focused regression files added but not executed because the runtime dependencies
-  below are unavailable.
+- `./.venv/bin/python -m pytest` — passed: 26 tests, including live-routing,
+  pinned-image, workflow, oracle and D2 semantic regressions.
+- `./.venv/bin/python -m src.runner --split dev --arms A,C,B --mock
+  --questions D01-Q1,D02-Q4a,D03-Q2 --run verification-mock-smoke` — passed: 9
+  attempted, 9 successful, 0 failed; raw/delivered/traces/usage records present.
+- The live gate was exercised without credentials; it failed before any provider
+  request because `AUD_SUD_ALLOW_LIVE_API` was not enabled.
 - Static checks confirmed no D2 import in `evaluation/gold_oracle.py`, no material
   files in `data/test/` or `gold/test/`, and no trailing-whitespace findings.
 
 ## Blocked checks
 
-- `python3 -m evaluation.gold_validate --split dev` — blocked: `pydantic` is not
-  installed in the workspace.
-- `python3 -m pytest tests/unit tests/security tests/dev` — blocked: `pytest` is not
-  installed.
-- Mocked workflow execution and all runtime tests therefore remain unexecuted; they
-  are not reported as passed. Materialized JSON fixtures, gold and schemas are now
-  present and statically validated.
-- Docker runtime validation is not executed: the daemon is unavailable and the
-  approved pinned Python image digest still requires operator configuration.
+- The base `python3` environment still lacks project runtime packages; the repository
+  `.venv` supplied the verified execution environment used above.
+- `google-genai` is specified but not installed, so an offline Gemini adapter transport
+  check remains pending the operator dependency installation.
+- Docker client is present but the daemon socket is not accessible; the configured
+  sandbox image is still the intentional placeholder and fails digest validation.
 - No API credentials, provider/model selection, live requests or human review were
   performed.
 
@@ -80,15 +100,23 @@ must be described as phrasing/face-validity review rather than clinical ground t
 ## Next commands after environment setup
 
 ```bash
-python3 -m src.devdata_export
-python3 -m src.schema_export
-python3 -m evaluation.gold_validate --split dev
-python3 -m pytest tests/unit tests/security tests/dev
-python3 -m src.runner --split dev --arms A,C,B --mock --run development
+./.venv/bin/python -m src.devdata_export
+./.venv/bin/python -m src.schema_export
+./.venv/bin/python -m evaluation.gold_validate --split dev
+./.venv/bin/python -m pytest tests/unit tests/security tests/dev
+./.venv/bin/python -m src.runner --split dev --arms A,C,B --mock --questions D01-Q1,D02-Q4a,D03-Q2 --run development-smoke-mock
 ```
 
-Replace the sandbox image placeholder in `configs/protocol.yaml` with the approved
-pinned image before any System C container run. Do not use `--live` until a model ID,
-provider settings, credentials, quota and explicit execution authorization have been
-reviewed separately.
+After installing `google-genai`, selecting a provider/model, supplying the API key,
+and configuring an approved sandbox digest, the operator smoke command is:
+
+```bash
+AUD_SUD_ALLOW_LIVE_API=true AUD_SUD_PROVIDER=gemini AUD_SUD_MODEL_ID='<operator-selected-model-id>' AUD_SUD_API_KEY='<operator-supplied-secret>' AUD_SUD_SANDBOX_IMAGE='<approved-image-reference-with-64-hex-digest>' ./.venv/bin/python -m src.runner --split dev --arms A,C,B --live --questions D01-Q1,D02-Q4a,D03-Q2 --run development-live-smoke
+```
+
+Replace the sandbox image placeholder in `configs/protocol.yaml` or set
+`AUD_SUD_SANDBOX_IMAGE` to the approved pinned image before any System C container
+run. Do not use `--live` until a model ID, provider settings, credentials, quota and
+explicit execution authorization have been reviewed separately. The exact live
+three-arm smoke command is in `README.md`.
 
