@@ -1,0 +1,8 @@
+{
+  "split": "dev",
+  "scenario_ids": ["D01", "D02", "D03", "D04", "D05"],
+  "question_count": 25,
+  "gold_review_status": "pending_human_review",
+  "held_out_scenarios_present": false,
+  "source": "src.devdata"
+}

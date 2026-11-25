@@ -1,0 +1,27 @@
+{
+  "version": "definitions.v1",
+  "interval_convention": "[start,end)",
+  "time_basis": "UTC with original timezone retained",
+  "methods": {
+    "heart_rate": ["chest_ecg"],
+    "pulse_rate": ["wrist_ppg"],
+    "ac_conductance": ["ac_conductance_100hz"],
+    "skin_temperature": ["skin_temperature"]
+  },
+  "support_kinds": ["intervals", "fraction_only", "unknown"],
+  "movement_strata": ["low", "elevated", "unknown", "ambiguous"],
+  "reference_statuses": ["unavailable", "provisional", "supported_descriptive"],
+  "operations": {
+    "coverage": "Union eligible nominal feature windows; separately union known actual support.",
+    "summary": "Median of accepted method-compatible feature values unless a statistic is explicitly requested.",
+    "episode": "Configured threshold, minimum grouping span and maximum gap; qualifying coverage and grouping span remain distinct.",
+    "comparison": "Median eligible target value minus the named immutable reference center.",
+    "anchors": "Only source-valid, semantically supported events with the requested action/assertion/evidence state."
+  },
+  "forbidden_inferences": [
+    "diagnosis",
+    "treatment_effect",
+    "normality",
+    "continuous_physiology_from_feature_windows"
+  ]
+}

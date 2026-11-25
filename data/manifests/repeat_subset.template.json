@@ -1,0 +1,8 @@
+{
+  "split": "test",
+  "status": "not_constructed",
+  "required_question_count": 24,
+  "selection_seed": 20261125,
+  "selection_rule": "one question per held-out scenario, class/status/difficulty coverage before freeze",
+  "question_ids": []
+}

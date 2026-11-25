@@ -1,0 +1,10 @@
+# Generated dependency specification for the development environment.
+# Installation is intentionally not performed by the development agent.
+pydantic==2.10.6
+numpy==2.2.3
+matplotlib==3.10.0
+pytest==8.3.4
+openai==1.61.1
+PyYAML==6.0.2
+ruff==0.9.7
+
