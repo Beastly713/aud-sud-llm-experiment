@@ -1,5 +1,5 @@
 {
-  "version": "definitions.v1",
+  "version": "definitions.v1.2",
   "interval_convention": "[start,end)",
   "time_basis": "UTC with original timezone retained",
   "methods": {
@@ -10,12 +10,16 @@
   },
   "support_kinds": ["intervals", "fraction_only", "unknown"],
   "movement_strata": ["low", "elevated", "unknown", "ambiguous"],
-  "reference_statuses": ["unavailable", "provisional", "supported_descriptive"],
+  "reference_statuses": ["unavailable", "supported_assessment", "provisional", "supported_descriptive"],
+  "comparison_types": ["matched_assessment", "passive_descriptive"],
+  "assessment_states": ["supported", "insufficient", "unknown", "interrupted"],
+  "assessment_membership": ["established", "not_established", "unknown"],
+  "source_availability": ["available", "candidate", "unknown", "unavailable", "invalidated"],
   "operations": {
     "coverage": "Union eligible nominal feature windows; separately union known actual support.",
     "summary": "Median of accepted method-compatible feature values unless a statistic is explicitly requested.",
     "episode": "Configured threshold, minimum grouping span and maximum gap; qualifying coverage and grouping span remain distinct.",
-    "comparison": "Median eligible target value minus the named immutable reference center.",
+    "comparison": "For matched assessments, require documented compatible procedure, condition, adherence, membership and accepted support; for passive descriptive comparisons, use compatible accepted target values without promoting them to matched assessments. Median target value minus the named immutable reference center.",
     "anchors": "Only source-valid, semantically supported events with the requested action/assertion/evidence state."
   },
   "forbidden_inferences": [

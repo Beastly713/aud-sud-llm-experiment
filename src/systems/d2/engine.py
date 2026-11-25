@@ -9,6 +9,7 @@ from typing import Iterable
 from ...evidence_store import EvidenceStore
 from ...schema import (
     Acceptance,
+    ComparisonType,
     AnswerStatus,
     ClinicalEventArgs,
     EventSelectionResult,
@@ -18,6 +19,7 @@ from ...schema import (
     Finding,
     FractionValue,
     HistoricalReference,
+    EligibilityStatus,
     InvestigationPlan,
     Interval,
     IntervalArgs,
@@ -26,6 +28,7 @@ from ...schema import (
     ObservationArgs,
     ObservationSelectionResult,
     Question,
+    ReferenceStatus,
     ResolvedSource,
     TimeRangeValue,
 )
@@ -253,47 +256,147 @@ class D2Engine:
             if selection.window_policy == "clip_for_coverage":
                 return IntervalResult(
                     operation=args.operation,
+                    comparison_type=args.comparison_type or selection.comparison_type,
                     limitations=["feature-window coverage selection cannot be reused for a named numeric comparison"],
                     dependency_ids=[args.target_ref or ""],
                 )
+            comparison_type = args.comparison_type or selection.comparison_type
+            if comparison_type is None:
+                raise ValueError("named comparison requires an explicit comparison type")
+            if selection.comparison_type is not None and selection.comparison_type != comparison_type:
+                raise ValueError("comparison type does not match the observation selection")
             reference_id = args.reference_id or selection.reference_id
             if not reference_id:
                 raise ValueError("named comparison requires an explicit reference")
             reference = self.store.reference(reference_id)
-            selected_metric = first_metric(rows) or selection.metric or ""
-            selected_method = first_method(rows) or selection.method or ""
-            if reference.metric != selected_metric or reference.method != selected_method:
+            policy_id = args.policy_id or selection.policy_id
+            if not policy_id:
+                raise ValueError("named comparison requires an explicit policy")
+            policy = next((item for item in self.store.scenario.policies if item.policy_id == policy_id), None)
+            if policy is None or reference_id not in policy.reference_ids or reference.policy_id != policy_id:
                 return IntervalResult(
                     operation=args.operation,
+                    comparison_type=comparison_type,
+                    eligibility_status=EligibilityStatus.INDETERMINATE,
+                    reference_id=reference_id,
+                    policy_id=policy_id,
+                    reference_revision=reference.revision,
+                    selected_ids=[row.observation_id for row in rows],
+                    limitations=["reference and policy binding is incompatible"],
+                    dependency_ids=[args.target_ref or ""],
+                )
+            if args.reference_revision and args.reference_revision != reference.revision:
+                return IntervalResult(
+                    operation=args.operation,
+                    comparison_type=comparison_type,
+                    eligibility_status=EligibilityStatus.INDETERMINATE,
+                    reference_id=reference_id,
+                    policy_id=policy_id,
+                    reference_revision=reference.revision,
+                    selected_ids=[row.observation_id for row in rows],
+                    limitations=[f"requested reference revision {args.reference_revision} is not available in this snapshot"],
+                    dependency_ids=[args.target_ref or ""],
+                )
+            if not rows:
+                limitations = list(selection.limitations)
+                if reference.status == ReferenceStatus.UNAVAILABLE or reference.center is None:
+                    limitations.append(f"reference {reference_id} is unavailable")
+                else:
+                    limitations.append(f"no selected observations support comparison to {reference_id}")
+                return IntervalResult(
+                    operation=args.operation,
+                    comparison_type=comparison_type,
+                    eligibility_status=selection.eligibility_status,
+                    reference_id=reference_id,
+                    policy_id=policy_id,
+                    reference_revision=reference.revision,
+                    limitations=list(dict.fromkeys(limitations)),
+                    dependency_ids=[args.target_ref or ""],
+                )
+            selected_metric = first_metric(rows) or selection.metric or ""
+            selected_method = first_method(rows) or selection.method or ""
+            selected_site = next((row.site for row in rows if row.site), None)
+            selected_configuration = next((row.configuration for row in rows if row.configuration), None)
+            if reference.metric != selected_metric or reference.method != selected_method or (reference.site and reference.site != selected_site) or (reference.configuration and reference.configuration != selected_configuration):
+                return IntervalResult(
+                    operation=args.operation,
+                    comparison_type=comparison_type,
+                    eligibility_status=EligibilityStatus.INELIGIBLE,
+                    reference_id=reference_id,
+                    policy_id=policy_id,
+                    reference_revision=reference.revision,
                     selected_ids=[row.observation_id for row in rows],
                     limitations=[f"reference {reference_id} is incompatible with the selected metric or method"],
                     dependency_ids=[args.target_ref or ""],
                 )
-            if reference.status.value == "unavailable" or reference.center is None:
+            if reference.units and any(row.value.units != reference.units for row in rows):
                 return IntervalResult(
                     operation=args.operation,
+                    comparison_type=comparison_type,
+                    eligibility_status=EligibilityStatus.INELIGIBLE,
+                    reference_id=reference_id,
+                    policy_id=policy_id,
+                    reference_revision=reference.revision,
+                    selected_ids=[row.observation_id for row in rows],
+                    limitations=[f"reference {reference_id} has incompatible units"],
+                    dependency_ids=[args.target_ref or ""],
+                )
+            if reference.status == ReferenceStatus.UNAVAILABLE or reference.center is None:
+                return IntervalResult(
+                    operation=args.operation,
+                    comparison_type=comparison_type,
+                    eligibility_status=EligibilityStatus.INDETERMINATE,
+                    reference_id=reference_id,
+                    policy_id=policy_id,
+                    reference_revision=reference.revision,
                     selected_ids=[row.observation_id for row in rows],
                     limitations=[f"reference {reference_id} is unavailable"],
                     dependency_ids=[args.target_ref or ""],
                 )
-            if not rows:
+            if comparison_type == ComparisonType.MATCHED_ASSESSMENT and reference.status != ReferenceStatus.SUPPORTED_ASSESSMENT:
                 return IntervalResult(
                     operation=args.operation,
-                    limitations=list(dict.fromkeys(selection.limitations + [f"no selected observations support comparison to {reference_id}"])),
+                    comparison_type=comparison_type,
+                    eligibility_status=EligibilityStatus.INELIGIBLE,
+                    reference_id=reference_id,
+                    policy_id=policy_id,
+                    reference_revision=reference.revision,
+                    selected_ids=[row.observation_id for row in rows],
+                    limitations=[f"reference {reference_id} is not documented as a supported assessment reference"],
+                    dependency_ids=[args.target_ref or ""],
+                )
+            if comparison_type == ComparisonType.MATCHED_ASSESSMENT and selection.eligibility_status != EligibilityStatus.ELIGIBLE:
+                return IntervalResult(
+                    operation=args.operation,
+                    comparison_type=comparison_type,
+                    eligibility_status=selection.eligibility_status or EligibilityStatus.INDETERMINATE,
+                    reference_id=reference_id,
+                    policy_id=policy_id,
+                    reference_revision=reference.revision,
+                    selected_ids=[row.observation_id for row in rows],
+                    limitations=["required documented matched-assessment eligibility is not established"],
                     dependency_ids=[args.target_ref or ""],
                 )
             target = numeric_summary(rows, "median")
             if target is None:
                 return IntervalResult(
                     operation=args.operation,
+                    comparison_type=comparison_type,
+                    eligibility_status=selection.eligibility_status,
+                    reference_id=reference_id,
+                    policy_id=policy_id,
+                    reference_revision=reference.revision,
                     selected_ids=[],
                     limitations=["no eligible numeric observations support the comparison"],
                     dependency_ids=[args.target_ref or ""],
                 )
             first = rows[0]
             value = target - reference.center
+            assessment_ids = {row.assessment_id for row in rows if row.assessment_id}
             finding = Finding(
-                claim=f"median {first.metric} difference from named reference {reference_id}",
+                claim=(f"median {first.metric} difference from matched assessment reference {reference_id}"
+                       if comparison_type == ComparisonType.MATCHED_ASSESSMENT
+                       else f"median {first.metric} passive descriptive difference from assessment reference {reference_id}"),
                 claim_kind="comparison",
                 metric=first.metric,
                 method=first.method,
@@ -301,21 +404,26 @@ class D2Engine:
                 value=NumericValue(value=value, unit=first.value.units or ""),
                 interval=selection.scope,
                 reference_id=reference_id,
-                policy_id=args.policy_id or selection.policy_id,
+                policy_id=policy_id,
                 source_ids=sorted({source for row in rows for source in row.source_ids} | set(reference.source_ids)),
                 selected_ids=[row.observation_id for row in rows],
+                comparison_type=comparison_type,
+                eligibility_status=selection.eligibility_status,
+                assessment_id=next(iter(assessment_ids)) if len(assessment_ids) == 1 else None,
+                reference_revision=reference.revision,
             )
             return IntervalResult(
                 operation=args.operation,
                 interval=selection.scope,
                 selected_ids=[row.observation_id for row in rows],
                 facts=[finding],
-                limitations=list(dict.fromkeys(selection.limitations + [
-                    f"reference status is {reference.status.value}; descriptive only"
-                    if reference.status.value == "provisional"
-                    else ""
-                ])),
+                limitations=list(dict.fromkeys(selection.limitations + ([f"reference status is {reference.status.value}; descriptive only"] if reference.status == ReferenceStatus.PROVISIONAL else []))),
                 dependency_ids=[args.target_ref or ""],
+                comparison_type=comparison_type,
+                eligibility_status=selection.eligibility_status,
+                reference_id=reference_id,
+                policy_id=policy_id,
+                reference_revision=reference.revision,
             )
 
         if args.operation == "episodes":

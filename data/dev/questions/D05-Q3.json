@@ -14,6 +14,6 @@
   "question_id": "D05-Q3",
   "requested_status": null,
   "scenario_id": "D05",
-  "snapshot_id": "D05-v1",
+  "snapshot_id": "D05-v2",
   "text": "Using the configured E1 rule, how many elevated heart-rate groups were identified, what was their qualifying-window coverage versus grouping span, and did the same rule recur earlier?"
 }

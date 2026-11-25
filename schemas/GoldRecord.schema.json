@@ -10,6 +10,14 @@
       "title": "AnswerStatus",
       "type": "string"
     },
+    "ComparisonType": {
+      "enum": [
+        "matched_assessment",
+        "passive_descriptive"
+      ],
+      "title": "ComparisonType",
+      "type": "string"
+    },
     "GoldSlot": {
       "additionalProperties": false,
       "properties": {
@@ -24,6 +32,17 @@
           ],
           "default": null,
           "title": "Absolute Tolerance"
+        },
+        "comparison_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComparisonType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "evidence_alternatives": {
           "items": {

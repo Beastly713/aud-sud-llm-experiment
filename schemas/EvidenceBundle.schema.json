@@ -33,6 +33,141 @@
       "title": "AssertionStatus",
       "type": "string"
     },
+    "AssessmentAdequacy": {
+      "enum": [
+        "adequate",
+        "inadequate",
+        "unknown",
+        "unavailable"
+      ],
+      "title": "AssessmentAdequacy",
+      "type": "string"
+    },
+    "AssessmentAdherence": {
+      "enum": [
+        "supported",
+        "insufficient",
+        "unknown",
+        "interrupted"
+      ],
+      "title": "AssessmentAdherence",
+      "type": "string"
+    },
+    "AssessmentEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_observation_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Accepted Observation Ids",
+          "type": "array"
+        },
+        "actual_support": {
+          "items": {
+            "$ref": "#/$defs/Interval"
+          },
+          "title": "Actual Support",
+          "type": "array"
+        },
+        "adequacy": {
+          "$ref": "#/$defs/AssessmentAdequacy"
+        },
+        "adherence": {
+          "$ref": "#/$defs/AssessmentAdherence"
+        },
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "assessment_id": {
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "condition": {
+          "title": "Condition",
+          "type": "string"
+        },
+        "event_cutoff": {
+          "format": "date-time",
+          "title": "Event Cutoff",
+          "type": "string"
+        },
+        "interruption": {
+          "$ref": "#/$defs/Missingness",
+          "default": "inapplicable"
+        },
+        "interval": {
+          "$ref": "#/$defs/Interval"
+        },
+        "membership": {
+          "$ref": "#/$defs/AssessmentMembership"
+        },
+        "observation_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Observation Ids",
+          "type": "array"
+        },
+        "participant_id": {
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "protocol_id": {
+          "title": "Protocol Id",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "support_seconds": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Support Seconds"
+        }
+      },
+      "required": [
+        "assessment_id",
+        "participant_id",
+        "protocol_id",
+        "condition",
+        "interval",
+        "adherence",
+        "adequacy",
+        "membership",
+        "event_cutoff",
+        "as_of",
+        "revision"
+      ],
+      "title": "AssessmentEvidence",
+      "type": "object"
+    },
+    "AssessmentMembership": {
+      "enum": [
+        "established",
+        "not_established",
+        "unknown"
+      ],
+      "title": "AssessmentMembership",
+      "type": "string"
+    },
     "CategoricalValue": {
       "additionalProperties": false,
       "properties": {
@@ -180,6 +315,14 @@
       "title": "ClinicalEvent",
       "type": "object"
     },
+    "ComparisonType": {
+      "enum": [
+        "matched_assessment",
+        "passive_descriptive"
+      ],
+      "title": "ComparisonType",
+      "type": "string"
+    },
     "CoverageType": {
       "enum": [
         "nominal_feature_window",
@@ -209,6 +352,15 @@
       ],
       "title": "DurationValue",
       "type": "object"
+    },
+    "EligibilityStatus": {
+      "enum": [
+        "eligible",
+        "ineligible",
+        "indeterminate"
+      ],
+      "title": "EligibilityStatus",
+      "type": "string"
     },
     "EventSelectionResult": {
       "additionalProperties": false,
@@ -323,6 +475,18 @@
           ],
           "default": null
         },
+        "assessment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assessment Id"
+        },
         "claim": {
           "title": "Claim",
           "type": "string"
@@ -330,6 +494,17 @@
         "claim_kind": {
           "$ref": "#/$defs/ClaimKind",
           "default": "other"
+        },
+        "comparison_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComparisonType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "coverage_type": {
           "anyOf": [
@@ -354,6 +529,17 @@
           "default": null,
           "title": "Denominator Seconds"
         },
+        "eligibility_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EligibilityStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "episode_rule_id": {
           "anyOf": [
             {
@@ -366,6 +552,17 @@
           "default": null,
           "title": "Episode Rule Id"
         },
+        "evidence_class": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceClass"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "interval": {
           "anyOf": [
             {
@@ -376,6 +573,18 @@
             }
           ],
           "default": null
+        },
+        "mention_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mention Id"
         },
         "method": {
           "anyOf": [
@@ -437,6 +646,18 @@
           "default": null,
           "title": "Reference Id"
         },
+        "reference_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Revision"
+        },
         "requested_statistic": {
           "anyOf": [
             {
@@ -474,6 +695,17 @@
           },
           "title": "Source Ids",
           "type": "array"
+        },
+        "temporal_precision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TemporalPrecision"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "value": {
           "anyOf": [
@@ -645,6 +877,17 @@
       "title": "ListValue",
       "type": "object"
     },
+    "Missingness": {
+      "enum": [
+        "present",
+        "absent",
+        "unknown",
+        "unavailable",
+        "inapplicable"
+      ],
+      "title": "Missingness",
+      "type": "string"
+    },
     "NumericValue": {
       "additionalProperties": false,
       "properties": {
@@ -760,11 +1003,25 @@
   },
   "additionalProperties": false,
   "properties": {
+    "assessments": {
+      "items": {
+        "$ref": "#/$defs/AssessmentEvidence"
+      },
+      "title": "Assessments",
+      "type": "array"
+    },
     "clinical_events": {
       "items": {
         "$ref": "#/$defs/ClinicalEvent"
       },
       "title": "Clinical Events",
+      "type": "array"
+    },
+    "comparison_types": {
+      "items": {
+        "$ref": "#/$defs/ComparisonType"
+      },
+      "title": "Comparison Types",
       "type": "array"
     },
     "computed_facts": {
@@ -790,7 +1047,7 @@
     },
     "internal_fact_ids": {
       "additionalProperties": {
-        "type": "string"
+        "type": "object"
       },
       "title": "Internal Fact Ids",
       "type": "object"
@@ -809,6 +1066,20 @@
     "question_id": {
       "title": "Question Id",
       "type": "string"
+    },
+    "selected_assessment_revisions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Selected Assessment Revisions",
+      "type": "object"
+    },
+    "selected_reference_revisions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Selected Reference Revisions",
+      "type": "object"
     },
     "selected_revisions": {
       "additionalProperties": {

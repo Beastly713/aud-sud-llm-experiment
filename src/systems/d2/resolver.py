@@ -18,7 +18,8 @@ def resolve_evidence(store: EvidenceStore, evidence_ids: list[str]) -> list[Reso
                 locator=source.locator,
                 content=source.content,
                 revision=source.revision,
-                scope_status=scope_status,
+                scope_status=("outside_scope" if source.current_access_status.value in {"unavailable", "invalidated"} else scope_status),
+                availability_status=source.current_access_status,
             )
         )
     return output

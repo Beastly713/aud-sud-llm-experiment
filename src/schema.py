@@ -13,7 +13,7 @@ from typing import Annotated, Literal, Union
 from pydantic import BaseModel, ConfigDict, Field, RootModel, field_validator, model_validator
 
 
-SCHEMA_VERSION = "d2-experiment.schema.v1"
+SCHEMA_VERSION = "d2-experiment.schema.v2"
 
 
 class StrictModel(BaseModel):
@@ -54,8 +54,42 @@ class ClockStatus(str, Enum):
 
 class ReferenceStatus(str, Enum):
     UNAVAILABLE = "unavailable"
+    SUPPORTED_ASSESSMENT = "supported_assessment"
     PROVISIONAL = "provisional"
     SUPPORTED_DESCRIPTIVE = "supported_descriptive"
+
+
+class ComparisonType(str, Enum):
+    MATCHED_ASSESSMENT = "matched_assessment"
+    PASSIVE_DESCRIPTIVE = "passive_descriptive"
+
+
+class AssessmentAdherence(str, Enum):
+    SUPPORTED = "supported"
+    INSUFFICIENT = "insufficient"
+    UNKNOWN = "unknown"
+    INTERRUPTED = "interrupted"
+
+
+class AssessmentAdequacy(str, Enum):
+    ADEQUATE = "adequate"
+    INADEQUATE = "inadequate"
+    UNKNOWN = "unknown"
+    UNAVAILABLE = "unavailable"
+
+
+class AssessmentMembership(str, Enum):
+    ESTABLISHED = "established"
+    NOT_ESTABLISHED = "not_established"
+    UNKNOWN = "unknown"
+
+
+class SourceAvailability(str, Enum):
+    AVAILABLE = "available"
+    CANDIDATE = "candidate"
+    UNKNOWN = "unknown"
+    UNAVAILABLE = "unavailable"
+    INVALIDATED = "invalidated"
 
 
 class EligibilityStatus(str, Enum):
@@ -196,6 +230,12 @@ class SourceRecord(StrictModel):
     covered_scope: list[Interval] = Field(default_factory=list)
     unknown_scope: list[Interval] = Field(default_factory=list)
     recording_available: bool | None = None
+    receipt_status: SourceAvailability = SourceAvailability.UNKNOWN
+    archival_status: SourceAvailability = SourceAvailability.UNKNOWN
+    current_access_status: SourceAvailability = SourceAvailability.UNKNOWN
+    availability_as_of: datetime | None = None
+    invalidated_by_revision: str | None = None
+    supersedes_revision: str | None = None
 
 
 class MeasurementValue(StrictModel):
@@ -230,6 +270,7 @@ class Observation(StrictModel):
     support_denominator_seconds: int | None = None
     timing_quality: str
     context_ids: list[str] = Field(default_factory=list)
+    assessment_id: str | None = None
     source_ids: list[str] = Field(default_factory=list)
     feature_version: str
 
@@ -262,6 +303,38 @@ class ContextAnnotation(StrictModel):
     ambient_qualifier: str | None = None
 
 
+class AssessmentEvidence(StrictModel):
+    assessment_id: str
+    participant_id: str
+    protocol_id: str
+    condition: str
+    interval: Interval
+    adherence: AssessmentAdherence
+    interruption: Missingness = Missingness.INAPPLICABLE
+    adequacy: AssessmentAdequacy
+    membership: AssessmentMembership
+    observation_ids: list[str] = Field(default_factory=list)
+    accepted_observation_ids: list[str] = Field(default_factory=list)
+    actual_support: list[Interval] = Field(default_factory=list)
+    support_seconds: int | None = None
+    source_ids: list[str] = Field(default_factory=list)
+    event_cutoff: datetime
+    as_of: datetime
+    revision: str
+
+    @model_validator(mode="after")
+    def validate_assessment(self) -> "AssessmentEvidence":
+        if self.event_cutoff.tzinfo is None or self.as_of.tzinfo is None:
+            raise ValueError("assessment cutoffs must be timezone-aware")
+        if not set(self.accepted_observation_ids).issubset(self.observation_ids):
+            raise ValueError("accepted assessment observations must be assessment members")
+        if self.support_seconds is not None and self.support_seconds < 0:
+            raise ValueError("assessment support cannot be negative")
+        if self.adherence in {AssessmentAdherence.INSUFFICIENT, AssessmentAdherence.INTERRUPTED} and self.membership == AssessmentMembership.ESTABLISHED:
+            raise ValueError("insufficient or interrupted assessments cannot have established matched membership")
+        return self
+
+
 class HistoricalReference(StrictModel):
     reference_id: str
     policy_id: str
@@ -269,6 +342,14 @@ class HistoricalReference(StrictModel):
     method: str
     site: str | None = None
     configuration: str | None = None
+    assessment_id: str | None = None
+    protocol_id: str | None = None
+    condition: str | None = None
+    assessment_interval: Interval | None = None
+    adherence: AssessmentAdherence | None = None
+    adequacy: AssessmentAdequacy | None = None
+    accepted_observation_ids: list[str] = Field(default_factory=list)
+    support_seconds: int | None = None
     epoch_label: str
     event_cutoff: datetime
     as_of: datetime
@@ -288,6 +369,11 @@ class HistoricalReference(StrictModel):
             raise ValueError("available reference needs a center")
         if self.event_cutoff.tzinfo is None or self.as_of.tzinfo is None:
             raise ValueError("reference cutoffs must be timezone-aware")
+        if self.status != ReferenceStatus.UNAVAILABLE:
+            if not self.assessment_id or not self.protocol_id or not self.condition or self.assessment_interval is None:
+                raise ValueError("available personal references require documented assessment linkage")
+            if self.adherence is None or self.adequacy is None:
+                raise ValueError("available personal references require adherence and adequacy state")
         return self
 
 
@@ -296,6 +382,8 @@ class EligibilityRecord(StrictModel):
     reference_id: str
     policy_id: str
     revision: str
+    comparison_type: ComparisonType = ComparisonType.MATCHED_ASSESSMENT
+    target_assessment_id: str | None = None
     status: EligibilityStatus
     reasons: list[str] = Field(default_factory=list)
 
@@ -345,6 +433,7 @@ class InvestigationPolicy(StrictModel):
     allowed_operations: list[str]
     episode_rule_ids: list[str] = Field(default_factory=list)
     denominator_definitions: dict[str, str]
+    allowed_comparison_types: list[ComparisonType] = Field(default_factory=lambda: [ComparisonType.MATCHED_ASSESSMENT, ComparisonType.PASSIVE_DESCRIPTIVE])
 
 
 class EvidenceSnapshot(StrictModel):
@@ -356,6 +445,7 @@ class EvidenceSnapshot(StrictModel):
     timezone: str
     authorized_scope: list[Interval]
     source_inventory: list[str]
+    source_revisions: dict[str, str] = Field(default_factory=dict)
     revision: str
 
 
@@ -366,6 +456,7 @@ class Scenario(StrictModel):
     sources: list[SourceRecord]
     observations: list[Observation]
     contexts: list[ContextAnnotation]
+    assessments: list[AssessmentEvidence] = Field(default_factory=list)
     references: list[HistoricalReference]
     eligibility: list[EligibilityRecord]
     clinical_events: list[ClinicalEvent]
@@ -381,9 +472,18 @@ class Scenario(StrictModel):
             raise ValueError("observation participant mismatch")
         if any(e.participant_id != self.participant_id for e in self.clinical_events):
             raise ValueError("clinical event participant mismatch")
+        if any(a.participant_id != self.participant_id for a in self.assessments):
+            raise ValueError("assessment participant mismatch")
+        assessment_ids = {a.assessment_id for a in self.assessments}
+        if any(o.assessment_id and o.assessment_id not in assessment_ids for o in self.observations):
+            raise ValueError("observation references an unknown assessment")
+        if any(r.assessment_id and r.assessment_id not in assessment_ids for r in self.references):
+            raise ValueError("reference references an unknown assessment")
         source_ids = {s.source_id for s in self.sources}
         if any(source_id not in source_ids for o in self.observations for source_id in o.source_ids):
             raise ValueError("observation references an unknown source")
+        if any(source_id not in source_ids for a in self.assessments for source_id in a.source_ids):
+            raise ValueError("assessment references an unknown source")
         return self
 
 
@@ -464,9 +564,16 @@ class Finding(StrictModel):
     denominator_seconds: int | None = None
     coverage_type: CoverageType | None = None
     occurrence_id: str | None = None
+    mention_id: str | None = None
+    evidence_class: EvidenceClass | None = None
     action_status: ActionStatus | None = None
     assertion_status: AssertionStatus | None = None
+    temporal_precision: TemporalPrecision | None = None
     episode_rule_id: str | None = None
+    comparison_type: ComparisonType | None = None
+    eligibility_status: EligibilityStatus | None = None
+    assessment_id: str | None = None
+    reference_revision: str | None = None
 
 
 class Limitation(StrictModel):
@@ -505,6 +612,7 @@ class GoldSlot(StrictModel):
     evidence_alternatives: list[list[str]]
     material: bool = True
     absolute_tolerance: float | None = None
+    comparison_type: ComparisonType | None = None
 
 
 class GoldRecord(StrictModel):
@@ -544,6 +652,8 @@ class ObservationArgs(StrictModel):
     movement: MovementStratum | None = None
     reference_id: str | None = None
     policy_id: str | None = None
+    comparison_type: ComparisonType | None = None
+    target_assessment_id: str | None = None
     require_eligibility: bool = False
     scope_mode: Literal["question_scope", "all_authorized"] = "question_scope"
     window_policy: Literal["fully_contained", "clip_for_coverage"] = "fully_contained"
@@ -565,6 +675,8 @@ class IntervalArgs(StrictModel):
     target_ref: str | None = None
     reference_id: str | None = None
     policy_id: str | None = None
+    comparison_type: ComparisonType | None = None
+    reference_revision: str | None = None
     statistic: Literal["median", "mean", "min", "max", "count"] = "median"
     episode_rule_id: str | None = None
     uncertainty_policy: Literal["preserve_bounds_or_abstain", "bounded_subpart"] = "preserve_bounds_or_abstain"
@@ -652,6 +764,10 @@ class ObservationSelectionResult(StrictModel):
     policy_id: str | None = None
     metric: str | None = None
     method: str | None = None
+    comparison_type: ComparisonType | None = None
+    eligibility_status: EligibilityStatus | None = None
+    selected_assessment_ids: list[str] = Field(default_factory=list)
+    reference_revision: str | None = None
     window_policy: Literal["fully_contained", "clip_for_coverage"] = "fully_contained"
     limitations: list[str] = Field(default_factory=list)
 
@@ -665,6 +781,11 @@ class IntervalResult(StrictModel):
     facts: list[Finding] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)
     dependency_ids: list[str] = Field(default_factory=list)
+    comparison_type: ComparisonType | None = None
+    eligibility_status: EligibilityStatus | None = None
+    reference_id: str | None = None
+    policy_id: str | None = None
+    reference_revision: str | None = None
 
 
 class ResolvedSource(StrictModel):
@@ -675,6 +796,7 @@ class ResolvedSource(StrictModel):
     content: str | None
     revision: str
     scope_status: Literal["covered", "unknown", "outside_scope"]
+    availability_status: SourceAvailability = SourceAvailability.UNKNOWN
 
 
 IntermediateResult = Annotated[
@@ -692,7 +814,11 @@ class EvidenceBundle(StrictModel):
     limitations: list[Limitation]
     source_ids: list[str]
     selected_revisions: dict[str, str]
-    internal_fact_ids: dict[str, str] = Field(default_factory=dict)
+    internal_fact_ids: dict[str, dict[str, object]] = Field(default_factory=dict)
+    selected_reference_revisions: dict[str, str] = Field(default_factory=dict)
+    selected_assessment_revisions: dict[str, str] = Field(default_factory=dict)
+    assessments: list[AssessmentEvidence] = Field(default_factory=list)
+    comparison_types: list[ComparisonType] = Field(default_factory=list)
     event_selections: list[EventSelectionResult] = Field(default_factory=list)
     clinical_events: list[ClinicalEvent] = Field(default_factory=list)
 

@@ -1,4 +1,41 @@
 {
+  "assessments": [
+    {
+      "accepted_observation_ids": [
+        "D05-P-H1",
+        "D05-P-H2"
+      ],
+      "actual_support": [
+        {
+          "end": "2026-01-04T09:00:20Z",
+          "start": "2026-01-04T09:00:00Z"
+        }
+      ],
+      "adequacy": "adequate",
+      "adherence": "supported",
+      "as_of": "2026-01-04T11:00:20Z",
+      "assessment_id": "D05-ASSESS-REF",
+      "condition": "documented_seated_assessment",
+      "event_cutoff": "2026-01-04T09:00:20Z",
+      "interruption": "inapplicable",
+      "interval": {
+        "end": "2026-01-04T09:00:20Z",
+        "start": "2026-01-04T09:00:00Z"
+      },
+      "membership": "established",
+      "observation_ids": [
+        "D05-P-H1",
+        "D05-P-H2"
+      ],
+      "participant_id": "D05-P01",
+      "protocol_id": "documented_seated_ecg_hr_v1",
+      "revision": "assessment-d05-assess-ref-r1",
+      "source_ids": [
+        "D05-S-A"
+      ],
+      "support_seconds": 20
+    }
+  ],
   "clinical_events": [
     {
       "action_status": "reported",
@@ -342,108 +379,204 @@
   ],
   "eligibility": [
     {
+      "comparison_type": "matched_assessment",
       "observation_id": "D05-H1",
       "policy_id": "D05-POLICY-NARROW",
-      "reasons": [],
+      "reasons": [
+        "reference unavailable or target membership is not established"
+      ],
       "reference_id": "D05-R1",
       "revision": "ref-r1",
-      "status": "eligible"
+      "status": "indeterminate",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "passive_descriptive",
+      "observation_id": "D05-H1",
+      "policy_id": "D05-POLICY-NARROW",
+      "reasons": [
+        "passive observation; assessment membership is not asserted"
+      ],
+      "reference_id": "D05-R1",
+      "revision": "ref-r1",
+      "status": "eligible",
+      "target_assessment_id": null
+    },
+    {
+      "comparison_type": "passive_descriptive",
       "observation_id": "D05-H1",
       "policy_id": "D05-POLICY-BROAD",
       "reasons": [],
       "reference_id": "D05-R2",
       "revision": "ref-r2",
-      "status": "eligible"
+      "status": "eligible",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "matched_assessment",
       "observation_id": "D05-H2",
       "policy_id": "D05-POLICY-NARROW",
       "reasons": [
-        "motion or unavailable reference"
+        "reference unavailable or target membership is not established"
       ],
       "reference_id": "D05-R1",
       "revision": "ref-r1",
-      "status": "ineligible"
+      "status": "indeterminate",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "passive_descriptive",
+      "observation_id": "D05-H2",
+      "policy_id": "D05-POLICY-NARROW",
+      "reasons": [
+        "passive observation; assessment membership is not asserted"
+      ],
+      "reference_id": "D05-R1",
+      "revision": "ref-r1",
+      "status": "eligible",
+      "target_assessment_id": null
+    },
+    {
+      "comparison_type": "passive_descriptive",
       "observation_id": "D05-H2",
       "policy_id": "D05-POLICY-BROAD",
       "reasons": [],
       "reference_id": "D05-R2",
       "revision": "ref-r2",
-      "status": "eligible"
+      "status": "eligible",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "matched_assessment",
       "observation_id": "D05-H4",
       "policy_id": "D05-POLICY-NARROW",
       "reasons": [
-        "motion or unavailable reference"
+        "reference unavailable or target membership is not established"
       ],
       "reference_id": "D05-R1",
       "revision": "ref-r1",
-      "status": "indeterminate"
+      "status": "indeterminate",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "passive_descriptive",
+      "observation_id": "D05-H4",
+      "policy_id": "D05-POLICY-NARROW",
+      "reasons": [
+        "passive observation; assessment membership is not asserted"
+      ],
+      "reference_id": "D05-R1",
+      "revision": "ref-r1",
+      "status": "eligible",
+      "target_assessment_id": null
+    },
+    {
+      "comparison_type": "passive_descriptive",
       "observation_id": "D05-H4",
       "policy_id": "D05-POLICY-BROAD",
       "reasons": [],
       "reference_id": "D05-R2",
       "revision": "ref-r2",
-      "status": "eligible"
+      "status": "eligible",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "matched_assessment",
       "observation_id": "D05-H5",
       "policy_id": "D05-POLICY-NARROW",
       "reasons": [
-        "motion or unavailable reference"
+        "reference unavailable or target membership is not established"
       ],
       "reference_id": "D05-R1",
       "revision": "ref-r1",
-      "status": "indeterminate"
+      "status": "indeterminate",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "passive_descriptive",
+      "observation_id": "D05-H5",
+      "policy_id": "D05-POLICY-NARROW",
+      "reasons": [
+        "passive observation; assessment membership is not asserted"
+      ],
+      "reference_id": "D05-R1",
+      "revision": "ref-r1",
+      "status": "eligible",
+      "target_assessment_id": null
+    },
+    {
+      "comparison_type": "passive_descriptive",
       "observation_id": "D05-H5",
       "policy_id": "D05-POLICY-BROAD",
       "reasons": [],
       "reference_id": "D05-R2",
       "revision": "ref-r2",
-      "status": "eligible"
+      "status": "eligible",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "matched_assessment",
       "observation_id": "D05-P-H1",
       "policy_id": "D05-POLICY-NARROW",
       "reasons": [],
       "reference_id": "D05-R1",
       "revision": "ref-r1",
-      "status": "eligible"
+      "status": "eligible",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "passive_descriptive",
+      "observation_id": "D05-P-H1",
+      "policy_id": "D05-POLICY-NARROW",
+      "reasons": [
+        "passive observation; assessment membership is not asserted"
+      ],
+      "reference_id": "D05-R1",
+      "revision": "ref-r1",
+      "status": "eligible",
+      "target_assessment_id": null
+    },
+    {
+      "comparison_type": "passive_descriptive",
       "observation_id": "D05-P-H1",
       "policy_id": "D05-POLICY-BROAD",
       "reasons": [],
       "reference_id": "D05-R2",
       "revision": "ref-r2",
-      "status": "eligible"
+      "status": "eligible",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "matched_assessment",
+      "observation_id": "D05-P-H2",
+      "policy_id": "D05-POLICY-NARROW",
+      "reasons": [],
+      "reference_id": "D05-R1",
+      "revision": "ref-r1",
+      "status": "eligible",
+      "target_assessment_id": null
+    },
+    {
+      "comparison_type": "passive_descriptive",
       "observation_id": "D05-P-H2",
       "policy_id": "D05-POLICY-NARROW",
       "reasons": [
-        "motion or unavailable reference"
+        "passive observation; assessment membership is not asserted"
       ],
       "reference_id": "D05-R1",
       "revision": "ref-r1",
-      "status": "ineligible"
+      "status": "eligible",
+      "target_assessment_id": null
     },
     {
+      "comparison_type": "passive_descriptive",
       "observation_id": "D05-P-H2",
       "policy_id": "D05-POLICY-BROAD",
       "reasons": [],
       "reference_id": "D05-R2",
       "revision": "ref-r2",
-      "status": "eligible"
+      "status": "eligible",
+      "target_assessment_id": null
     }
   ],
   "episode_rules": [
@@ -471,6 +604,7 @@
           "start": "2026-01-05T09:00:00Z"
         }
       ],
+      "assessment_id": null,
       "configuration": null,
       "context_ids": [
         "D05-CTX-H1"
@@ -508,6 +642,7 @@
           "start": "2026-01-05T09:00:05Z"
         }
       ],
+      "assessment_id": null,
       "configuration": null,
       "context_ids": [
         "D05-CTX-H2"
@@ -542,6 +677,7 @@
         "artifact"
       ],
       "actual_support": [],
+      "assessment_id": null,
       "configuration": null,
       "context_ids": [
         "D05-CTX-H3"
@@ -579,6 +715,7 @@
           "start": "2026-01-05T09:00:30Z"
         }
       ],
+      "assessment_id": null,
       "configuration": null,
       "context_ids": [
         "D05-CTX-H4"
@@ -616,6 +753,7 @@
           "start": "2026-01-05T09:00:45Z"
         }
       ],
+      "assessment_id": null,
       "configuration": null,
       "context_ids": [
         "D05-CTX-H5"
@@ -653,6 +791,7 @@
           "start": "2026-01-05T09:00:00Z"
         }
       ],
+      "assessment_id": null,
       "configuration": null,
       "context_ids": [
         "D05-CTX-W1"
@@ -690,6 +829,7 @@
           "start": "2026-01-05T09:00:00Z"
         }
       ],
+      "assessment_id": null,
       "configuration": null,
       "context_ids": [
         "D05-CTX-W1"
@@ -727,6 +867,7 @@
           "start": "2026-01-05T09:00:30Z"
         }
       ],
+      "assessment_id": null,
       "configuration": null,
       "context_ids": [
         "D05-CTX-W2"
@@ -761,6 +902,7 @@
         "artifact"
       ],
       "actual_support": [],
+      "assessment_id": null,
       "configuration": null,
       "context_ids": [
         "D05-CTX-W2"
@@ -798,6 +940,7 @@
           "start": "2026-01-04T09:00:00Z"
         }
       ],
+      "assessment_id": "D05-ASSESS-REF",
       "configuration": null,
       "context_ids": [
         "D05-CTX-P1"
@@ -835,6 +978,7 @@
           "start": "2026-01-04T09:00:10Z"
         }
       ],
+      "assessment_id": "D05-ASSESS-REF",
       "configuration": null,
       "context_ids": [
         "D05-CTX-P2"
@@ -867,6 +1011,10 @@
   "participant_id": "D05-P01",
   "policies": [
     {
+      "allowed_comparison_types": [
+        "matched_assessment",
+        "passive_descriptive"
+      ],
       "allowed_operations": [
         "summary",
         "coverage",
@@ -888,9 +1036,13 @@
       "reference_ids": [
         "D05-R1"
       ],
-      "version": "bucket5-v1"
+      "version": "bucket5-v2"
     },
     {
+      "allowed_comparison_types": [
+        "matched_assessment",
+        "passive_descriptive"
+      ],
       "allowed_operations": [
         "summary",
         "coverage",
@@ -909,22 +1061,36 @@
       "reference_ids": [
         "D05-R2"
       ],
-      "version": "bucket5-v1"
+      "version": "bucket5-v2"
     }
   ],
   "references": [
     {
-      "as_of": "2026-01-05T11:00:00Z",
-      "center": 80.0,
-      "comparison_units": [
-        "prior-day-bout"
+      "accepted_observation_ids": [
+        "D05-P-H1",
+        "D05-P-H2"
       ],
+      "adequacy": "adequate",
+      "adherence": "supported",
+      "as_of": "2026-01-05T11:00:00Z",
+      "assessment_id": "D05-ASSESS-REF",
+      "assessment_interval": {
+        "end": "2026-01-04T09:00:20Z",
+        "start": "2026-01-04T09:00:00Z"
+      },
+      "center": 97.5,
+      "comparison_units": [
+        "D05-P-H1",
+        "D05-P-H2"
+      ],
+      "condition": "documented_seated_assessment",
       "configuration": null,
       "epoch_label": "earlier low-chest-motion epoch",
       "event_cutoff": "2026-01-04T09:30:00Z",
       "method": "chest_ecg",
       "metric": "heart_rate",
       "policy_id": "D05-POLICY-NARROW",
+      "protocol_id": "documented_seated_ecg_hr_v1",
       "reference_id": "D05-R1",
       "revision": "ref-r1",
       "site": "chest",
@@ -932,21 +1098,36 @@
         "D05-S-R"
       ],
       "spread": null,
-      "status": "provisional",
+      "status": "supported_assessment",
+      "support_seconds": 20,
       "units": "bpm"
     },
     {
-      "as_of": "2026-01-05T11:00:00Z",
-      "center": 82.0,
-      "comparison_units": [
-        "prior-day-bout"
+      "accepted_observation_ids": [
+        "D05-P-H1",
+        "D05-P-H2"
       ],
+      "adequacy": "adequate",
+      "adherence": "supported",
+      "as_of": "2026-01-05T11:00:00Z",
+      "assessment_id": "D05-ASSESS-REF",
+      "assessment_interval": {
+        "end": "2026-01-04T09:00:20Z",
+        "start": "2026-01-04T09:00:00Z"
+      },
+      "center": 97.5,
+      "comparison_units": [
+        "D05-P-H1",
+        "D05-P-H2"
+      ],
+      "condition": "documented_seated_assessment",
       "configuration": null,
       "epoch_label": "earlier broad ECG epoch",
       "event_cutoff": "2026-01-04T09:30:00Z",
       "method": "chest_ecg",
       "metric": "heart_rate",
       "policy_id": "D05-POLICY-BROAD",
+      "protocol_id": "documented_seated_ecg_hr_v1",
       "reference_id": "D05-R2",
       "revision": "ref-r2",
       "site": "chest",
@@ -955,6 +1136,7 @@
       ],
       "spread": null,
       "status": "supported_descriptive",
+      "support_seconds": 20,
       "units": "bpm"
     }
   ],
@@ -972,20 +1154,30 @@
     ],
     "available_as_of": "2026-01-05T11:00:00Z",
     "participant_id": "D05-P01",
-    "revision": "snapshot-v1",
+    "revision": "snapshot-v2",
     "scenario_id": "D05",
-    "snapshot_id": "D05-v1",
+    "snapshot_id": "D05-v2",
     "source_event_cutoff": "2026-01-05T10:00:00Z",
     "source_inventory": [
       "D05-S-H",
       "D05-S-C",
       "D05-S-R",
-      "D05-S-I"
+      "D05-S-I",
+      "D05-S-A"
     ],
+    "source_revisions": {
+      "D05-S-A": "r1",
+      "D05-S-C": "r1",
+      "D05-S-H": "r1",
+      "D05-S-I": "r1",
+      "D05-S-R": "r1"
+    },
     "timezone": "UTC"
   },
   "sources": [
     {
+      "archival_status": "available",
+      "availability_as_of": "2026-01-05T10:00:00Z",
       "content": "feature rows and measurement support for the target recording",
       "covered_scope": [
         {
@@ -993,14 +1185,20 @@
           "start": "2026-01-05T09:00:00Z"
         }
       ],
+      "current_access_status": "available",
+      "invalidated_by_revision": null,
       "locator": "synthetic://D05-S-H",
+      "receipt_status": "available",
       "recording_available": true,
       "revision": "r1",
       "source_id": "D05-S-H",
       "source_type": "feature_export",
+      "supersedes_revision": null,
       "unknown_scope": []
     },
     {
+      "archival_status": "available",
+      "availability_as_of": "2026-01-05T10:00:00Z",
       "content": "patient-reported tremor onset and medication documentation",
       "covered_scope": [
         {
@@ -1008,14 +1206,20 @@
           "start": "2026-01-05T09:00:00Z"
         }
       ],
+      "current_access_status": "available",
+      "invalidated_by_revision": null,
       "locator": "synthetic://D05-S-C",
+      "receipt_status": "available",
       "recording_available": true,
       "revision": "r1",
       "source_id": "D05-S-C",
       "source_type": "clinical_note",
+      "supersedes_revision": null,
       "unknown_scope": []
     },
     {
+      "archival_status": "available",
+      "availability_as_of": "2026-01-04T09:30:00Z",
       "content": "named historical reference center and eligibility policy",
       "covered_scope": [
         {
@@ -1023,14 +1227,20 @@
           "start": "2026-01-04T09:00:00Z"
         }
       ],
+      "current_access_status": "available",
+      "invalidated_by_revision": null,
       "locator": "synthetic://D05-S-R",
+      "receipt_status": "available",
       "recording_available": true,
       "revision": "r1",
       "source_id": "D05-S-R",
       "source_type": "reference_snapshot",
+      "supersedes_revision": null,
       "unknown_scope": []
     },
     {
+      "archival_status": "available",
+      "availability_as_of": "2026-01-05T10:00:00Z",
       "content": "recording inventory: target bouts are available; unrecorded spans remain unknown",
       "covered_scope": [
         {
@@ -1038,11 +1248,36 @@
           "start": "2026-01-05T09:00:00Z"
         }
       ],
+      "current_access_status": "available",
+      "invalidated_by_revision": null,
       "locator": "synthetic://D05-S-I",
+      "receipt_status": "available",
       "recording_available": true,
       "revision": "r1",
       "source_id": "D05-S-I",
       "source_type": "inventory",
+      "supersedes_revision": null,
+      "unknown_scope": []
+    },
+    {
+      "archival_status": "available",
+      "availability_as_of": "2026-01-05T10:00:00Z",
+      "content": "documented standardized seated/standing assessment protocol, adherence and accepted feature membership",
+      "covered_scope": [
+        {
+          "end": "2026-01-05T10:00:00Z",
+          "start": "2026-01-05T09:00:00Z"
+        }
+      ],
+      "current_access_status": "available",
+      "invalidated_by_revision": null,
+      "locator": "synthetic://D05-S-A",
+      "receipt_status": "available",
+      "recording_available": true,
+      "revision": "r1",
+      "source_id": "D05-S-A",
+      "source_type": "assessment_record",
+      "supersedes_revision": null,
       "unknown_scope": []
     }
   ],

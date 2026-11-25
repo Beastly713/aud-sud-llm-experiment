@@ -12,12 +12,17 @@ from typing import Any
 
 from .schema import (
     Acceptance,
+    AssessmentAdequacy,
+    AssessmentAdherence,
+    AssessmentEvidence,
+    AssessmentMembership,
     ActionStatus,
     AnswerStatus,
     AssertionStatus,
     ClinicalEventArgs,
     ClinicalEvent,
     ClinicalStep,
+    ComparisonType,
     CommonAnswer,
     ContextAnnotation,
     EvidenceClass,
@@ -31,6 +36,7 @@ from .schema import (
     IntervalArgs,
     IntervalStep,
     MeasurementValue,
+    Missingness,
     MovementStratum,
     Observation,
     ObservationArgs,
@@ -44,6 +50,7 @@ from .schema import (
     ReviewState,
     Scenario,
     SourceRecord,
+    SourceAvailability,
     SupportKind,
     TemporalPrecision,
     TimeBounds,
@@ -73,6 +80,10 @@ def _source(source_id: str, scope: Interval, content: str, source_type: str = "s
         revision="r1",
         covered_scope=[scope],
         recording_available=True,
+        receipt_status=SourceAvailability.AVAILABLE,
+        archival_status=SourceAvailability.AVAILABLE,
+        current_access_status=SourceAvailability.AVAILABLE,
+        availability_as_of=scope.end,
     )
 
 
@@ -88,6 +99,7 @@ def _observation(
     units: str,
     context_id: str,
     source_id: str,
+    assessment_id: str | None = None,
     accepted: bool = True,
     support: str = "full",
 ) -> Observation:
@@ -130,6 +142,7 @@ def _observation(
         support_denominator_seconds=support_denominator,
         timing_quality="resolved",
         context_ids=[context_id],
+        assessment_id=assessment_id,
         source_ids=[source_id],
         feature_version="fixture-feature-v1",
     )
@@ -145,6 +158,42 @@ def _context(context_id: str, participant: str, start: datetime, seconds: int, n
         movement=movement,
         clock_status="aligned",
         source_ids=[source],
+    )
+
+
+def _assessment(
+    assessment_id: str,
+    participant: str,
+    protocol_id: str,
+    condition: str,
+    interval: Interval,
+    source_id: str,
+    *,
+    adherence: AssessmentAdherence = AssessmentAdherence.SUPPORTED,
+    adequacy: AssessmentAdequacy = AssessmentAdequacy.ADEQUATE,
+    membership: AssessmentMembership = AssessmentMembership.ESTABLISHED,
+    observation_ids: list[str] | None = None,
+    accepted_observation_ids: list[str] | None = None,
+    support_seconds: int | None = None,
+) -> AssessmentEvidence:
+    return AssessmentEvidence(
+        assessment_id=assessment_id,
+        participant_id=participant,
+        protocol_id=protocol_id,
+        condition=condition,
+        interval=interval,
+        adherence=adherence,
+        interruption=Missingness.INAPPLICABLE,
+        adequacy=adequacy,
+        membership=membership,
+        observation_ids=observation_ids or [],
+        accepted_observation_ids=accepted_observation_ids or [],
+        actual_support=[_interval(interval.start, support_seconds)] if support_seconds else [],
+        support_seconds=support_seconds,
+        source_ids=[source_id],
+        event_cutoff=interval.end,
+        as_of=interval.end + timedelta(hours=2),
+        revision=f"assessment-{assessment_id.lower()}-r1",
     )
 
 
@@ -190,12 +239,13 @@ def make_scenario(number: int) -> Scenario:
     base = _time(day)
     target = _interval(base, 3600)
     historical = _interval(base - timedelta(days=1), 1800)
-    source_ids = [f"{scenario_id}-S-H", f"{scenario_id}-S-C", f"{scenario_id}-S-R", f"{scenario_id}-S-I"]
+    source_ids = [f"{scenario_id}-S-H", f"{scenario_id}-S-C", f"{scenario_id}-S-R", f"{scenario_id}-S-I", f"{scenario_id}-S-A"]
     sources = [
         _source(source_ids[0], target, "feature rows and measurement support for the target recording", "feature_export"),
         _source(source_ids[1], target, "patient-reported tremor onset and medication documentation", "clinical_note"),
         _source(source_ids[2], historical, "named historical reference center and eligibility policy", "reference_snapshot"),
         _source(source_ids[3], target, "recording inventory: target bouts are available; unrecorded spans remain unknown", "inventory"),
+        _source(source_ids[4], target, "documented standardized seated/standing assessment protocol, adherence and accepted feature membership", "assessment_record"),
     ]
     contexts = [
         _context(f"{scenario_id}-CTX-H1", participant, base, 10, "chest", MovementStratum.LOW, source_ids[0]),
@@ -209,8 +259,8 @@ def make_scenario(number: int) -> Scenario:
         _context(f"{scenario_id}-CTX-P2", participant, base - timedelta(days=1, seconds=-10), 10, "chest", MovementStratum.LOW, source_ids[2]),
     ]
     observations = [
-        _observation(f"{scenario_id}-H1", participant, "heart_rate", "chest_ecg", "chest", base, 10, 96, "bpm", f"{scenario_id}-CTX-H1", source_ids[0], support="partial"),
-        _observation(f"{scenario_id}-H2", participant, "heart_rate", "chest_ecg", "chest", base + timedelta(seconds=5), 10, 100, "bpm", f"{scenario_id}-CTX-H2", source_ids[0]),
+        _observation(f"{scenario_id}-H1", participant, "heart_rate", "chest_ecg", "chest", base, 10, 96, "bpm", f"{scenario_id}-CTX-H1", source_ids[0], assessment_id=f"{scenario_id}-ASSESS-TARGET" if number in (1, 3) else None, support="partial"),
+        _observation(f"{scenario_id}-H2", participant, "heart_rate", "chest_ecg", "chest", base + timedelta(seconds=5), 10, 100, "bpm", f"{scenario_id}-CTX-H2", source_ids[0], assessment_id=f"{scenario_id}-ASSESS-TARGET" if number == 3 else None),
         _observation(f"{scenario_id}-H3", participant, "heart_rate", "chest_ecg", "chest", base + timedelta(seconds=20), 10, None, "bpm", f"{scenario_id}-CTX-H3", source_ids[0], accepted=False),
         _observation(f"{scenario_id}-H4", participant, "heart_rate", "chest_ecg", "chest", base + timedelta(seconds=30), 10, 98, "bpm", f"{scenario_id}-CTX-H4", source_ids[0]),
         _observation(f"{scenario_id}-H5", participant, "heart_rate", "chest_ecg", "chest", base + timedelta(seconds=45), 10, 92, "bpm", f"{scenario_id}-CTX-H5", source_ids[0], support="fraction" if number == 2 else "full"),
@@ -218,10 +268,11 @@ def make_scenario(number: int) -> Scenario:
         _observation(f"{scenario_id}-G1", participant, "ac_conductance", "ac_conductance_100hz", "wrist", base, 30, 2.5, "µS", f"{scenario_id}-CTX-W1", source_ids[0]),
         _observation(f"{scenario_id}-G2", participant, "ac_conductance", "ac_conductance_100hz", "wrist", base + timedelta(seconds=30), 10, 3.5, "µS", f"{scenario_id}-CTX-W2", source_ids[0]),
         _observation(f"{scenario_id}-G3", participant, "ac_conductance", "ac_conductance_100hz", "wrist", base + timedelta(seconds=40), 10, None, "µS", f"{scenario_id}-CTX-W2", source_ids[0], accepted=False),
-        _observation(f"{scenario_id}-P-H1", participant, "heart_rate", "chest_ecg", "chest", base - timedelta(days=1), 10, 98, "bpm", f"{scenario_id}-CTX-P1", source_ids[2]),
-        _observation(f"{scenario_id}-P-H2", participant, "heart_rate", "chest_ecg", "chest", base - timedelta(days=1, seconds=-10), 10, 97, "bpm", f"{scenario_id}-CTX-P2", source_ids[2]),
+        _observation(f"{scenario_id}-P-H1", participant, "heart_rate", "chest_ecg", "chest", base - timedelta(days=1), 10, 98, "bpm", f"{scenario_id}-CTX-P1", source_ids[2], assessment_id=f"{scenario_id}-ASSESS-REF"),
+        _observation(f"{scenario_id}-P-H2", participant, "heart_rate", "chest_ecg", "chest", base - timedelta(days=1, seconds=-10), 10, 97, "bpm", f"{scenario_id}-CTX-P2", source_ids[2], assessment_id=f"{scenario_id}-ASSESS-REF"),
     ]
-    ref_status = ReferenceStatus.UNAVAILABLE if number == 4 else ReferenceStatus.PROVISIONAL
+    ref_status = ReferenceStatus.UNAVAILABLE if number == 4 else ReferenceStatus.SUPPORTED_ASSESSMENT
+    reference_interval = _interval(historical.start, 20)
     references = [
         HistoricalReference(
             reference_id=f"{scenario_id}-R1",
@@ -233,10 +284,18 @@ def make_scenario(number: int) -> Scenario:
             event_cutoff=historical.end,
             as_of=base + timedelta(hours=2),
             status=ref_status,
-            center=None if ref_status == ReferenceStatus.UNAVAILABLE else 80.0,
+            assessment_id=None if ref_status == ReferenceStatus.UNAVAILABLE else f"{scenario_id}-ASSESS-REF",
+            protocol_id=None if ref_status == ReferenceStatus.UNAVAILABLE else "documented_seated_ecg_hr_v1",
+            condition=None if ref_status == ReferenceStatus.UNAVAILABLE else "documented_seated_assessment",
+            assessment_interval=None if ref_status == ReferenceStatus.UNAVAILABLE else reference_interval,
+            adherence=None if ref_status == ReferenceStatus.UNAVAILABLE else AssessmentAdherence.SUPPORTED,
+            adequacy=None if ref_status == ReferenceStatus.UNAVAILABLE else AssessmentAdequacy.ADEQUATE,
+            center=None if ref_status == ReferenceStatus.UNAVAILABLE else 97.5,
             units="bpm",
             source_ids=[source_ids[2]],
-            comparison_units=["prior-day-bout"],
+            comparison_units=[f"{scenario_id}-P-H1", f"{scenario_id}-P-H2"],
+            accepted_observation_ids=[f"{scenario_id}-P-H1", f"{scenario_id}-P-H2"],
+            support_seconds=20 if ref_status != ReferenceStatus.UNAVAILABLE else None,
             revision="ref-r1",
         ),
         HistoricalReference(
@@ -249,27 +308,67 @@ def make_scenario(number: int) -> Scenario:
             event_cutoff=historical.end,
             as_of=base + timedelta(hours=2),
             status=ReferenceStatus.SUPPORTED_DESCRIPTIVE,
-            center=82.0,
+            assessment_id=f"{scenario_id}-ASSESS-REF",
+            protocol_id="documented_seated_ecg_hr_v1",
+            condition="documented_seated_assessment",
+            assessment_interval=reference_interval,
+            adherence=AssessmentAdherence.SUPPORTED,
+            adequacy=AssessmentAdequacy.ADEQUATE,
+            center=97.5,
             units="bpm",
             source_ids=[source_ids[2]],
-            comparison_units=["prior-day-bout"],
+            comparison_units=[f"{scenario_id}-P-H1", f"{scenario_id}-P-H2"],
+            accepted_observation_ids=[f"{scenario_id}-P-H1", f"{scenario_id}-P-H2"],
+            support_seconds=20,
             revision="ref-r2",
         ),
     ]
+    assessments = [
+        _assessment(
+            f"{scenario_id}-ASSESS-REF",
+            participant,
+            "documented_seated_ecg_hr_v1",
+            "documented_seated_assessment",
+            reference_interval,
+            source_ids[4],
+            observation_ids=[f"{scenario_id}-P-H1", f"{scenario_id}-P-H2"],
+            accepted_observation_ids=[f"{scenario_id}-P-H1", f"{scenario_id}-P-H2"],
+            support_seconds=20,
+        ),
+    ]
+    if number == 1:
+        assessments.append(_assessment(f"{scenario_id}-ASSESS-TARGET", participant, "documented_seated_ecg_hr_v1", "documented_seated_assessment", _interval(base, 15), source_ids[4], observation_ids=[f"{scenario_id}-H1"], accepted_observation_ids=[f"{scenario_id}-H1"], support_seconds=8))
+    elif number == 2:
+        assessments.append(_assessment(f"{scenario_id}-ASSESS-TARGET", participant, "documented_seated_ecg_hr_v1", "documented_seated_assessment", _interval(base, 15), source_ids[4], adherence=AssessmentAdherence.UNKNOWN, adequacy=AssessmentAdequacy.UNKNOWN, membership=AssessmentMembership.UNKNOWN))
+    elif number == 3:
+        assessments.append(_assessment(f"{scenario_id}-ASSESS-TARGET", participant, "documented_standing_ecg_hr_v1", "documented_standing_assessment", _interval(base, 15), source_ids[4], observation_ids=[f"{scenario_id}-H1", f"{scenario_id}-H2"], accepted_observation_ids=[f"{scenario_id}-H1", f"{scenario_id}-H2"], support_seconds=15))
     eligibility: list[EligibilityRecord] = []
     for observation in observations:
         if observation.metric != "heart_rate" or observation.observation_id.endswith("-H3"):
             continue
-        if observation.observation_id.endswith("-H1") or observation.observation_id.endswith("-P-H1"):
+        if observation.observation_id.endswith("-P-H1") or observation.observation_id.endswith("-P-H2"):
             narrow = EligibilityStatus.ELIGIBLE
-        elif observation.observation_id.endswith("-H2"):
+            narrow_reason = []
+            target_assessment_id = None
+        elif number == 1:
+            narrow = EligibilityStatus.ELIGIBLE if observation.assessment_id == f"{scenario_id}-ASSESS-TARGET" else EligibilityStatus.INDETERMINATE
+            narrow_reason = [] if narrow == EligibilityStatus.ELIGIBLE else ["assessment membership is not established"]
+            target_assessment_id = observation.assessment_id
+        elif number == 2:
+            narrow = EligibilityStatus.INDETERMINATE
+            narrow_reason = ["target assessment adherence and membership are unknown"]
+            target_assessment_id = None
+        elif number == 3:
             narrow = EligibilityStatus.INELIGIBLE
+            narrow_reason = ["target assessment condition is standing, reference condition is seated"]
+            target_assessment_id = observation.assessment_id
         else:
             narrow = EligibilityStatus.INDETERMINATE
-        if number == 4:
-            narrow = EligibilityStatus.INDETERMINATE
-        eligibility.append(EligibilityRecord(observation_id=observation.observation_id, reference_id=f"{scenario_id}-R1", policy_id=f"{scenario_id}-POLICY-NARROW", revision="ref-r1", status=narrow, reasons=[] if narrow == EligibilityStatus.ELIGIBLE else ["motion or unavailable reference"]))
-        eligibility.append(EligibilityRecord(observation_id=observation.observation_id, reference_id=f"{scenario_id}-R2", policy_id=f"{scenario_id}-POLICY-BROAD", revision="ref-r2", status=EligibilityStatus.ELIGIBLE, reasons=[]))
+            narrow_reason = ["reference unavailable or target membership is not established"]
+            target_assessment_id = observation.assessment_id
+        eligibility.append(EligibilityRecord(observation_id=observation.observation_id, reference_id=f"{scenario_id}-R1", policy_id=f"{scenario_id}-POLICY-NARROW", revision="ref-r1", comparison_type=ComparisonType.MATCHED_ASSESSMENT, target_assessment_id=target_assessment_id, status=narrow, reasons=narrow_reason))
+        eligibility.append(EligibilityRecord(observation_id=observation.observation_id, reference_id=f"{scenario_id}-R1", policy_id=f"{scenario_id}-POLICY-NARROW", revision="ref-r1", comparison_type=ComparisonType.PASSIVE_DESCRIPTIVE, target_assessment_id=target_assessment_id, status=EligibilityStatus.ELIGIBLE, reasons=["passive observation; assessment membership is not asserted"]))
+        eligibility.append(EligibilityRecord(observation_id=observation.observation_id, reference_id=f"{scenario_id}-R2", policy_id=f"{scenario_id}-POLICY-BROAD", revision="ref-r2", comparison_type=ComparisonType.PASSIVE_DESCRIPTIVE, target_assessment_id=target_assessment_id, status=EligibilityStatus.ELIGIBLE, reasons=[]))
     onset_precision = TemporalPrecision.APPROXIMATE if number == 2 else TemporalPrecision.INSTANT
     onset = TimeBounds(lower=base - timedelta(minutes=10) if number == 2 else base, upper=base + timedelta(minutes=10) if number == 2 else base, precision=onset_precision)
     events = [
@@ -285,12 +384,12 @@ def make_scenario(number: int) -> Scenario:
             events.append(_event(f"{scenario_id}-C4", participant, "diazepam", "medication_administration", ActionStatus.COMPLETED, EvidenceClass.STRUCTURED_ADMINISTRATION, source_ids[1], TimeBounds(lower=base + timedelta(minutes=30), upper=base + timedelta(minutes=30), precision=TemporalPrecision.INSTANT), f"{scenario_id}-O4", "diazepam administration completed"))
     events.append(_event(f"{scenario_id}-C6", participant, "diazepam", "medication_report", ActionStatus.REPORTED, EvidenceClass.NARRATIVE_REPORT, source_ids[1], TimeBounds(lower=base + timedelta(minutes=15), upper=base + timedelta(minutes=15), precision=TemporalPrecision.INSTANT), None, "patient uncertainly reports a dose", AssertionStatus.UNCERTAIN))
     policies = [
-        InvestigationPolicy(policy_id=f"{scenario_id}-POLICY-NARROW", version="bucket5-v1", metric="heart_rate", method="chest_ecg", compatible_nodes=["chest"], reference_ids=[f"{scenario_id}-R1"], allowed_operations=["summary", "coverage", "compare_to_named_reference", "episodes"], episode_rule_ids=[f"{scenario_id}-E1"], denominator_definitions={"requested_interval": "wall-clock seconds"}),
-        InvestigationPolicy(policy_id=f"{scenario_id}-POLICY-BROAD", version="bucket5-v1", metric="heart_rate", method="chest_ecg", compatible_nodes=["chest"], reference_ids=[f"{scenario_id}-R2"], allowed_operations=["summary", "coverage", "compare_to_named_reference"], denominator_definitions={"requested_interval": "wall-clock seconds"}),
+        InvestigationPolicy(policy_id=f"{scenario_id}-POLICY-NARROW", version="bucket5-v2", metric="heart_rate", method="chest_ecg", compatible_nodes=["chest"], reference_ids=[f"{scenario_id}-R1"], allowed_operations=["summary", "coverage", "compare_to_named_reference", "episodes"], episode_rule_ids=[f"{scenario_id}-E1"], denominator_definitions={"requested_interval": "wall-clock seconds"}, allowed_comparison_types=[ComparisonType.MATCHED_ASSESSMENT, ComparisonType.PASSIVE_DESCRIPTIVE]),
+        InvestigationPolicy(policy_id=f"{scenario_id}-POLICY-BROAD", version="bucket5-v2", metric="heart_rate", method="chest_ecg", compatible_nodes=["chest"], reference_ids=[f"{scenario_id}-R2"], allowed_operations=["summary", "coverage", "compare_to_named_reference"], denominator_definitions={"requested_interval": "wall-clock seconds"}, allowed_comparison_types=[ComparisonType.MATCHED_ASSESSMENT, ComparisonType.PASSIVE_DESCRIPTIVE]),
     ]
     episode_rule = EpisodeRule(rule_id=f"{scenario_id}-E1", metric="heart_rate", method="chest_ecg", threshold_operator=">=", threshold=95.0, minimum_grouping_seconds=15, maximum_gap_seconds=5, required_movement=MovementStratum.LOW)
-    snapshot = EvidenceSnapshot(scenario_id=scenario_id, participant_id=participant, snapshot_id=f"{scenario_id}-v1", available_as_of=base + timedelta(hours=2), source_event_cutoff=base + timedelta(hours=1), timezone="UTC", authorized_scope=[target, historical], source_inventory=source_ids, revision="snapshot-v1")
-    return Scenario(scenario_id=scenario_id, participant_id=participant, snapshot=snapshot, sources=sources, observations=observations, contexts=contexts, references=references, eligibility=eligibility, clinical_events=events, policies=policies, episode_rules=[episode_rule])
+    snapshot = EvidenceSnapshot(scenario_id=scenario_id, participant_id=participant, snapshot_id=f"{scenario_id}-v2", available_as_of=base + timedelta(hours=2), source_event_cutoff=base + timedelta(hours=1), timezone="UTC", authorized_scope=[target, historical], source_inventory=source_ids, source_revisions={source_id: "r1" for source_id in source_ids}, revision="snapshot-v2")
+    return Scenario(scenario_id=scenario_id, participant_id=participant, snapshot=snapshot, sources=sources, observations=observations, contexts=contexts, assessments=assessments, references=references, eligibility=eligibility, clinical_events=events, policies=policies, episode_rules=[episode_rule])
 
 
 def make_questions(scenarios: list[Scenario] | None = None) -> list[Question]:
@@ -302,9 +401,16 @@ def make_questions(scenarios: list[Scenario] | None = None) -> list[Question]:
         target_short = [_interval(base, 30)]
         target = [_interval(base, 1800)]
         history_and_target = [scenario.snapshot.authorized_scope[0], scenario.snapshot.authorized_scope[1]]
+        q2_text = {
+            "D01": "Compared with this patient's earlier documented seated ECG HR assessment, what typical HR difference is supported by the later documented seated assessment, and is the matched comparison eligible?",
+            "D02": "Compared with this patient's earlier documented seated ECG HR assessment, what passive descriptive HR difference is supported by the low-motion review bout when assessment membership is not established?",
+            "D03": "Compared with this patient's earlier documented seated ECG HR assessment, can the later standing-assessment HR values support a matched comparison when the conditions differ?",
+            "D04": "Compared with the named earlier ECG assessment reference, what comparison can be made when that reference is unavailable?",
+            "D05": "Compared with the named earlier ECG assessment reference, is the accepted wrist PPG pulse rate eligible for a matched comparison?",
+        }[sid]
         questions.extend([
             Question(question_id=f"{sid}-Q1", scenario_id=sid, snapshot_id=scenario.snapshot.snapshot_id, text="Over the first 30 seconds, how much accepted chest-ECG heart-rate evidence was available, and for how much do we have documented usable support?", question_class=QuestionClass.Q1, difficulty="foundational", authorized_scope=target_short),
-            Question(question_id=f"{sid}-Q2", scenario_id=sid, snapshot_id=scenario.snapshot.snapshot_id, text=("Compared with the named earlier ECG reference, what was the typical wrist pulse rate during the review bout?" if sid == "D05" else "Compared with the named earlier low-chest-motion ECG reference, what was the typical heart rate during the review bout?"), question_class=QuestionClass.Q2, difficulty="compositional", authorized_scope=[_interval(base, 15)]),
+            Question(question_id=f"{sid}-Q2", scenario_id=sid, snapshot_id=scenario.snapshot.snapshot_id, text=q2_text, question_class=QuestionClass.Q2, difficulty="compositional", authorized_scope=[_interval(base, 15)]),
             Question(question_id=f"{sid}-Q3", scenario_id=sid, snapshot_id=scenario.snapshot.snapshot_id, text="Using the configured E1 rule, how many elevated heart-rate groups were identified, what was their qualifying-window coverage versus grouping span, and did the same rule recur earlier?", question_class=QuestionClass.Q3, difficulty="complex", authorized_scope=history_and_target),
             Question(question_id=f"{sid}-Q4a", scenario_id=sid, snapshot_id=scenario.snapshot.snapshot_id, text="Between the reported tremor onset and a documented completed diazepam administration, what accepted low-chest-motion ECG heart-rate change and wrist AC conductance were observed?", question_class=QuestionClass.Q4, difficulty="complex", authorized_scope=target),
             Question(question_id=f"{sid}-Q4b", scenario_id=sid, snapshot_id=scenario.snapshot.snapshot_id, text="Which source-supported clinical medication action and symptom-onset evidence can be stated for this review, and what remains uncertain?", question_class=QuestionClass.Q4, difficulty="compositional", authorized_scope=target),
@@ -325,7 +431,9 @@ def plan_for_question(question: Question, scenario: Scenario) -> InvestigationPl
     if question.question_class == QuestionClass.Q2:
         metric = "pulse_rate" if sid == "D05" else "heart_rate"
         method = "wrist_ppg" if sid == "D05" else "chest_ecg"
-        return InvestigationPlan(plan_id=f"dev-{question.question_id}", intent="named historical comparison", steps=[ObservationStep(id="obs", args=ObservationArgs(metric=metric, method=method, reference_id=narrow_ref, policy_id=narrow_policy, require_eligibility=True)), IntervalStep(id="summary", args=IntervalArgs(operation="summary", observation_ref="obs")), IntervalStep(id="comparison", args=IntervalArgs(operation="compare_to_named_reference", target_ref="obs", reference_id=narrow_ref, policy_id=narrow_policy))], output="comparison")
+        comparison_type = ComparisonType.MATCHED_ASSESSMENT if sid != "D02" else ComparisonType.PASSIVE_DESCRIPTIVE
+        require_eligibility = comparison_type == ComparisonType.MATCHED_ASSESSMENT
+        return InvestigationPlan(plan_id=f"dev-{question.question_id}", intent=f"{comparison_type.value} named personal-reference comparison", steps=[ObservationStep(id="obs", args=ObservationArgs(metric=metric, method=method, movement=MovementStratum.LOW if sid == "D02" else None, reference_id=narrow_ref, policy_id=narrow_policy, comparison_type=comparison_type, require_eligibility=require_eligibility)), IntervalStep(id="summary", args=IntervalArgs(operation="summary", observation_ref="obs")), IntervalStep(id="comparison", args=IntervalArgs(operation="compare_to_named_reference", target_ref="obs", reference_id=narrow_ref, policy_id=narrow_policy, comparison_type=comparison_type, reference_revision="ref-r1"))], output="comparison")
     if question.question_class == QuestionClass.Q3:
         return InvestigationPlan(plan_id=f"dev-{question.question_id}", intent="configured episode recurrence", steps=[ObservationStep(id="obs", args=ObservationArgs(metric="heart_rate", method="chest_ecg", movement=MovementStratum.LOW, scope_mode="all_authorized")), IntervalStep(id="episodes", args=IntervalArgs(operation="episodes", observation_ref="obs", episode_rule_id=f"{sid}-E1"))], output="episodes")
     if question.question_id.endswith("Q4b"):
@@ -333,7 +441,7 @@ def plan_for_question(question: Question, scenario: Scenario) -> InvestigationPl
         return InvestigationPlan(plan_id=f"dev-{question.question_id}", intent="source-supported clinical chronology", steps=[ClinicalStep(id="onset", args=ClinicalEventArgs(concept="tremor", event_type="symptom_onset", selection=selection)), ClinicalStep(id="administration", args=ClinicalEventArgs(concept="diazepam", event_type="medication_administration", action_status=ActionStatus.COMPLETED, evidence_class=EvidenceClass.STRUCTURED_ADMINISTRATION, selection=selection)), ResolveStep(id="sources", args=ResolveArgs(evidence_ids=[f"{sid}-S-C"]))], output="clinical_evidence")
     if int(sid[-2:]) in (3, 4):
         return InvestigationPlan(plan_id=f"dev-{question.question_id}", intent="clinical anchor resolution with honest abstention", steps=[ClinicalStep(id="onset", args=ClinicalEventArgs(concept="tremor", event_type="symptom_onset", selection="unique_supported_or_clarify")), ClinicalStep(id="administration", args=ClinicalEventArgs(concept="diazepam", event_type="medication_administration", action_status=ActionStatus.COMPLETED, evidence_class=EvidenceClass.STRUCTURED_ADMINISTRATION, selection="unique_supported_or_clarify"))], output="clinical_evidence")
-    return InvestigationPlan(plan_id=f"dev-{question.question_id}", intent="event-anchored multimodal comparison", steps=[ClinicalStep(id="onset", args=ClinicalEventArgs(concept="tremor", event_type="symptom_onset", selection="unique_supported_or_clarify")), ClinicalStep(id="administration", args=ClinicalEventArgs(concept="diazepam", event_type="medication_administration", action_status=ActionStatus.COMPLETED, evidence_class=EvidenceClass.STRUCTURED_ADMINISTRATION, selection="unique_supported_or_clarify")), IntervalStep(id="span", args=IntervalArgs(operation="between_event_anchors", start_ref="onset", end_ref="administration")), ObservationStep(id="hr", args=ObservationArgs(metric="heart_rate", method="chest_ecg", interval_ref="span", reference_id=narrow_ref, policy_id=narrow_policy, require_eligibility=True)), IntervalStep(id="hr_comparison", args=IntervalArgs(operation="compare_to_named_reference", target_ref="hr", reference_id=narrow_ref, policy_id=narrow_policy)), ObservationStep(id="acg", args=ObservationArgs(metric="ac_conductance", method="ac_conductance_100hz", interval_ref="span")), IntervalStep(id="acg_summary", args=IntervalArgs(operation="summary", observation_ref="acg")), ResolveStep(id="sources", args=ResolveArgs(evidence_ids=[f"{sid}-S-C", f"{sid}-S-H", f"{sid}-S-R"]))], output="evidence_linked_comparison")
+    return InvestigationPlan(plan_id=f"dev-{question.question_id}", intent="event-anchored passive descriptive multimodal comparison", steps=[ClinicalStep(id="onset", args=ClinicalEventArgs(concept="tremor", event_type="symptom_onset", selection="unique_supported_or_clarify")), ClinicalStep(id="administration", args=ClinicalEventArgs(concept="diazepam", event_type="medication_administration", action_status=ActionStatus.COMPLETED, evidence_class=EvidenceClass.STRUCTURED_ADMINISTRATION, selection="unique_supported_or_clarify")), IntervalStep(id="span", args=IntervalArgs(operation="between_event_anchors", start_ref="onset", end_ref="administration")), ObservationStep(id="hr", args=ObservationArgs(metric="heart_rate", method="chest_ecg", interval_ref="span", movement=MovementStratum.LOW, reference_id=narrow_ref, policy_id=narrow_policy, comparison_type=ComparisonType.PASSIVE_DESCRIPTIVE, require_eligibility=False)), IntervalStep(id="hr_comparison", args=IntervalArgs(operation="compare_to_named_reference", target_ref="hr", reference_id=narrow_ref, policy_id=narrow_policy, comparison_type=ComparisonType.PASSIVE_DESCRIPTIVE, reference_revision="ref-r1")), ObservationStep(id="acg", args=ObservationArgs(metric="ac_conductance", method="ac_conductance_100hz", interval_ref="span")), IntervalStep(id="acg_summary", args=IntervalArgs(operation="summary", observation_ref="acg")), ResolveStep(id="sources", args=ResolveArgs(evidence_ids=[f"{sid}-S-C", f"{sid}-S-H", f"{sid}-S-R"]))], output="evidence_linked_comparison")
 
 
 def make_plans(scenarios: list[Scenario] | None = None, questions: list[Question] | None = None) -> dict[str, InvestigationPlan]:
@@ -347,8 +455,8 @@ def make_gold(questions: list[Question] | None = None) -> list[GoldRecord]:
     questions = questions or make_questions()
     records: list[GoldRecord] = []
 
-    def slot(slot_id: str, kind: str, expected: dict[str, object], evidence: list[str], tolerance: float | None = None, material: bool = True) -> GoldSlot:
-        return GoldSlot(slot_id=slot_id, kind=kind, expected=expected, evidence_alternatives=[evidence], material=material, absolute_tolerance=tolerance)
+    def slot(slot_id: str, kind: str, expected: dict[str, object], evidence: list[str], tolerance: float | None = None, material: bool = True, comparison_type: ComparisonType | None = None) -> GoldSlot:
+        return GoldSlot(slot_id=slot_id, kind=kind, expected=expected, evidence_alternatives=[evidence], material=material, absolute_tolerance=tolerance, comparison_type=comparison_type)
 
     def limitation(slot_id: str, reason_code: str, expected: dict[str, object], evidence: list[str]) -> GoldSlot:
         return slot(slot_id, "limitation", {"reason_code": reason_code, **expected}, evidence)
@@ -364,11 +472,15 @@ def make_gold(questions: list[Question] | None = None) -> list[GoldRecord]:
         status = AnswerStatus.ANSWERED
         if number == 2 and question.question_id.endswith("Q4a"):
             status = AnswerStatus.PARTIAL
+        if number == 2 and question.question_id.endswith("Q1"):
+            status = AnswerStatus.PARTIAL
         if number == 3 and question.question_id.endswith("Q4a"):
             status = AnswerStatus.CLARIFY
         if number == 3 and question.question_id.endswith("Q4b"):
             status = AnswerStatus.CLARIFY
         if number == 4 and question.question_id.endswith("Q2"):
+            status = AnswerStatus.INSUFFICIENT
+        if number == 3 and question.question_id.endswith("Q2"):
             status = AnswerStatus.INSUFFICIENT
         if number == 4 and question.question_id.endswith("Q4a"):
             status = AnswerStatus.INSUFFICIENT
@@ -391,25 +503,42 @@ def make_gold(questions: list[Question] | None = None) -> list[GoldRecord]:
             ])
             limitations.append(limitation("coverage_gaps", "sparse_recording_bouts", {"claim": "the remaining 15 seconds are not evidence of normal physiology"}, [f"{sid}-H1", f"{sid}-H2", f"{sid}-S-I"]))
         if question.question_class == QuestionClass.Q2:
-            if number in (1, 2, 3):
+            if number == 1:
                 included = [f"{sid}-H1"]
                 excluded = [
-                    {"id": f"{sid}-H2", "reason": "ineligible under narrow low-chest-motion policy"},
+                    {"id": f"{sid}-H2", "reason": "documented target assessment membership is not established"},
                     {"id": f"{sid}-H3", "reason": "rejected artifact"},
                 ]
                 slots.extend([
                     slot("summary", "numeric", {"value": 96.0, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median", "interval_start": start, "interval_end": end_15, "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1"], 0.1),
-                    slot("reference_difference", "numeric", {"value": 16.0, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median_difference", "reference_id": f"{sid}-R1", "policy_id": f"{sid}-POLICY-NARROW", "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1", f"{sid}-R1", f"{sid}-S-R"], 0.1),
+                    slot("reference_difference", "numeric", {"value": -1.5, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median_difference", "reference_id": f"{sid}-R1", "policy_id": f"{sid}-POLICY-NARROW", "reference_revision": "ref-r1", "comparison_type": ComparisonType.MATCHED_ASSESSMENT.value, "eligibility_status": EligibilityStatus.ELIGIBLE.value, "assessment_id": f"{sid}-ASSESS-TARGET", "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1", f"{sid}-R1", f"{sid}-S-R", f"{sid}-S-A"], 0.1, comparison_type=ComparisonType.MATCHED_ASSESSMENT),
                 ])
                 limitations.extend([
-                    limitation("reference_qualification", "provisional_reference", {"reference_id": f"{sid}-R1", "claim": "descriptive comparison only; not a healthy-normal inference"}, [f"{sid}-R1", f"{sid}-S-R"]),
-                    limitation("summary_gap", "sparse_recording_bouts", {"claim": "the typical value describes selected windows, not the uncovered portion of the review span"}, [f"{sid}-H1", f"{sid}-S-I"]),
+                    limitation("reference_qualification", "assessment_reference_qualification", {"reference_id": f"{sid}-R1", "claim": "this is a documented matched-assessment comparison, not a healthy-normal inference"}, [f"{sid}-R1", f"{sid}-S-R", f"{sid}-S-A"]),
+                    limitation("summary_gap", "sparse_recording_bouts", {"claim": "the typical value describes the selected assessment-supported window, not the uncovered portion of the review span"}, [f"{sid}-H1", f"{sid}-S-I"]),
                 ])
+            elif number == 2:
+                included = [f"{sid}-H1"]
+                excluded = [
+                    {"id": f"{sid}-H2", "reason": "elevated chest motion; low-motion context filter"},
+                    {"id": f"{sid}-H3", "reason": "rejected artifact"},
+                ]
+                slots.extend([
+                    slot("summary", "numeric", {"value": 96.0, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median", "interval_start": start, "interval_end": end_15, "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1"], 0.1),
+                    slot("reference_difference", "numeric", {"value": -1.5, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median_difference", "reference_id": f"{sid}-R1", "policy_id": f"{sid}-POLICY-NARROW", "reference_revision": "ref-r1", "comparison_type": ComparisonType.PASSIVE_DESCRIPTIVE.value, "eligibility_status": EligibilityStatus.ELIGIBLE.value, "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1", f"{sid}-R1", f"{sid}-S-R"], 0.1, comparison_type=ComparisonType.PASSIVE_DESCRIPTIVE),
+                ])
+                limitations.append(limitation("comparison_qualification", "passive_descriptive_comparison", {"reference_id": f"{sid}-R1", "claim": "this is a passive descriptive difference; target assessment membership is not established"}, [f"{sid}-R1", f"{sid}-S-R"]))
+            elif number == 3:
+                excluded = [
+                    {"id": f"{sid}-H1", "reason": "target standing assessment condition is incompatible with seated reference"},
+                    {"id": f"{sid}-H2", "reason": "target standing assessment condition is incompatible with seated reference"},
+                    {"id": f"{sid}-H3", "reason": "rejected artifact"},
+                ]
+                limitations.append(limitation("assessment_condition", "assessment_condition_incompatible", {"reference_id": f"{sid}-R1", "claim": "the standing target assessment cannot be silently compared with the seated reference"}, [f"{sid}-S-A", f"{sid}-R1", f"{sid}-S-R"]))
             elif number == 4:
                 excluded = [{"id": f"{sid}-R1", "reason": "named reference unavailable"}]
                 limitations.append(limitation("reference_unavailable", "reference_unavailable", {"reference_id": f"{sid}-R1"}, [f"{sid}-R1", f"{sid}-S-R"]))
             else:
-                included = [f"{sid}-PULSE1"]
                 excluded = [{"id": f"{sid}-PULSE1", "reason": "wrist PPG is not eligible for the chest-ECG reference policy"}]
                 limitations.append(limitation("method_incompatible", "method_incompatible_reference", {"reference_id": f"{sid}-R1", "metric": "pulse_rate", "method": "wrist_ppg"}, [f"{sid}-PULSE1", f"{sid}-R1", f"{sid}-S-R"]))
         if question.question_class == QuestionClass.Q3:
@@ -443,7 +572,7 @@ def make_gold(questions: list[Question] | None = None) -> list[GoldRecord]:
                     slots.extend([
                         slot("onset_anchor", "event", {"mention_id": f"{sid}-C1", "occurrence_id": f"{sid}-O1", "action_status": "reported", "assertion": "affirmed", "time": start, "precision": "instant"}, [f"{sid}-C1", f"{sid}-S-C"]),
                         slot("administration_anchor", "event", {"mention_id": f"{sid}-C4", "occurrence_id": f"{sid}-O4", "action_status": "completed", "evidence_class": "structured_administration", "time": admin_time, "precision": "instant"}, [f"{sid}-C4", f"{sid}-S-C"]),
-                        slot("heart_rate_difference", "numeric", {"value": 16.0, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median_difference", "reference_id": f"{sid}-R1", "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1", f"{sid}-R1", f"{sid}-S-H", f"{sid}-S-R"], 0.1),
+                        slot("heart_rate_difference", "numeric", {"value": -1.5, "unit": "bpm", "metric": "heart_rate", "method": "chest_ecg", "statistic": "median_difference", "reference_id": f"{sid}-R1", "reference_revision": "ref-r1", "comparison_type": ComparisonType.PASSIVE_DESCRIPTIVE.value, "eligibility_status": EligibilityStatus.ELIGIBLE.value, "selected_ids": [f"{sid}-H1"]}, [f"{sid}-H1", f"{sid}-R1", f"{sid}-S-H", f"{sid}-S-R"], 0.1, comparison_type=ComparisonType.PASSIVE_DESCRIPTIVE),
                         slot("ac_conductance_summary", "numeric", {"value": 3.0, "unit": "µS", "metric": "ac_conductance", "method": "ac_conductance_100hz", "statistic": "median", "selected_ids": [f"{sid}-G1", f"{sid}-G2"]}, [f"{sid}-G1", f"{sid}-G2", f"{sid}-G3", f"{sid}-S-H"], 0.01),
                     ])
                     limitations.extend([

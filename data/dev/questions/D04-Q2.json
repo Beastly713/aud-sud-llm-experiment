@@ -10,6 +10,6 @@
   "question_id": "D04-Q2",
   "requested_status": null,
   "scenario_id": "D04",
-  "snapshot_id": "D04-v1",
-  "text": "Compared with the named earlier low-chest-motion ECG reference, what was the typical heart rate during the review bout?"
+  "snapshot_id": "D04-v2",
+  "text": "Compared with the named earlier ECG assessment reference, what comparison can be made when that reference is unavailable?"
 }

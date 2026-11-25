@@ -31,6 +31,141 @@
       "title": "AssertionStatus",
       "type": "string"
     },
+    "AssessmentAdequacy": {
+      "enum": [
+        "adequate",
+        "inadequate",
+        "unknown",
+        "unavailable"
+      ],
+      "title": "AssessmentAdequacy",
+      "type": "string"
+    },
+    "AssessmentAdherence": {
+      "enum": [
+        "supported",
+        "insufficient",
+        "unknown",
+        "interrupted"
+      ],
+      "title": "AssessmentAdherence",
+      "type": "string"
+    },
+    "AssessmentEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_observation_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Accepted Observation Ids",
+          "type": "array"
+        },
+        "actual_support": {
+          "items": {
+            "$ref": "#/$defs/Interval"
+          },
+          "title": "Actual Support",
+          "type": "array"
+        },
+        "adequacy": {
+          "$ref": "#/$defs/AssessmentAdequacy"
+        },
+        "adherence": {
+          "$ref": "#/$defs/AssessmentAdherence"
+        },
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "assessment_id": {
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "condition": {
+          "title": "Condition",
+          "type": "string"
+        },
+        "event_cutoff": {
+          "format": "date-time",
+          "title": "Event Cutoff",
+          "type": "string"
+        },
+        "interruption": {
+          "$ref": "#/$defs/Missingness",
+          "default": "inapplicable"
+        },
+        "interval": {
+          "$ref": "#/$defs/Interval"
+        },
+        "membership": {
+          "$ref": "#/$defs/AssessmentMembership"
+        },
+        "observation_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Observation Ids",
+          "type": "array"
+        },
+        "participant_id": {
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "protocol_id": {
+          "title": "Protocol Id",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "support_seconds": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Support Seconds"
+        }
+      },
+      "required": [
+        "assessment_id",
+        "participant_id",
+        "protocol_id",
+        "condition",
+        "interval",
+        "adherence",
+        "adequacy",
+        "membership",
+        "event_cutoff",
+        "as_of",
+        "revision"
+      ],
+      "title": "AssessmentEvidence",
+      "type": "object"
+    },
+    "AssessmentMembership": {
+      "enum": [
+        "established",
+        "not_established",
+        "unknown"
+      ],
+      "title": "AssessmentMembership",
+      "type": "string"
+    },
     "ClinicalEvent": {
       "additionalProperties": false,
       "properties": {
@@ -154,6 +289,14 @@
       "title": "ClockStatus",
       "type": "string"
     },
+    "ComparisonType": {
+      "enum": [
+        "matched_assessment",
+        "passive_descriptive"
+      ],
+      "title": "ComparisonType",
+      "type": "string"
+    },
     "ContextAnnotation": {
       "additionalProperties": false,
       "properties": {
@@ -241,6 +384,10 @@
     "EligibilityRecord": {
       "additionalProperties": false,
       "properties": {
+        "comparison_type": {
+          "$ref": "#/$defs/ComparisonType",
+          "default": "matched_assessment"
+        },
         "observation_id": {
           "title": "Observation Id",
           "type": "string"
@@ -266,6 +413,18 @@
         },
         "status": {
           "$ref": "#/$defs/EligibilityStatus"
+        },
+        "target_assessment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Assessment Id"
         }
       },
       "required": [
@@ -430,6 +589,13 @@
           "title": "Source Inventory",
           "type": "array"
         },
+        "source_revisions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Source Revisions",
+          "type": "object"
+        },
         "timezone": {
           "title": "Timezone",
           "type": "string"
@@ -461,10 +627,62 @@
     "HistoricalReference": {
       "additionalProperties": false,
       "properties": {
+        "accepted_observation_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Accepted Observation Ids",
+          "type": "array"
+        },
+        "adequacy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AssessmentAdequacy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "adherence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AssessmentAdherence"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "as_of": {
           "format": "date-time",
           "title": "As Of",
           "type": "string"
+        },
+        "assessment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assessment Id"
+        },
+        "assessment_interval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Interval"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "center": {
           "anyOf": [
@@ -484,6 +702,18 @@
           },
           "title": "Comparison Units",
           "type": "array"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Condition"
         },
         "configuration": {
           "anyOf": [
@@ -517,6 +747,18 @@
         "policy_id": {
           "title": "Policy Id",
           "type": "string"
+        },
+        "protocol_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Protocol Id"
         },
         "reference_id": {
           "title": "Reference Id",
@@ -559,6 +801,18 @@
         },
         "status": {
           "$ref": "#/$defs/ReferenceStatus"
+        },
+        "support_seconds": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Support Seconds"
         },
         "units": {
           "anyOf": [
@@ -611,6 +865,13 @@
     "InvestigationPolicy": {
       "additionalProperties": false,
       "properties": {
+        "allowed_comparison_types": {
+          "items": {
+            "$ref": "#/$defs/ComparisonType"
+          },
+          "title": "Allowed Comparison Types",
+          "type": "array"
+        },
         "allowed_operations": {
           "items": {
             "type": "string"
@@ -759,6 +1020,18 @@
           "title": "Actual Support",
           "type": "array"
         },
+        "assessment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assessment Id"
+        },
         "configuration": {
           "anyOf": [
             {
@@ -888,6 +1161,7 @@
     "ReferenceStatus": {
       "enum": [
         "unavailable",
+        "supported_assessment",
         "provisional",
         "supported_descriptive"
       ],
@@ -904,9 +1178,37 @@
       "title": "ReviewState",
       "type": "string"
     },
+    "SourceAvailability": {
+      "enum": [
+        "available",
+        "candidate",
+        "unknown",
+        "unavailable",
+        "invalidated"
+      ],
+      "title": "SourceAvailability",
+      "type": "string"
+    },
     "SourceRecord": {
       "additionalProperties": false,
       "properties": {
+        "archival_status": {
+          "$ref": "#/$defs/SourceAvailability",
+          "default": "unknown"
+        },
+        "availability_as_of": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Availability As Of"
+        },
         "content": {
           "anyOf": [
             {
@@ -926,9 +1228,29 @@
           "title": "Covered Scope",
           "type": "array"
         },
+        "current_access_status": {
+          "$ref": "#/$defs/SourceAvailability",
+          "default": "unknown"
+        },
+        "invalidated_by_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invalidated By Revision"
+        },
         "locator": {
           "title": "Locator",
           "type": "string"
+        },
+        "receipt_status": {
+          "$ref": "#/$defs/SourceAvailability",
+          "default": "unknown"
         },
         "recording_available": {
           "anyOf": [
@@ -953,6 +1275,18 @@
         "source_type": {
           "title": "Source Type",
           "type": "string"
+        },
+        "supersedes_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supersedes Revision"
         },
         "unknown_scope": {
           "items": {
@@ -1019,6 +1353,13 @@
   },
   "additionalProperties": false,
   "properties": {
+    "assessments": {
+      "items": {
+        "$ref": "#/$defs/AssessmentEvidence"
+      },
+      "title": "Assessments",
+      "type": "array"
+    },
     "clinical_events": {
       "items": {
         "$ref": "#/$defs/ClinicalEvent"

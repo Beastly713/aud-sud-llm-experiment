@@ -66,6 +66,14 @@
       "title": "ClaimKind",
       "type": "string"
     },
+    "ComparisonType": {
+      "enum": [
+        "matched_assessment",
+        "passive_descriptive"
+      ],
+      "title": "ComparisonType",
+      "type": "string"
+    },
     "CoverageType": {
       "enum": [
         "nominal_feature_window",
@@ -96,6 +104,26 @@
       "title": "DurationValue",
       "type": "object"
     },
+    "EligibilityStatus": {
+      "enum": [
+        "eligible",
+        "ineligible",
+        "indeterminate"
+      ],
+      "title": "EligibilityStatus",
+      "type": "string"
+    },
+    "EvidenceClass": {
+      "enum": [
+        "structured_administration",
+        "structured_order",
+        "narrative_report",
+        "assessment",
+        "extracted_candidate"
+      ],
+      "title": "EvidenceClass",
+      "type": "string"
+    },
     "Finding": {
       "additionalProperties": false,
       "properties": {
@@ -121,6 +149,18 @@
           ],
           "default": null
         },
+        "assessment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assessment Id"
+        },
         "claim": {
           "title": "Claim",
           "type": "string"
@@ -128,6 +168,17 @@
         "claim_kind": {
           "$ref": "#/$defs/ClaimKind",
           "default": "other"
+        },
+        "comparison_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComparisonType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "coverage_type": {
           "anyOf": [
@@ -152,6 +203,17 @@
           "default": null,
           "title": "Denominator Seconds"
         },
+        "eligibility_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EligibilityStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "episode_rule_id": {
           "anyOf": [
             {
@@ -164,6 +226,17 @@
           "default": null,
           "title": "Episode Rule Id"
         },
+        "evidence_class": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceClass"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "interval": {
           "anyOf": [
             {
@@ -174,6 +247,18 @@
             }
           ],
           "default": null
+        },
+        "mention_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mention Id"
         },
         "method": {
           "anyOf": [
@@ -235,6 +320,18 @@
           "default": null,
           "title": "Reference Id"
         },
+        "reference_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Revision"
+        },
         "requested_statistic": {
           "anyOf": [
             {
@@ -272,6 +369,17 @@
           },
           "title": "Source Ids",
           "type": "array"
+        },
+        "temporal_precision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TemporalPrecision"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "value": {
           "anyOf": [
@@ -540,7 +648,7 @@
       "type": "array"
     },
     "schema_version": {
-      "default": "d2-experiment.schema.v1",
+      "default": "d2-experiment.schema.v2",
       "title": "Schema Version",
       "type": "string"
     },

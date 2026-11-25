@@ -7,6 +7,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -17,6 +18,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "clip_for_coverage"
         },
         "id": "obs",
@@ -24,6 +26,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -31,6 +34,7 @@
           "operation": "coverage",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -42,13 +46,14 @@
     ]
   },
   "D01-Q2": {
-    "intent": "named historical comparison",
+    "intent": "matched_assessment named personal-reference comparison",
     "output": "comparison",
     "participant_scope": "authorized_context_only",
     "plan_id": "dev-D01-Q2",
     "steps": [
       {
         "args": {
+          "comparison_type": "matched_assessment",
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -59,6 +64,7 @@
           "reference_id": "D01-R1",
           "require_eligibility": true,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -66,6 +72,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -73,6 +80,7 @@
           "operation": "summary",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -83,6 +91,7 @@
       },
       {
         "args": {
+          "comparison_type": "matched_assessment",
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -90,6 +99,7 @@
           "operation": "compare_to_named_reference",
           "policy_id": "D01-POLICY-NARROW",
           "reference_id": "D01-R1",
+          "reference_revision": "ref-r1",
           "start_ref": null,
           "statistic": "median",
           "target_ref": "obs",
@@ -108,6 +118,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -118,6 +129,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "all_authorized",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -125,6 +137,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": "D01-E1",
           "interval_ref": null,
@@ -132,6 +145,7 @@
           "operation": "episodes",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -143,7 +157,7 @@
     ]
   },
   "D01-Q4a": {
-    "intent": "event-anchored multimodal comparison",
+    "intent": "event-anchored passive descriptive multimodal comparison",
     "output": "evidence_linked_comparison",
     "participant_scope": "authorized_context_only",
     "plan_id": "dev-D01-Q4a",
@@ -178,6 +192,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": "administration",
           "episode_rule_id": null,
           "interval_ref": null,
@@ -185,6 +200,7 @@
           "operation": "between_event_anchors",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": "onset",
           "statistic": "median",
           "target_ref": null,
@@ -195,16 +211,18 @@
       },
       {
         "args": {
+          "comparison_type": "passive_descriptive",
           "interval_ref": "span",
           "method": "chest_ecg",
           "metric": "heart_rate",
-          "movement": null,
+          "movement": "low",
           "operation": "select",
           "policy_id": "D01-POLICY-NARROW",
           "quality": "accepted",
           "reference_id": "D01-R1",
-          "require_eligibility": true,
+          "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "hr",
@@ -212,6 +230,7 @@
       },
       {
         "args": {
+          "comparison_type": "passive_descriptive",
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -219,6 +238,7 @@
           "operation": "compare_to_named_reference",
           "policy_id": "D01-POLICY-NARROW",
           "reference_id": "D01-R1",
+          "reference_revision": "ref-r1",
           "start_ref": null,
           "statistic": "median",
           "target_ref": "hr",
@@ -229,6 +249,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": "span",
           "method": "ac_conductance_100hz",
           "metric": "ac_conductance",
@@ -239,6 +260,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "acg",
@@ -246,6 +268,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -253,6 +276,7 @@
           "operation": "summary",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -329,6 +353,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -339,6 +364,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "clip_for_coverage"
         },
         "id": "obs",
@@ -346,6 +372,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -353,6 +380,7 @@
           "operation": "coverage",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -364,23 +392,25 @@
     ]
   },
   "D02-Q2": {
-    "intent": "named historical comparison",
+    "intent": "passive_descriptive named personal-reference comparison",
     "output": "comparison",
     "participant_scope": "authorized_context_only",
     "plan_id": "dev-D02-Q2",
     "steps": [
       {
         "args": {
+          "comparison_type": "passive_descriptive",
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
-          "movement": null,
+          "movement": "low",
           "operation": "select",
           "policy_id": "D02-POLICY-NARROW",
           "quality": "accepted",
           "reference_id": "D02-R1",
-          "require_eligibility": true,
+          "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -388,6 +418,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -395,6 +426,7 @@
           "operation": "summary",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -405,6 +437,7 @@
       },
       {
         "args": {
+          "comparison_type": "passive_descriptive",
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -412,6 +445,7 @@
           "operation": "compare_to_named_reference",
           "policy_id": "D02-POLICY-NARROW",
           "reference_id": "D02-R1",
+          "reference_revision": "ref-r1",
           "start_ref": null,
           "statistic": "median",
           "target_ref": "obs",
@@ -430,6 +464,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -440,6 +475,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "all_authorized",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -447,6 +483,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": "D02-E1",
           "interval_ref": null,
@@ -454,6 +491,7 @@
           "operation": "episodes",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -465,7 +503,7 @@
     ]
   },
   "D02-Q4a": {
-    "intent": "event-anchored multimodal comparison",
+    "intent": "event-anchored passive descriptive multimodal comparison",
     "output": "evidence_linked_comparison",
     "participant_scope": "authorized_context_only",
     "plan_id": "dev-D02-Q4a",
@@ -500,6 +538,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": "administration",
           "episode_rule_id": null,
           "interval_ref": null,
@@ -507,6 +546,7 @@
           "operation": "between_event_anchors",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": "onset",
           "statistic": "median",
           "target_ref": null,
@@ -517,16 +557,18 @@
       },
       {
         "args": {
+          "comparison_type": "passive_descriptive",
           "interval_ref": "span",
           "method": "chest_ecg",
           "metric": "heart_rate",
-          "movement": null,
+          "movement": "low",
           "operation": "select",
           "policy_id": "D02-POLICY-NARROW",
           "quality": "accepted",
           "reference_id": "D02-R1",
-          "require_eligibility": true,
+          "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "hr",
@@ -534,6 +576,7 @@
       },
       {
         "args": {
+          "comparison_type": "passive_descriptive",
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -541,6 +584,7 @@
           "operation": "compare_to_named_reference",
           "policy_id": "D02-POLICY-NARROW",
           "reference_id": "D02-R1",
+          "reference_revision": "ref-r1",
           "start_ref": null,
           "statistic": "median",
           "target_ref": "hr",
@@ -551,6 +595,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": "span",
           "method": "ac_conductance_100hz",
           "metric": "ac_conductance",
@@ -561,6 +606,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "acg",
@@ -568,6 +614,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -575,6 +622,7 @@
           "operation": "summary",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -651,6 +699,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -661,6 +710,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "clip_for_coverage"
         },
         "id": "obs",
@@ -668,6 +718,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -675,6 +726,7 @@
           "operation": "coverage",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -686,13 +738,14 @@
     ]
   },
   "D03-Q2": {
-    "intent": "named historical comparison",
+    "intent": "matched_assessment named personal-reference comparison",
     "output": "comparison",
     "participant_scope": "authorized_context_only",
     "plan_id": "dev-D03-Q2",
     "steps": [
       {
         "args": {
+          "comparison_type": "matched_assessment",
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -703,6 +756,7 @@
           "reference_id": "D03-R1",
           "require_eligibility": true,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -710,6 +764,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -717,6 +772,7 @@
           "operation": "summary",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -727,6 +783,7 @@
       },
       {
         "args": {
+          "comparison_type": "matched_assessment",
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -734,6 +791,7 @@
           "operation": "compare_to_named_reference",
           "policy_id": "D03-POLICY-NARROW",
           "reference_id": "D03-R1",
+          "reference_revision": "ref-r1",
           "start_ref": null,
           "statistic": "median",
           "target_ref": "obs",
@@ -752,6 +810,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -762,6 +821,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "all_authorized",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -769,6 +829,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": "D03-E1",
           "interval_ref": null,
@@ -776,6 +837,7 @@
           "operation": "episodes",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -876,6 +938,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -886,6 +949,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "clip_for_coverage"
         },
         "id": "obs",
@@ -893,6 +957,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -900,6 +965,7 @@
           "operation": "coverage",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -911,13 +977,14 @@
     ]
   },
   "D04-Q2": {
-    "intent": "named historical comparison",
+    "intent": "matched_assessment named personal-reference comparison",
     "output": "comparison",
     "participant_scope": "authorized_context_only",
     "plan_id": "dev-D04-Q2",
     "steps": [
       {
         "args": {
+          "comparison_type": "matched_assessment",
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -928,6 +995,7 @@
           "reference_id": "D04-R1",
           "require_eligibility": true,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -935,6 +1003,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -942,6 +1011,7 @@
           "operation": "summary",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -952,6 +1022,7 @@
       },
       {
         "args": {
+          "comparison_type": "matched_assessment",
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -959,6 +1030,7 @@
           "operation": "compare_to_named_reference",
           "policy_id": "D04-POLICY-NARROW",
           "reference_id": "D04-R1",
+          "reference_revision": "ref-r1",
           "start_ref": null,
           "statistic": "median",
           "target_ref": "obs",
@@ -977,6 +1049,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -987,6 +1060,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "all_authorized",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -994,6 +1068,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": "D04-E1",
           "interval_ref": null,
@@ -1001,6 +1076,7 @@
           "operation": "episodes",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -1101,6 +1177,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -1111,6 +1188,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "clip_for_coverage"
         },
         "id": "obs",
@@ -1118,6 +1196,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -1125,6 +1204,7 @@
           "operation": "coverage",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -1136,13 +1216,14 @@
     ]
   },
   "D05-Q2": {
-    "intent": "named historical comparison",
+    "intent": "matched_assessment named personal-reference comparison",
     "output": "comparison",
     "participant_scope": "authorized_context_only",
     "plan_id": "dev-D05-Q2",
     "steps": [
       {
         "args": {
+          "comparison_type": "matched_assessment",
           "interval_ref": null,
           "method": "wrist_ppg",
           "metric": "pulse_rate",
@@ -1153,6 +1234,7 @@
           "reference_id": "D05-R1",
           "require_eligibility": true,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -1160,6 +1242,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -1167,6 +1250,7 @@
           "operation": "summary",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -1177,6 +1261,7 @@
       },
       {
         "args": {
+          "comparison_type": "matched_assessment",
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -1184,6 +1269,7 @@
           "operation": "compare_to_named_reference",
           "policy_id": "D05-POLICY-NARROW",
           "reference_id": "D05-R1",
+          "reference_revision": "ref-r1",
           "start_ref": null,
           "statistic": "median",
           "target_ref": "obs",
@@ -1202,6 +1288,7 @@
     "steps": [
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": null,
           "method": "chest_ecg",
           "metric": "heart_rate",
@@ -1212,6 +1299,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "all_authorized",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "obs",
@@ -1219,6 +1307,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": "D05-E1",
           "interval_ref": null,
@@ -1226,6 +1315,7 @@
           "operation": "episodes",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,
@@ -1237,7 +1327,7 @@
     ]
   },
   "D05-Q4a": {
-    "intent": "event-anchored multimodal comparison",
+    "intent": "event-anchored passive descriptive multimodal comparison",
     "output": "evidence_linked_comparison",
     "participant_scope": "authorized_context_only",
     "plan_id": "dev-D05-Q4a",
@@ -1272,6 +1362,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": "administration",
           "episode_rule_id": null,
           "interval_ref": null,
@@ -1279,6 +1370,7 @@
           "operation": "between_event_anchors",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": "onset",
           "statistic": "median",
           "target_ref": null,
@@ -1289,16 +1381,18 @@
       },
       {
         "args": {
+          "comparison_type": "passive_descriptive",
           "interval_ref": "span",
           "method": "chest_ecg",
           "metric": "heart_rate",
-          "movement": null,
+          "movement": "low",
           "operation": "select",
           "policy_id": "D05-POLICY-NARROW",
           "quality": "accepted",
           "reference_id": "D05-R1",
-          "require_eligibility": true,
+          "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "hr",
@@ -1306,6 +1400,7 @@
       },
       {
         "args": {
+          "comparison_type": "passive_descriptive",
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -1313,6 +1408,7 @@
           "operation": "compare_to_named_reference",
           "policy_id": "D05-POLICY-NARROW",
           "reference_id": "D05-R1",
+          "reference_revision": "ref-r1",
           "start_ref": null,
           "statistic": "median",
           "target_ref": "hr",
@@ -1323,6 +1419,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "interval_ref": "span",
           "method": "ac_conductance_100hz",
           "metric": "ac_conductance",
@@ -1333,6 +1430,7 @@
           "reference_id": null,
           "require_eligibility": false,
           "scope_mode": "question_scope",
+          "target_assessment_id": null,
           "window_policy": "fully_contained"
         },
         "id": "acg",
@@ -1340,6 +1438,7 @@
       },
       {
         "args": {
+          "comparison_type": null,
           "end_ref": null,
           "episode_rule_id": null,
           "interval_ref": null,
@@ -1347,6 +1446,7 @@
           "operation": "summary",
           "policy_id": null,
           "reference_id": null,
+          "reference_revision": null,
           "start_ref": null,
           "statistic": "median",
           "target_ref": null,

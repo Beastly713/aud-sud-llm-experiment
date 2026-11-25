@@ -151,6 +151,14 @@
       "title": "ClinicalStep",
       "type": "object"
     },
+    "ComparisonType": {
+      "enum": [
+        "matched_assessment",
+        "passive_descriptive"
+      ],
+      "title": "ComparisonType",
+      "type": "string"
+    },
     "EvidenceClass": {
       "enum": [
         "structured_administration",
@@ -165,6 +173,17 @@
     "IntervalArgs": {
       "additionalProperties": false,
       "properties": {
+        "comparison_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComparisonType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "end_ref": {
           "anyOf": [
             {
@@ -248,6 +267,18 @@
           ],
           "default": null,
           "title": "Reference Id"
+        },
+        "reference_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Revision"
         },
         "start_ref": {
           "anyOf": [
@@ -338,6 +369,17 @@
     "ObservationArgs": {
       "additionalProperties": false,
       "properties": {
+        "comparison_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComparisonType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "interval_ref": {
           "anyOf": [
             {
@@ -426,6 +468,18 @@
           ],
           "title": "Scope Mode",
           "type": "string"
+        },
+        "target_assessment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Assessment Id"
         },
         "window_policy": {
           "default": "fully_contained",

@@ -2,6 +2,22 @@
 
 Date: 2026-11-25
 
+## Blueprint v1.8 / Protocol v1.2 synchronization
+
+- Added the active v1.2 protocol bound to Blueprint v1.8; v1.1 remains historical.
+- Added documented assessment evidence, supported-assessment/passive reference
+  semantics, explicit comparison types, source availability/invalidation fields and
+  revision/as-of bindings to the shared contracts and definitions.
+- Updated D2 comparison selection, dependent interval propagation, evidence bundles
+  and typed composition verification. Matched comparisons now require documented
+  compatible assessment membership; passive comparisons cannot be silently promoted.
+- Revised D01–D05 Q2/Q4 provisional gold and the worksheet. D02-Q1 is now partial
+  for the actual 15/30-second represented support in its 30-second scope. All 25
+  records remain pending independent human review.
+- Added regression coverage for matched/passive distinctions, incompatible and
+  unavailable references, invalidated source snapshots, blocked anchors and typed
+  verifier rejection/clinical-event acceptance.
+
 ## Confirmed-defect fix pass
 
 - Corrected all development oracle selectors to exact D01 observation IDs; the
@@ -15,7 +31,7 @@ Date: 2026-11-25
   occurrence IDs, action/assertion/time fields, source revisions and limitations.
 - Replaced placeholder gold slots with independently authored values, units,
   denominators, exclusions, limitations and statuses for all 25 provisional records;
-  D02-Q1 is `answered` for its actual 30-second scope. D03/D04 ambiguity and partial
+  D02-Q1 is `partial` for its actual 30-second scope. D03/D04 ambiguity and partial
   answerability were corrected.
 - Regenerated materialized development plans, gold, schemas and artifact-hash
   manifest; human-review fields remain pending.
@@ -34,8 +50,8 @@ Date: 2026-11-25
   schemas/manifests to B. Docker execution now validates a 64-hex digest, runs
   offline/non-root/read-only with resource/output limits, and cleans up timeouts.
 - Added live-routing regression tests and retained clinical selection details in the
-  D2 composition bundle. No development dataset or authoritative document was
-  changed in this pass.
+  D2 composition bundle. No held-out dataset or Blueprint document was changed in
+  this pass.
 
 ## Implemented
 
@@ -69,11 +85,20 @@ Date: 2026-11-25
   gold, schemas and manifests — passed.
 - Regenerated-artifact checks confirmed 25 gold records, exact Q1 coverage plans,
   pending review status and corrected answerability statuses — passed.
-- `./.venv/bin/python -m pytest` — passed: 26 tests, including live-routing,
-  pinned-image, workflow, oracle and D2 semantic regressions.
+- `./.venv/bin/python -m pytest -q` — passed: 31 tests, including live-routing,
+  pinned-image, workflow, oracle, comparison-contract and D2 semantic regressions.
+- `./.venv/bin/python -m src.devdata_export` — passed: regenerated five fixtures,
+  25 questions, 25 provisional gold records, manual plans and development manifest.
+- `./.venv/bin/python -m src.schema_export` — passed: regenerated public schemas.
+- `./.venv/bin/python -m evaluation.gold_validate --split dev` — passed.
 - `./.venv/bin/python -m src.runner --split dev --arms A,C,B --mock
-  --questions D01-Q1,D02-Q4a,D03-Q2 --run verification-mock-smoke` — passed: 9
-  attempted, 9 successful, 0 failed; raw/delivered/traces/usage records present.
+  --run development-v18-sync-mock-20261125-r6` — passed: 75 attempted, 75
+  successful, 0 failed; raw/delivered/traces/usage records present.
+- `./.venv/bin/python -m compileall -q src evaluation tests` — passed. Final
+  artifact check confirmed 5 fixtures, 25 questions, 25 gold records, 25 plans,
+  32 manifest hashes, D02-Q1 `partial`, D03-Q2 `insufficient`, no held-out
+  artifacts beyond `data/test/.gitkeep`, and no API-key strings in the final mock
+  run.
 - The live gate was exercised without credentials; it failed before any provider
   request because `AUD_SUD_ALLOW_LIVE_API` was not enabled.
 - Static checks confirmed no D2 import in `evaluation/gold_oracle.py`, no material

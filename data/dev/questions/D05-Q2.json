@@ -10,6 +10,6 @@
   "question_id": "D05-Q2",
   "requested_status": null,
   "scenario_id": "D05",
-  "snapshot_id": "D05-v1",
-  "text": "Compared with the named earlier ECG reference, what was the typical wrist pulse rate during the review bout?"
+  "snapshot_id": "D05-v2",
+  "text": "Compared with the named earlier ECG assessment reference, is the accepted wrist PPG pulse rate eligible for a matched comparison?"
 }

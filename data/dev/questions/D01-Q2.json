@@ -10,6 +10,6 @@
   "question_id": "D01-Q2",
   "requested_status": null,
   "scenario_id": "D01",
-  "snapshot_id": "D01-v1",
-  "text": "Compared with the named earlier low-chest-motion ECG reference, what was the typical heart rate during the review bout?"
+  "snapshot_id": "D01-v2",
+  "text": "Compared with this patient's earlier documented seated ECG HR assessment, what typical HR difference is supported by the later documented seated assessment, and is the matched comparison eligible?"
 }

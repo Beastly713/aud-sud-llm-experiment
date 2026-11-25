@@ -44,6 +44,8 @@ def query_clinical_events(store: EvidenceStore, args: ClinicalEventArgs) -> Even
             continue
         if args.evidence_class and event.evidence_class != args.evidence_class:
             continue
+        if event.source_ids and not any(store.source_is_currently_usable(source_id) for source_id in event.source_ids):
+            continue
         if admitted(event):
             candidates.append(event)
     candidates.sort(key=lambda item: (item.event_time.lower if item.event_time else item.documented_at, item.mention_id))

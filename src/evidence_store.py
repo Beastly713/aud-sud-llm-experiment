@@ -6,12 +6,15 @@ from datetime import datetime, timezone
 
 from .schema import (
     ClinicalEvent,
+    AssessmentEvidence,
     ContextAnnotation,
     EligibilityRecord,
     HistoricalReference,
     Observation,
     Scenario,
     SourceRecord,
+    ComparisonType,
+    SourceAvailability,
 )
 
 
@@ -76,6 +79,12 @@ class EvidenceStore:
                 return item
         raise KeyError(f"unknown clinical mention: {mention_id}")
 
+    def assessment(self, assessment_id: str) -> AssessmentEvidence:
+        for item in self.scenario.assessments:
+            if item.assessment_id == assessment_id:
+                return item
+        raise KeyError(f"unknown assessment: {assessment_id}")
+
     def reference(self, reference_id: str) -> HistoricalReference:
         for item in self.scenario.references:
             if item.reference_id == reference_id:
@@ -88,12 +97,13 @@ class EvidenceStore:
                 return item
         raise KeyError(f"unknown source: {source_id}")
 
-    def eligibility(self, observation_id: str, reference_id: str, policy_id: str) -> EligibilityRecord | None:
+    def eligibility(self, observation_id: str, reference_id: str, policy_id: str, comparison_type: ComparisonType | None = None) -> EligibilityRecord | None:
         for item in self.scenario.eligibility:
             if (
                 item.observation_id == observation_id
                 and item.reference_id == reference_id
                 and item.policy_id == policy_id
+                and (comparison_type is None or item.comparison_type == comparison_type)
             ):
                 return item
         return None
@@ -111,6 +121,18 @@ class EvidenceStore:
         if span is not None and source.content is not None and span not in source.content:
             raise ValueError(f"span is not present in source {source_id}")
         return source
+
+    def source_is_currently_usable(self, source_id: str) -> bool:
+        source = self.source(source_id)
+        return source.current_access_status == SourceAvailability.AVAILABLE
+
+    def reference_is_currently_usable(self, reference_id: str) -> bool:
+        reference = self.reference(reference_id)
+        return bool(reference.source_ids) and all(self.source_is_currently_usable(source_id) for source_id in reference.source_ids)
+
+    def assessment_is_currently_usable(self, assessment_id: str) -> bool:
+        assessment = self.assessment(assessment_id)
+        return bool(assessment.source_ids) and all(self.source_is_currently_usable(source_id) for source_id in assessment.source_ids)
 
     def assert_scope(self, start: datetime, end: datetime) -> None:
         if not self._in_scope(start, end):

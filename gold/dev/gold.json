@@ -13,6 +13,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-H1",
@@ -32,6 +33,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-S-I"
@@ -46,6 +48,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-H1",
@@ -66,6 +69,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-H1",
@@ -105,7 +109,7 @@
         "D01-H2"
       ]
     },
-    "snapshot_id": "D01-v1",
+    "snapshot_id": "D01-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -123,15 +127,17 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-R1",
-            "D01-S-R"
+            "D01-S-R",
+            "D01-S-A"
           ]
         ],
         "expected": {
-          "claim": "descriptive comparison only; not a healthy-normal inference",
-          "reason_code": "provisional_reference",
+          "claim": "this is a documented matched-assessment comparison, not a healthy-normal inference",
+          "reason_code": "assessment_reference_qualification",
           "reference_id": "D01-R1"
         },
         "kind": "limitation",
@@ -140,6 +146,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-H1",
@@ -147,7 +154,7 @@
           ]
         ],
         "expected": {
-          "claim": "the typical value describes selected windows, not the uncovered portion of the review span",
+          "claim": "the typical value describes the selected assessment-supported window, not the uncovered portion of the review span",
           "reason_code": "sparse_recording_bouts"
         },
         "kind": "limitation",
@@ -158,6 +165,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-S-I"
@@ -172,6 +180,7 @@
       },
       {
         "absolute_tolerance": 0.1,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-H1"
@@ -195,24 +204,30 @@
       },
       {
         "absolute_tolerance": 0.1,
+        "comparison_type": "matched_assessment",
         "evidence_alternatives": [
           [
             "D01-H1",
             "D01-R1",
-            "D01-S-R"
+            "D01-S-R",
+            "D01-S-A"
           ]
         ],
         "expected": {
+          "assessment_id": "D01-ASSESS-TARGET",
+          "comparison_type": "matched_assessment",
+          "eligibility_status": "eligible",
           "method": "chest_ecg",
           "metric": "heart_rate",
           "policy_id": "D01-POLICY-NARROW",
           "reference_id": "D01-R1",
+          "reference_revision": "ref-r1",
           "selected_ids": [
             "D01-H1"
           ],
           "statistic": "median_difference",
           "unit": "bpm",
-          "value": 16.0
+          "value": -1.5
         },
         "kind": "numeric",
         "material": true,
@@ -227,7 +242,7 @@
       "excluded_ids_with_reasons": [
         {
           "id": "D01-H2",
-          "reason": "ineligible under narrow low-chest-motion policy"
+          "reason": "documented target assessment membership is not established"
         },
         {
           "id": "D01-H3",
@@ -238,7 +253,7 @@
         "D01-H1"
       ]
     },
-    "snapshot_id": "D01-v1",
+    "snapshot_id": "D01-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -256,6 +271,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-S-H",
@@ -275,6 +291,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-S-I"
@@ -289,6 +306,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-P-H1",
@@ -307,6 +325,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-P-H1",
@@ -330,6 +349,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-H1",
@@ -378,7 +398,7 @@
         "D01-P-H2"
       ]
     },
-    "snapshot_id": "D01-v1",
+    "snapshot_id": "D01-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -396,6 +416,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-S-I",
@@ -412,6 +433,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-C4",
@@ -430,6 +452,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-S-I"
@@ -444,6 +467,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-C1",
@@ -464,6 +488,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-C4",
@@ -484,6 +509,7 @@
       },
       {
         "absolute_tolerance": 0.1,
+        "comparison_type": "passive_descriptive",
         "evidence_alternatives": [
           [
             "D01-H1",
@@ -493,15 +519,18 @@
           ]
         ],
         "expected": {
+          "comparison_type": "passive_descriptive",
+          "eligibility_status": "eligible",
           "method": "chest_ecg",
           "metric": "heart_rate",
           "reference_id": "D01-R1",
+          "reference_revision": "ref-r1",
           "selected_ids": [
             "D01-H1"
           ],
           "statistic": "median_difference",
           "unit": "bpm",
-          "value": 16.0
+          "value": -1.5
         },
         "kind": "numeric",
         "material": true,
@@ -509,6 +538,7 @@
       },
       {
         "absolute_tolerance": 0.01,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-G1",
@@ -580,7 +610,7 @@
         "D01-G2"
       ]
     },
-    "snapshot_id": "D01-v1",
+    "snapshot_id": "D01-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -599,6 +629,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-S-I"
@@ -613,6 +644,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-C1",
@@ -633,6 +665,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D01-C4",
@@ -675,7 +708,7 @@
         "D01-C1"
       ]
     },
-    "snapshot_id": "D01-v1",
+    "snapshot_id": "D01-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -693,6 +726,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-H1",
@@ -712,13 +746,14 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-S-I"
           ]
         ],
         "expected": {
-          "status": "answered"
+          "status": "partial"
         },
         "kind": "status",
         "material": true,
@@ -726,6 +761,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-H1",
@@ -746,6 +782,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-H1",
@@ -785,8 +822,8 @@
         "D02-H2"
       ]
     },
-    "snapshot_id": "D02-v1",
-    "status": "answered",
+    "snapshot_id": "D02-v2",
+    "status": "partial",
     "worksheet": "gold/worksheets/development.md"
   },
   {
@@ -803,6 +840,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-R1",
@@ -810,34 +848,19 @@
           ]
         ],
         "expected": {
-          "claim": "descriptive comparison only; not a healthy-normal inference",
-          "reason_code": "provisional_reference",
+          "claim": "this is a passive descriptive difference; target assessment membership is not established",
+          "reason_code": "passive_descriptive_comparison",
           "reference_id": "D02-R1"
         },
         "kind": "limitation",
         "material": true,
-        "slot_id": "reference_qualification"
-      },
-      {
-        "absolute_tolerance": null,
-        "evidence_alternatives": [
-          [
-            "D02-H1",
-            "D02-S-I"
-          ]
-        ],
-        "expected": {
-          "claim": "the typical value describes selected windows, not the uncovered portion of the review span",
-          "reason_code": "sparse_recording_bouts"
-        },
-        "kind": "limitation",
-        "material": true,
-        "slot_id": "summary_gap"
+        "slot_id": "comparison_qualification"
       }
     ],
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-S-I"
@@ -852,6 +875,7 @@
       },
       {
         "absolute_tolerance": 0.1,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-H1"
@@ -875,6 +899,7 @@
       },
       {
         "absolute_tolerance": 0.1,
+        "comparison_type": "passive_descriptive",
         "evidence_alternatives": [
           [
             "D02-H1",
@@ -883,16 +908,19 @@
           ]
         ],
         "expected": {
+          "comparison_type": "passive_descriptive",
+          "eligibility_status": "eligible",
           "method": "chest_ecg",
           "metric": "heart_rate",
           "policy_id": "D02-POLICY-NARROW",
           "reference_id": "D02-R1",
+          "reference_revision": "ref-r1",
           "selected_ids": [
             "D02-H1"
           ],
           "statistic": "median_difference",
           "unit": "bpm",
-          "value": 16.0
+          "value": -1.5
         },
         "kind": "numeric",
         "material": true,
@@ -907,7 +935,7 @@
       "excluded_ids_with_reasons": [
         {
           "id": "D02-H2",
-          "reason": "ineligible under narrow low-chest-motion policy"
+          "reason": "elevated chest motion; low-motion context filter"
         },
         {
           "id": "D02-H3",
@@ -918,7 +946,7 @@
         "D02-H1"
       ]
     },
-    "snapshot_id": "D02-v1",
+    "snapshot_id": "D02-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -936,6 +964,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-S-H",
@@ -955,6 +984,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-S-I"
@@ -969,6 +999,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-P-H1",
@@ -987,6 +1018,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-P-H1",
@@ -1010,6 +1042,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-H1",
@@ -1058,7 +1091,7 @@
         "D02-P-H2"
       ]
     },
-    "snapshot_id": "D02-v1",
+    "snapshot_id": "D02-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -1076,6 +1109,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-C1",
@@ -1095,6 +1129,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-C1",
@@ -1114,6 +1149,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-S-I"
@@ -1128,6 +1164,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-C1",
@@ -1146,6 +1183,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-C4",
@@ -1175,7 +1213,7 @@
         "D02-C4"
       ]
     },
-    "snapshot_id": "D02-v1",
+    "snapshot_id": "D02-v2",
     "status": "partial",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -1194,6 +1232,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-S-I"
@@ -1208,6 +1247,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-C1",
@@ -1228,6 +1268,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D02-C4",
@@ -1270,7 +1311,7 @@
         "D02-C1"
       ]
     },
-    "snapshot_id": "D02-v1",
+    "snapshot_id": "D02-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -1288,6 +1329,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-H1",
@@ -1307,6 +1349,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-S-I"
@@ -1321,6 +1364,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-H1",
@@ -1341,6 +1385,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-H1",
@@ -1380,7 +1425,7 @@
         "D03-H2"
       ]
     },
-    "snapshot_id": "D03-v1",
+    "snapshot_id": "D03-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -1398,100 +1443,39 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
+            "D03-S-A",
             "D03-R1",
             "D03-S-R"
           ]
         ],
         "expected": {
-          "claim": "descriptive comparison only; not a healthy-normal inference",
-          "reason_code": "provisional_reference",
+          "claim": "the standing target assessment cannot be silently compared with the seated reference",
+          "reason_code": "assessment_condition_incompatible",
           "reference_id": "D03-R1"
         },
         "kind": "limitation",
         "material": true,
-        "slot_id": "reference_qualification"
-      },
-      {
-        "absolute_tolerance": null,
-        "evidence_alternatives": [
-          [
-            "D03-H1",
-            "D03-S-I"
-          ]
-        ],
-        "expected": {
-          "claim": "the typical value describes selected windows, not the uncovered portion of the review span",
-          "reason_code": "sparse_recording_bouts"
-        },
-        "kind": "limitation",
-        "material": true,
-        "slot_id": "summary_gap"
+        "slot_id": "assessment_condition"
       }
     ],
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-S-I"
           ]
         ],
         "expected": {
-          "status": "answered"
+          "status": "insufficient"
         },
         "kind": "status",
         "material": true,
         "slot_id": "D03-Q2-status"
-      },
-      {
-        "absolute_tolerance": 0.1,
-        "evidence_alternatives": [
-          [
-            "D03-H1"
-          ]
-        ],
-        "expected": {
-          "interval_end": "2026-01-03T09:00:15+00:00",
-          "interval_start": "2026-01-03T09:00:00+00:00",
-          "method": "chest_ecg",
-          "metric": "heart_rate",
-          "selected_ids": [
-            "D03-H1"
-          ],
-          "statistic": "median",
-          "unit": "bpm",
-          "value": 96.0
-        },
-        "kind": "numeric",
-        "material": true,
-        "slot_id": "summary"
-      },
-      {
-        "absolute_tolerance": 0.1,
-        "evidence_alternatives": [
-          [
-            "D03-H1",
-            "D03-R1",
-            "D03-S-R"
-          ]
-        ],
-        "expected": {
-          "method": "chest_ecg",
-          "metric": "heart_rate",
-          "policy_id": "D03-POLICY-NARROW",
-          "reference_id": "D03-R1",
-          "selected_ids": [
-            "D03-H1"
-          ],
-          "statistic": "median_difference",
-          "unit": "bpm",
-          "value": 16.0
-        },
-        "kind": "numeric",
-        "material": true,
-        "slot_id": "reference_difference"
       }
     ],
     "review_author": "pending-human-review",
@@ -1501,20 +1485,22 @@
       "anchor_candidates": [],
       "excluded_ids_with_reasons": [
         {
+          "id": "D03-H1",
+          "reason": "target standing assessment condition is incompatible with seated reference"
+        },
+        {
           "id": "D03-H2",
-          "reason": "ineligible under narrow low-chest-motion policy"
+          "reason": "target standing assessment condition is incompatible with seated reference"
         },
         {
           "id": "D03-H3",
           "reason": "rejected artifact"
         }
       ],
-      "included_ids": [
-        "D03-H1"
-      ]
+      "included_ids": []
     },
-    "snapshot_id": "D03-v1",
-    "status": "answered",
+    "snapshot_id": "D03-v2",
+    "status": "insufficient",
     "worksheet": "gold/worksheets/development.md"
   },
   {
@@ -1531,6 +1517,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-S-H",
@@ -1550,6 +1537,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-S-I"
@@ -1564,6 +1552,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-P-H1",
@@ -1582,6 +1571,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-P-H1",
@@ -1605,6 +1595,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-H1",
@@ -1653,7 +1644,7 @@
         "D03-P-H2"
       ]
     },
-    "snapshot_id": "D03-v1",
+    "snapshot_id": "D03-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -1671,6 +1662,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-C4A",
@@ -1694,6 +1686,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-S-I"
@@ -1708,6 +1701,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-C1",
@@ -1738,7 +1732,7 @@
         "D03-C1"
       ]
     },
-    "snapshot_id": "D03-v1",
+    "snapshot_id": "D03-v2",
     "status": "clarify",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -1756,6 +1750,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-C4A",
@@ -1778,6 +1773,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-S-I"
@@ -1792,6 +1788,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D03-C1",
@@ -1837,7 +1834,7 @@
         "D03-C1"
       ]
     },
-    "snapshot_id": "D03-v1",
+    "snapshot_id": "D03-v2",
     "status": "clarify",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -1855,6 +1852,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-H1",
@@ -1874,6 +1872,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-S-I"
@@ -1888,6 +1887,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-H1",
@@ -1908,6 +1908,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-H1",
@@ -1947,7 +1948,7 @@
         "D04-H2"
       ]
     },
-    "snapshot_id": "D04-v1",
+    "snapshot_id": "D04-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -1965,6 +1966,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-R1",
@@ -1983,6 +1985,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-S-I"
@@ -2009,7 +2012,7 @@
       ],
       "included_ids": []
     },
-    "snapshot_id": "D04-v1",
+    "snapshot_id": "D04-v2",
     "status": "insufficient",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -2027,6 +2030,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-S-H",
@@ -2046,6 +2050,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-S-I"
@@ -2060,6 +2065,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-P-H1",
@@ -2078,6 +2084,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-P-H1",
@@ -2101,6 +2108,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-H1",
@@ -2149,7 +2157,7 @@
         "D04-P-H2"
       ]
     },
-    "snapshot_id": "D04-v1",
+    "snapshot_id": "D04-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -2167,6 +2175,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-C1",
@@ -2187,6 +2196,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-S-I"
@@ -2201,6 +2211,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-C1",
@@ -2228,7 +2239,7 @@
         "D04-C1"
       ]
     },
-    "snapshot_id": "D04-v1",
+    "snapshot_id": "D04-v2",
     "status": "insufficient",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -2246,6 +2257,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-C2",
@@ -2265,6 +2277,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-S-I"
@@ -2279,6 +2292,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D04-C1",
@@ -2321,7 +2335,7 @@
         "D04-C1"
       ]
     },
-    "snapshot_id": "D04-v1",
+    "snapshot_id": "D04-v2",
     "status": "insufficient",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -2339,6 +2353,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-H1",
@@ -2358,6 +2373,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-S-I"
@@ -2372,6 +2388,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-H1",
@@ -2392,6 +2409,7 @@
       },
       {
         "absolute_tolerance": 0.0,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-H1",
@@ -2431,7 +2449,7 @@
         "D05-H2"
       ]
     },
-    "snapshot_id": "D05-v1",
+    "snapshot_id": "D05-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -2449,6 +2467,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-PULSE1",
@@ -2470,6 +2489,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-S-I"
@@ -2494,11 +2514,9 @@
           "reason": "wrist PPG is not eligible for the chest-ECG reference policy"
         }
       ],
-      "included_ids": [
-        "D05-PULSE1"
-      ]
+      "included_ids": []
     },
-    "snapshot_id": "D05-v1",
+    "snapshot_id": "D05-v2",
     "status": "insufficient",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -2516,6 +2534,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-S-H",
@@ -2535,6 +2554,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-S-I"
@@ -2549,6 +2569,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-P-H1",
@@ -2567,6 +2588,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-P-H1",
@@ -2590,6 +2612,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-H1",
@@ -2638,7 +2661,7 @@
         "D05-P-H2"
       ]
     },
-    "snapshot_id": "D05-v1",
+    "snapshot_id": "D05-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -2656,6 +2679,7 @@
     "required_limitations": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-S-I",
@@ -2672,6 +2696,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-C4",
@@ -2690,6 +2715,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-S-I"
@@ -2704,6 +2730,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-C1",
@@ -2724,6 +2751,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-C4",
@@ -2744,6 +2772,7 @@
       },
       {
         "absolute_tolerance": 0.1,
+        "comparison_type": "passive_descriptive",
         "evidence_alternatives": [
           [
             "D05-H1",
@@ -2753,15 +2782,18 @@
           ]
         ],
         "expected": {
+          "comparison_type": "passive_descriptive",
+          "eligibility_status": "eligible",
           "method": "chest_ecg",
           "metric": "heart_rate",
           "reference_id": "D05-R1",
+          "reference_revision": "ref-r1",
           "selected_ids": [
             "D05-H1"
           ],
           "statistic": "median_difference",
           "unit": "bpm",
-          "value": 16.0
+          "value": -1.5
         },
         "kind": "numeric",
         "material": true,
@@ -2769,6 +2801,7 @@
       },
       {
         "absolute_tolerance": 0.01,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-G1",
@@ -2840,7 +2873,7 @@
         "D05-G2"
       ]
     },
-    "snapshot_id": "D05-v1",
+    "snapshot_id": "D05-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   },
@@ -2859,6 +2892,7 @@
     "required_slots": [
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-S-I"
@@ -2873,6 +2907,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-C1",
@@ -2893,6 +2928,7 @@
       },
       {
         "absolute_tolerance": null,
+        "comparison_type": null,
         "evidence_alternatives": [
           [
             "D05-C4",
@@ -2935,7 +2971,7 @@
         "D05-C1"
       ]
     },
-    "snapshot_id": "D05-v1",
+    "snapshot_id": "D05-v2",
     "status": "answered",
     "worksheet": "gold/worksheets/development.md"
   }

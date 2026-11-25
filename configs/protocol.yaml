@@ -1,6 +1,6 @@
-protocol_version: "1.1"
-blueprint_version: "1.6"
-schema_version: "d2-experiment.schema.v1"
+protocol_version: "1.2"
+blueprint_version: "1.8"
+schema_version: "d2-experiment.schema.v2"
 python_version: "3.12"
 development_split: dev
 test_split: test
